@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "./api";
 import { MASCOT_CREDIT, Mascot } from "./Mascot";
+import { Fx, STEPS } from "./meta";
 
 export function Login() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -33,13 +34,22 @@ export function Login() {
     <div className="login-page">
       <Mascot name="hiyori" mood="cheer" className="login-hero" say="Hi! Mình là Hiyori. Cùng học tiếng Anh mỗi ngày nhé!" />
       <div className="login-card">
-        <span className="logo-mark big">EC</span>
+        <span className="logo-mark">
+          <Fx name="speech_balloon" size={46} />
+        </span>
         <h1>English Coach</h1>
         <p className="lead">
-          Luyện <b>đọc</b>, <b>nghe</b> và <b>nói</b> tiếng Anh với bài học do AI soạn theo trình độ của bạn. Ghi âm giọng
-          đọc và nhận điểm cùng góp ý bằng tiếng Việt.
+          40 bài học có sẵn từ A1 đến C1. Học từ, nghe, chép chính tả, <b>nói và được AI chấm phát âm</b>, góp ý bằng tiếng Việt.
         </p>
-        <div className="tabs login-tabs" role="tablist">
+        <div className="login-feats">
+          {STEPS.map((s) => (
+            <span key={s.key}>
+              <Fx name={s.fx} size={36} />
+              {s.label}
+            </span>
+          ))}
+        </div>
+        <div className="seg login-tabs" role="tablist">
           <button role="tab" aria-selected={mode === "login"} className={mode === "login" ? "tab on" : "tab"} onClick={() => switchTo("login")}>
             Đăng nhập
           </button>
@@ -98,7 +108,7 @@ export function Login() {
           </button>
         </form>
         <p className="muted small">Tài khoản mới được dùng thử miễn phí một số lượt AI.</p>
-        <p className="credit">{MASCOT_CREDIT}</p>
+        <p className="credit">{MASCOT_CREDIT} Icon: Microsoft Fluent Emoji (MIT).</p>
       </div>
     </div>
   );

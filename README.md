@@ -4,14 +4,26 @@
 
 | Phần | Cách học |
 |---|---|
-| 🏠 Lộ trình | Mỗi bài là một "unit" với 5 nút: 🎧 nghe & xếp câu, ✍️ chép chính tả, 🎙️ luyện nói, 📖 đọc hiểu, 🏆 câu hỏi |
-| 📚 Thư viện | Bài ai tạo cũng vào thư viện chung; học lại bài có sẵn không tốn lượt AI. Gõ chủ đề sẽ gợi ý bài tương tự trước khi tạo mới |
-| 🎙️ Luyện nói | Ghi âm → Whisper (Workers AI) → AI chấm 0–100, tô màu từ sai/thiếu, mẹo phát âm tiếng Việt |
-| ⚡ XP, 🔥 chuỗi ngày, 🎯 mục tiêu ngày, 🏅 bảng xếp hạng tuần | Kiểu Duolingo |
+| Lộ trình | **Khoá học có sẵn 40 bài**, A1 → C1, 10 chủ đề (đời sống, ăn uống, du lịch, công việc, học tập, công nghệ, sức khoẻ, giải trí, thiên nhiên, con người). Mỗi bài là một nút trên bản đồ, đi qua 6 bước |
+| 6 bước mỗi bài | Từ vựng (lật thẻ, ghép cặp, điền từ, nghe chọn từ) · Nghe & xếp câu · Chép chính tả · Luyện nói · Đọc hiểu · Thử thách |
+| Thư viện | Khoá học + bài ai tạo cũng vào thư viện chung, lọc theo chủ đề và cấp độ. Học lại bài có sẵn không tốn lượt AI. Gõ chủ đề sẽ gợi ý bài tương tự trước khi tạo mới |
+| Luyện nói | Ghi âm → Whisper (Workers AI) → AI chấm 0–100, tô màu từ sai/thiếu, mẹo phát âm tiếng Việt |
+| Game | XP, chuỗi ngày, mục tiêu ngày, 3 nhiệm vụ hằng ngày, combo đúng liên tiếp, giải đấu tuần |
 
 ## Nhân vật
 
 Hai nhân vật Live2D chuyển động: **Hiyori Momose** (minh hoạ: Kani Biimu) và **Haru**, mẫu chính thức của Live2D Inc., dùng theo [Live2D Free Material License](https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html) (cá nhân và doanh nghiệp nhỏ doanh thu dưới 10 triệu yên được dùng, kể cả thương mại, có ghi credit). License cấm phát tán lại file gốc, nên file model **không nằm trong git**: `scripts/fetch-live2d.mjs` tải chúng (và Cubism Core) vào `public/live2d/` trước mỗi lần `dev`/`build`.
+
+Icon 3D: [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) của Microsoft (MIT), thu nhỏ thành WebP trong `public/fx/`. Icon giao diện: [Phosphor Icons](https://phosphoricons.com) (MIT).
+
+## Khoá học có sẵn
+
+Nội dung nằm trong `seed/lessons/A1.json` … `C1.json` (mỗi file 8 bài). Sửa hoặc thêm bài rồi:
+
+```bash
+npm run seed:check          # kiểm tra định dạng, độ dài câu, từ vựng có trong bài…
+npm run db:seed:remote      # ghi đè/thêm vào D1 (chạy lại bao nhiêu lần cũng được)
+```
 
 ## Ai dùng AI nào
 
@@ -33,7 +45,7 @@ Tài khoản lưu trong D1: tên đăng nhập + mật khẩu băm PBKDF2-SHA256
 
 ```
 Trình duyệt (React) ──► Cloudflare Worker (Hono)
-                          ├─ D1: users, sessions, lessons, attempts, ai_events
+                          ├─ D1: users, sessions, lessons, lesson_progress, xp_events, attempts
                           ├─ Workers AI: Whisper large-v3-turbo, Llama 3.3 70B
                           └─ Durable Object BridgeHub ◄──WebSocket── bridge/bridge.mjs (máy byocao)
                                                                      └─ claude -p --json-schema
@@ -45,6 +57,7 @@ Trình duyệt (React) ──► Cloudflare Worker (Hono)
 npm install
 cp .dev.vars.example .dev.vars        # điền ADMIN_PASSWORD và BRIDGE_TOKEN
 npm run db:migrate:local
+npm run db:seed:local                 # nạp 40 bài có sẵn
 npm run dev                           # http://localhost:5173
 ```
 
@@ -62,7 +75,7 @@ npm run bridge
 
 1. `npx wrangler login` bằng tài khoản Cloudflare của bạn.
 2. `npx wrangler d1 create english-coach`, rồi chép `database_id` vào `wrangler.jsonc`.
-3. `npm run db:migrate:remote`
+3. `npm run db:migrate:remote` rồi `npm run db:seed:remote`
 4. Đặt secrets:
    ```bash
    npx wrangler secret put ADMIN_PASSWORD

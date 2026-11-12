@@ -13,13 +13,15 @@
     "deploy": "npm run build && wrangler deploy",
     "bridge": "node bridge/bridge.mjs",
     "prebuild": "node scripts/fetch-live2d.mjs",
-    "predev": "node scripts/fetch-live2d.mjs"
+    "predev": "node scripts/fetch-live2d.mjs",
+    "seed:check": "node scripts/check-seed.mjs",
+    "seed:build": "node scripts/check-seed.mjs && node scripts/build-seed.mjs",
+    "db:seed:local": "npm run seed:build && wrangler d1 execute english-coach --local --file seed/course.sql",
+    "db:seed:remote": "npm run seed:build && wrangler d1 execute english-coach --remote --file seed/course.sql"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "hono": "4.13.14",
-    "pixi": {
-      "js": "6.5.10"
-    },
     "pixi-live2d-display": "0.4.0",
     "pixi.js": "^6.5.10",
     "react": "19.1.10",

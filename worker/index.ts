@@ -73,13 +73,16 @@ async function recordAi(env: Env, user: User, kind: string, provider: string) {
   user.ai_used += 1;
 }
 
+const CATEGORIES = ["daily", "food", "travel", "work", "study", "tech", "health", "fun", "nature", "people"];
+
 // ---- Lessons -----------------------------------------------------------------
 
 api.post("/lessons", async (c) => {
   const blocked = gate(c);
   if (blocked) return blocked;
   const user = c.get("user");
-  const body = await c.req.json<{ topic?: string; level?: string; length?: string }>().catch(() => ({}) as never);
+  const body = await c.req.json<{ topic?: string; level?: string; length?: string; category?: string }>().catch(() => ({}) as never);
+  const category = CATEGORIES.includes(body.category ?? "") ? body.category! : null;
   const topic = (body.topic ?? "").trim().slice(0, 200);
   const level = (LEVELS as readonly string[]).includes(body.level ?? "") ? (body.level as Level) : "B1";
   const length: LengthKey = body.length && body.length in LENGTHS ? (body.length as LengthKey) : "medium";
@@ -95,9 +98,9 @@ api.post("/lessons", async (c) => {
   if (lesson.sentences.length === 0) return c.json({ error: "AI không tạo được bài, hãy thử lại." }, 502);
 
   const row = await c.env.DB.prepare(
-    "INSERT INTO lessons (user_id, title, topic, level, content, provider, is_public) VALUES (?1, ?2, ?3, ?4, ?5, ?6, 1) RETURNING id",
+    "INSERT INTO lessons (user_id, title, topic, level, content, provider, is_public, category) VALUES (?1, ?2, ?3, ?4, ?5, ?6, 1, ?7) RETURNING id",
   )
-    .bind(user.id, lesson.title || topic, topic, level, JSON.stringify(lesson), result.provider)
+    .bind(user.id, lesson.title || topic, topic, level, JSON.stringify(lesson), result.provider, category)
     .first<{ id: number }>();
   await recordAi(c.env, user, "lesson", result.provider);
   return c.json({ id: row!.id, provider: result.provider, note: result.note, quota: quota(c.env, user) });

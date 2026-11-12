@@ -3,11 +3,11 @@ import { Hono } from "hono";
 import type { AppEnv, Env, User } from "./env";
 import { quota } from "./quota";
 
-export const STEPS = ["listen", "dictation", "speak", "read", "quiz"] as const;
+export const STEPS = ["words", "listen", "dictation", "speak", "read", "quiz"] as const;
 export type Step = (typeof STEPS)[number];
 
 /** XP for finishing a step with a 0-100 score; first completion of a step earns a bonus. */
-const STEP_XP: Record<Step, number> = { listen: 10, dictation: 15, speak: 20, read: 10, quiz: 15 };
+const STEP_XP: Record<Step, number> = { words: 10, listen: 10, dictation: 15, speak: 20, read: 10, quiz: 15 };
 const FIRST_TIME_BONUS = 5;
 const DAILY_GOALS = [10, 20, 30, 50, 80];
 
@@ -24,6 +24,8 @@ interface Gamer {
   today: string;
   yesterday: string;
   today_xp: number;
+  today_steps: number;
+  best_speak_today: number;
 }
 
 async function gamer(env: Env, userId: number): Promise<Gamer> {
@@ -31,7 +33,11 @@ async function gamer(env: Env, userId: number): Promise<Gamer> {
     `SELECT xp, streak, last_active_day, daily_goal,
             ${VN_TODAY} AS today, date('now', '+7 hours', '-1 day') AS yesterday,
             (SELECT COALESCE(SUM(amount), 0) FROM xp_events
-              WHERE user_id = ?1 AND date(created_at, '+7 hours') = ${VN_TODAY}) AS today_xp
+              WHERE user_id = ?1 AND date(created_at, '+7 hours') = ${VN_TODAY}) AS today_xp,
+            (SELECT COUNT(*) FROM xp_events
+              WHERE user_id = ?1 AND date(created_at, '+7 hours') = ${VN_TODAY}) AS today_steps,
+            (SELECT COALESCE(MAX(score), 0) FROM attempts
+              WHERE user_id = ?1 AND date(created_at, '+7 hours') = ${VN_TODAY}) AS best_speak_today
        FROM users WHERE id = ?1`,
   )
     .bind(userId)
@@ -51,6 +57,8 @@ function gameView(g: Gamer) {
     practicedToday: g.last_active_day === g.today,
     todayXp: g.today_xp,
     dailyGoal: g.daily_goal,
+    todaySteps: g.today_steps,
+    bestSpeakToday: g.best_speak_today,
   };
 }
 
@@ -74,6 +82,7 @@ learn.patch("/me", async (c) => {
 // ---- Library ---------------------------------------------------------------------
 
 const LESSON_COLUMNS = `l.id, l.title, l.topic, l.level, l.is_public, l.created_at, l.user_id, u.login AS author,
+  l.category, l.course_order, json_extract(l.content, '$.summary_vi') AS summary,
   json_array_length(l.content, '$.sentences') AS sentences,
   (SELECT COUNT(DISTINCT p.user_id) FROM lesson_progress p WHERE p.lesson_id = l.id) AS learners,
   (SELECT COUNT(*) FROM lesson_progress p WHERE p.lesson_id = l.id AND p.user_id = ?1) AS my_steps,
@@ -89,6 +98,7 @@ learn.get("/lessons", async (c) => {
   const scope = c.req.query("scope") === "mine" ? "mine" : "library";
   const level = c.req.query("level") ?? "";
   const q = (c.req.query("q") ?? "").trim().slice(0, 80);
+  const cat = (c.req.query("cat") ?? "").slice(0, 20);
   const visible = user.role === "admin" ? "1 = 1" : "(l.is_public = 1 OR l.user_id = ?1)";
 
   if (scope === "mine") {
@@ -107,9 +117,21 @@ learn.get("/lessons", async (c) => {
       WHERE ${visible}
         AND (?2 = '' OR l.level = ?2)
         AND (?3 = '' OR l.title LIKE '%' || ?3 || '%' OR l.topic LIKE '%' || ?3 || '%')
-      ORDER BY learners DESC, l.created_at DESC LIMIT 120`,
+        AND (?4 = '' OR (?4 = 'community' AND l.course_order IS NULL) OR l.category = ?4)
+      ORDER BY (l.course_order IS NULL), l.course_order, learners DESC, l.created_at DESC LIMIT 200`,
   )
-    .bind(user.id, level, q)
+    .bind(user.id, level, q, cat)
+    .all();
+  return c.json({ lessons: results });
+});
+
+/** The built-in course, in order: levels A1 to C1, each a run of lessons. */
+learn.get("/course", async (c) => {
+  const { results } = await c.env.DB.prepare(
+    `SELECT ${LESSON_COLUMNS} FROM lessons l JOIN users u ON u.id = l.user_id
+      WHERE l.course_order IS NOT NULL AND l.is_public = 1 ORDER BY l.course_order`,
+  )
+    .bind(c.get("user").id)
     .all();
   return c.json({ lessons: results });
 });

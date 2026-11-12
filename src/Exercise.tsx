@@ -1,16 +1,38 @@
-// Full-screen exercises, one item at a time (Duolingo style): word bank, dictation, speaking
-// (ELSA style), reading and quiz, then a completion screen with XP.
-import { useEffect, useMemo, useRef, useState } from "react";
+// Full-screen exercises, one item at a time: vocabulary (flashcards, match pairs, fill the gap,
+// listen and pick), word bank, dictation, speaking (ELSA style), reading and quiz,
+// then a completion screen with XP.
+import {
+  ArrowCounterClockwise,
+  ArrowRight,
+  Check,
+  Lightbulb,
+  Microphone,
+  Play,
+  Question,
+  SpeakerHigh,
+  Stop,
+  X,
+} from "@phosphor-icons/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, type Grade, type LessonContent, type LessonDetail, type Me, type ProgressResult, type Step } from "./api";
 import { alignWords, norm, speak, startRecording, stopSpeaking, words, type Recorder } from "./audio";
 import { Mascot, type Mood } from "./Mascot";
+import { Fx, STEPS } from "./meta";
 import { sfx } from "./sound";
-import { STEPS } from "./steps";
 
 type Check = "idle" | "correct" | "wrong";
 
-const PRAISE = ["Tuyệt vời!", "Chính xác!", "Giỏi quá!", "Hay lắm!", "Đúng rồi!"];
+const PRAISE = ["Tuyệt vời!", "Chính xác!", "Giỏi quá!", "Hay lắm!", "Đúng rồi!", "Xuất sắc!"];
 const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
+
+function shuffle<T>(a: T[]): T[] {
+  const b = [...a];
+  for (let k = b.length - 1; k > 0; k--) {
+    const j = Math.floor(Math.random() * (k + 1));
+    [b[k], b[j]] = [b[j], b[k]];
+  }
+  return b;
+}
 
 export function Exercise({ lessonId, step, me, onGame }: { lessonId: number; step: string; me: Me; onGame: () => void }) {
   const [d, setD] = useState<LessonDetail | null>(null);
@@ -38,13 +60,27 @@ export function Exercise({ lessonId, step, me, onGame }: { lessonId: number; ste
 
   const back = `#/lesson/${lessonId}`;
   if (!info) return <p className="error center">Không có bài tập “{step}”.</p>;
-  if (error) return <ExShell back={back} progress={0}><p className="error center">{error}</p></ExShell>;
-  if (!d) return <ExShell back={back} progress={0}><p className="muted center">Đang tải…</p></ExShell>;
+  if (error)
+    return (
+      <ExShell back={back} progress={0}>
+        <p className="error center">{error}</p>
+      </ExShell>
+    );
+  if (!d)
+    return (
+      <ExShell back={back} progress={0}>
+        <div className="loading">
+          <Fx name={info.fx} size={64} className="bob" />
+        </div>
+      </ExShell>
+    );
   if (done) return <Complete lessonId={lessonId} stepKey={info.key} score={done.score} res={done.res} />;
 
   const c = d.lesson.content;
   const props = { c, back, lessonId, me, onFinish: finish };
   switch (info.key) {
+    case "words":
+      return <WordsRun {...props} />;
     case "listen":
       return <WordBankRun {...props} />;
     case "dictation":
@@ -66,18 +102,35 @@ interface RunProps {
   onFinish: (score: number) => void;
 }
 
-// ---- shell, footer, prompt ---------------------------------------------------------
+// ---- shell, footer, prompt ---------------------------------------------------------------
 
-function ExShell({ back, progress, children, footer }: { back: string; progress: number; children: React.ReactNode; footer?: React.ReactNode }) {
+function ExShell({
+  back,
+  progress,
+  combo = 0,
+  children,
+  footer,
+}: {
+  back: string;
+  progress: number;
+  combo?: number;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+}) {
   return (
     <div className="ex">
       <header className="ex-top">
-        <a className="ex-close" href={back} aria-label="Thoát">
-          ✕
+        <a className="icon-btn" href={back} aria-label="Thoát">
+          <X size={26} weight="bold" />
         </a>
-        <div className="bar big grow">
-          <span style={{ width: `${Math.round(progress * 100)}%` }} />
+        <div className="ex-progress grow">
+          <span style={{ width: `${Math.max(3, Math.round(progress * 100))}%` }} />
         </div>
+        {combo >= 2 && (
+          <span className="combo" key={combo}>
+            <Fx name="fire" size={22} /> {combo}
+          </span>
+        )}
       </header>
       <main className="ex-body">{children}</main>
       {footer}
@@ -102,9 +155,12 @@ function Footer({
   checkLabel?: string;
   extra?: React.ReactNode;
 }) {
-  const [praise] = useState(() => pick(PRAISE));
+  const [praise, setPraise] = useState(() => pick(PRAISE));
   useEffect(() => {
-    if (state === "idle") return;
+    if (state === "idle") {
+      setPraise(pick(PRAISE));
+      return;
+    }
     const onKey = (e: KeyboardEvent) => e.key === "Enter" && onNext();
     const t = setTimeout(() => addEventListener("keydown", onKey), 150);
     return () => {
@@ -125,13 +181,13 @@ function Footer({
         ) : (
           <>
             <div className="verdict">
-              <span className="verdict-icon">{state === "correct" ? "✔" : "✖"}</span>
+              <span className="verdict-icon">{state === "correct" ? <Check size={30} weight="bold" /> : <X size={30} weight="bold" />}</span>
               <div>
                 <b>{state === "correct" ? praise : "Chưa đúng rồi"}</b>
                 {detail && <div className="verdict-detail">{detail}</div>}
               </div>
             </div>
-            <button className={`btn wide ${state === "correct" ? "primary" : "danger-solid"}`} onClick={onNext} autoFocus>
+            <button className={`btn wide ${state === "correct" ? "good" : "danger"}`} onClick={onNext} autoFocus>
               TIẾP TỤC
             </button>
           </>
@@ -146,9 +202,11 @@ function Prompt({ title, mood, say, children }: { title: string; mood: Mood; say
     <>
       <h1 className="ex-title">{title}</h1>
       <div className="ex-prompt">
-        <Mascot name="haru" mood={mood} className="ex-mascot" frame={0.5} />
+        <div className="ex-mascot-frame">
+          <Mascot name="haru" mood={mood} className="ex-mascot" frame={0.42} />
+        </div>
         <div className="ex-speech">
-          {say && <div className="speech-bubble">{say}</div>}
+          {say && <div className="speech">{say}</div>}
           {children}
         </div>
       </div>
@@ -156,36 +214,41 @@ function Prompt({ title, mood, say, children }: { title: string; mood: Mood; say
   );
 }
 
-function PlayButtons({ text, auto = true }: { text: string; auto?: boolean }) {
+function PlayButtons({ text, auto = true, size = "big" }: { text: string; auto?: boolean; size?: "big" | "small" }) {
   useEffect(() => {
     if (!auto) return;
     const t = setTimeout(() => void speak(text, { rate: 0.95 }), 300);
     return () => clearTimeout(t);
   }, [text, auto]);
   return (
-    <div className="play-row">
-      <button className="play big" onClick={() => speak(text, { rate: 0.95 })} aria-label="Nghe">
-        🔊
+    <div className={`play-row ${size}`}>
+      <button className="play" onClick={() => speak(text, { rate: 0.95 })} aria-label="Nghe">
+        <SpeakerHigh size={size === "big" ? 34 : 22} weight="fill" />
       </button>
-      <button className="play" onClick={() => speak(text, { rate: 0.6 })} aria-label="Nghe chậm">
-        🐢
+      <button className="play slow" onClick={() => speak(text, { rate: 0.6 })} aria-label="Nghe chậm">
+        <Fx name="snail" size={size === "big" ? 30 : 20} />
       </button>
     </div>
   );
 }
 
-/** Runs `items` one by one with check / continue; returns the share answered right (or average score). */
+/** Runs `total` items one by one with check / continue; reports the average score at the end. */
 function useRunner(total: number, onFinish: (score: number) => void) {
   const [i, setI] = useState(0);
   const [state, setState] = useState<Check>("idle");
+  const [combo, setCombo] = useState(0);
   const scores = useRef<number[]>([]);
-  const mark = (score: number, ok: boolean) => {
-    scores.current[i] = score;
-    setState(ok ? "correct" : "wrong");
-    if (ok) sfx.correct();
-    else sfx.wrong();
-  };
-  const next = () => {
+  const mark = useCallback(
+    (score: number, ok: boolean) => {
+      scores.current[i] = score;
+      setState(ok ? "correct" : "wrong");
+      setCombo((c) => (ok ? c + 1 : 0));
+      if (ok) sfx.correct();
+      else sfx.wrong();
+    },
+    [i],
+  );
+  const next = useCallback(() => {
     if (i + 1 >= total) {
       const avg = scores.current.reduce((a, b) => a + (b ?? 0), 0) / Math.max(1, total);
       onFinish(Math.round(avg));
@@ -193,15 +256,287 @@ function useRunner(total: number, onFinish: (score: number) => void) {
     }
     setI(i + 1);
     setState("idle");
-  };
-  return { i, state, mark, next, progress: (i + (state === "idle" ? 0 : 1)) / total };
+  }, [i, total, onFinish]);
+  /** For items that are not graded (flashcards): count as full marks and move on. */
+  const pass = useCallback(() => {
+    scores.current[i] = 100;
+    next();
+  }, [i, next]);
+  return { i, state, mark, next, pass, combo, progress: (i + (state === "idle" ? 0 : 1)) / total };
 }
 
 function moodFor(state: Check): Mood {
   return state === "correct" ? "happy" : state === "wrong" ? "oops" : "idle";
 }
 
-// ---- Listen: word bank ----------------------------------------------------------------
+// ---- Words: flashcards, match pairs, fill the gap, listen & pick -----------------------------
+
+type Vocab = LessonContent["vocabulary"][number];
+type WordItem =
+  | { kind: "cards"; vocab: Vocab[] }
+  | { kind: "match"; vocab: Vocab[] }
+  | { kind: "gap"; v: Vocab; before: string; after: string; options: string[] }
+  | { kind: "hear"; v: Vocab; options: string[] };
+
+function buildWordItems(c: LessonContent): WordItem[] {
+  const vocab = c.vocabulary.filter((v) => v.word.trim());
+  if (vocab.length === 0) return [];
+  const others = (v: Vocab, n: number) =>
+    shuffle(vocab.filter((o) => o.word.toLowerCase() !== v.word.toLowerCase()).map((o) => o.word)).slice(0, n);
+  const items: WordItem[] = [{ kind: "cards", vocab }];
+  const gaps: WordItem[] = [];
+  for (const v of shuffle(vocab)) {
+    const at = v.example.toLowerCase().indexOf(v.word.toLowerCase());
+    if (at < 0 || vocab.length < 3) continue;
+    gaps.push({
+      kind: "gap",
+      v,
+      before: v.example.slice(0, at),
+      after: v.example.slice(at + v.word.length),
+      options: shuffle([v.word, ...others(v, 3)]),
+    });
+  }
+  if (vocab.length >= 3) items.push({ kind: "match", vocab: shuffle(vocab).slice(0, 5) });
+  items.push(...gaps.slice(0, 2));
+  if (vocab.length >= 3) {
+    for (const v of shuffle(vocab).slice(0, 2)) items.push({ kind: "hear", v, options: shuffle([v.word, ...others(v, 3)]) });
+  }
+  items.push(...gaps.slice(2, 4));
+  return items;
+}
+
+function WordsRun({ c, back, onFinish }: RunProps) {
+  const items = useMemo(() => buildWordItems(c), [c]);
+  const run = useRunner(Math.max(1, items.length), onFinish);
+  const item = items[run.i];
+  if (!item)
+    return (
+      <ExShell back={back} progress={1}>
+        <p className="muted center">Bài này chưa có từ vựng.</p>
+      </ExShell>
+    );
+  if (item.kind === "cards") return <CardsItem key={run.i} vocab={item.vocab} back={back} run={run} total={items.length} />;
+  if (item.kind === "match") return <MatchItem key={run.i} vocab={item.vocab} back={back} run={run} />;
+  return <ChoiceItem key={run.i} item={item} back={back} run={run} />;
+}
+
+type Run = ReturnType<typeof useRunner>;
+
+function CardsItem({ vocab, back, run, total }: { vocab: Vocab[]; back: string; run: Run; total: number }) {
+  const [flipped, setFlipped] = useState<Set<number>>(new Set());
+  const flip = (k: number) => {
+    sfx.tap();
+    if (!flipped.has(k)) void speak(vocab[k].word);
+    setFlipped((f) => {
+      const n = new Set(f);
+      if (n.has(k)) n.delete(k);
+      else n.add(k);
+      return n;
+    });
+  };
+  return (
+    <ExShell
+      back={back}
+      progress={0.5 / total}
+      footer={
+        <footer className="ex-foot idle">
+          <div className="ex-foot-inner">
+            <span className="muted small">
+              Đã lật {flipped.size}/{vocab.length} thẻ
+            </span>
+            <button className="btn primary wide" onClick={run.pass}>
+              {flipped.size >= vocab.length ? "ĐÃ NHỚ HẾT" : "TIẾP TỤC"}
+            </button>
+          </div>
+        </footer>
+      }
+    >
+      <Prompt title="Làm quen từ mới" mood="happy" say="Bấm vào từng thẻ để nghe và xem nghĩa nhé!" />
+      <div className="flash-grid">
+        {vocab.map((v, k) => (
+          <button key={v.word} className={flipped.has(k) ? "flash flipped" : "flash"} onClick={() => flip(k)} aria-pressed={flipped.has(k)}>
+            <span className="flash-inner">
+              <span className="flash-front">
+                <b>{v.word}</b>
+                <span className="ipa">{v.ipa}</span>
+                <span className="pos">{v.pos}</span>
+              </span>
+              <span className="flash-back">
+                <b>{v.meaning_vi}</b>
+                <i>{v.example}</i>
+              </span>
+            </span>
+          </button>
+        ))}
+      </div>
+    </ExShell>
+  );
+}
+
+function MatchItem({ vocab, back, run }: { vocab: Vocab[]; back: string; run: Run }) {
+  const left = useMemo(() => shuffle(vocab.map((v, k) => ({ k, text: v.word }))), [vocab]);
+  const right = useMemo(() => shuffle(vocab.map((v, k) => ({ k, text: v.meaning_vi }))), [vocab]);
+  const [selL, setSelL] = useState<number | null>(null);
+  const [selR, setSelR] = useState<number | null>(null);
+  const [matched, setMatched] = useState<Set<number>>(new Set());
+  const [shake, setShake] = useState<[number, number] | null>(null);
+  const mistakes = useRef(0);
+
+  const tryPair = (l: number | null, r: number | null) => {
+    setSelL(l);
+    setSelR(r);
+    if (l === null || r === null) return;
+    if (l === r) {
+      sfx.correct();
+      const n = new Set(matched).add(l);
+      setMatched(n);
+      setSelL(null);
+      setSelR(null);
+      if (n.size === vocab.length) {
+        const score = Math.max(40, 100 - mistakes.current * 15);
+        setTimeout(() => run.mark(score, true), 350);
+      }
+    } else {
+      sfx.wrong();
+      mistakes.current += 1;
+      setShake([l, r]);
+      setTimeout(() => {
+        setShake(null);
+        setSelL(null);
+        setSelR(null);
+      }, 450);
+    }
+  };
+
+  const cls = (side: "l" | "r", k: number) => {
+    const sel = side === "l" ? selL : selR;
+    if (matched.has(k)) return "pair matched";
+    if (shake && shake[side === "l" ? 0 : 1] === k) return "pair bad";
+    return sel === k ? "pair sel" : "pair";
+  };
+
+  return (
+    <ExShell
+      back={back}
+      progress={run.progress}
+      combo={run.combo}
+      footer={
+        <Footer
+          state={run.state}
+          canCheck={false}
+          onCheck={() => {}}
+          onNext={run.next}
+          checkLabel={`${matched.size}/${vocab.length} CẶP`}
+          detail={mistakes.current ? `Sai ${mistakes.current} lần` : "Không sai lần nào!"}
+        />
+      }
+    >
+      <Prompt title="Ghép từ với nghĩa" mood={run.state === "correct" ? "cheer" : "idle"} say="Chọn một từ bên trái rồi chọn nghĩa đúng bên phải." />
+      <div className="match">
+        <div className="match-col">
+          {left.map(({ k, text }) => (
+            <button
+              key={k}
+              className={cls("l", k)}
+              disabled={matched.has(k) || run.state !== "idle"}
+              onClick={() => {
+                sfx.tap();
+                void speak(text);
+                if (!shake) tryPair(k, selR);
+              }}
+            >
+              {text}
+            </button>
+          ))}
+        </div>
+        <div className="match-col">
+          {right.map(({ k, text }) => (
+            <button
+              key={k}
+              className={cls("r", k)}
+              disabled={matched.has(k) || run.state !== "idle"}
+              onClick={() => {
+                sfx.tap();
+                if (!shake) tryPair(selL, k);
+              }}
+            >
+              {text}
+            </button>
+          ))}
+        </div>
+      </div>
+    </ExShell>
+  );
+}
+
+function ChoiceItem({ item, back, run }: { item: Extract<WordItem, { kind: "gap" | "hear" }>; back: string; run: Run }) {
+  const [sel, setSel] = useState<string | null>(null);
+  const answer = item.v.word;
+  const check = () => {
+    const ok = sel === answer;
+    run.mark(ok ? 100 : 0, ok);
+    if (item.kind === "gap") void speak(item.v.example, { rate: 0.95 });
+  };
+  return (
+    <ExShell
+      back={back}
+      progress={run.progress}
+      combo={run.combo}
+      footer={
+        <Footer
+          state={run.state}
+          canCheck={sel !== null}
+          onCheck={check}
+          onNext={run.next}
+          detail={
+            <>
+              {run.state === "wrong" && <div>Đáp án: {answer}</div>}
+              <span>
+                <b>{item.v.word}</b> {item.v.ipa}: {item.v.meaning_vi}
+              </span>
+            </>
+          }
+        />
+      }
+    >
+      {item.kind === "gap" ? (
+        <>
+          <Prompt title="Điền từ còn thiếu" mood={moodFor(run.state)} />
+          <p className="gap-sentence">
+            {item.before}
+            <span className={`gap ${sel ? "filled" : ""} ${run.state}`}>{sel ?? " ".repeat(8)}</span>
+            {item.after}
+          </p>
+        </>
+      ) : (
+        <Prompt title="Nghe và chọn từ đúng" mood={moodFor(run.state)}>
+          <PlayButtons text={answer} />
+        </Prompt>
+      )}
+      <div className="options grid2">
+        {item.options.map((o) => {
+          const reveal = run.state !== "idle";
+          const cls = reveal && o === answer ? "right" : reveal && sel === o ? "wrong" : sel === o ? "sel" : "";
+          return (
+            <button
+              key={o}
+              className={`option ${cls}`}
+              disabled={reveal}
+              onClick={() => {
+                sfx.tap();
+                setSel(o);
+              }}
+            >
+              {o}
+            </button>
+          );
+        })}
+      </div>
+    </ExShell>
+  );
+}
+
+// ---- Listen: word bank -----------------------------------------------------------------------
 
 interface Tile {
   id: number;
@@ -214,17 +549,8 @@ function tileWords(s: string): string[] {
     .filter(Boolean);
 }
 
-function shuffle<T>(a: T[]): T[] {
-  const b = [...a];
-  for (let k = b.length - 1; k > 0; k--) {
-    const j = Math.floor(Math.random() * (k + 1));
-    [b[k], b[j]] = [b[j], b[k]];
-  }
-  return b;
-}
-
 function WordBankRun({ c, back, onFinish }: RunProps) {
-  const { i, state, mark, next, progress } = useRunner(c.sentences.length, onFinish);
+  const { i, state, mark, next, progress, combo } = useRunner(c.sentences.length, onFinish);
   const sentence = c.sentences[i];
   const target = useMemo(() => tileWords(sentence), [sentence]);
   const bank = useMemo<Tile[]>(() => {
@@ -247,6 +573,7 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
     <ExShell
       back={back}
       progress={progress}
+      combo={combo}
       footer={
         <Footer
           state={state}
@@ -303,10 +630,10 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
   );
 }
 
-// ---- Dictation ----------------------------------------------------------------------
+// ---- Dictation ---------------------------------------------------------------------------------
 
 function DictationRun({ c, back, onFinish }: RunProps) {
-  const { i, state, mark, next, progress } = useRunner(c.sentences.length, onFinish);
+  const { i, state, mark, next, progress, combo } = useRunner(c.sentences.length, onFinish);
   const sentence = c.sentences[i];
   const [text, setText] = useState("");
   const [diff, setDiff] = useState<{ word: string; ok: boolean }[] | null>(null);
@@ -326,6 +653,7 @@ function DictationRun({ c, back, onFinish }: RunProps) {
     <ExShell
       back={back}
       progress={progress}
+      combo={combo}
       footer={
         <Footer
           state={state}
@@ -374,20 +702,26 @@ function DictationRun({ c, back, onFinish }: RunProps) {
   );
 }
 
-// ---- Quiz -----------------------------------------------------------------------------
+// ---- Quiz --------------------------------------------------------------------------------------
 
 function QuizRun({ c, back, onFinish }: RunProps) {
   const total = Math.max(1, c.questions.length);
-  const { i, state, mark, next, progress } = useRunner(total, onFinish);
+  const { i, state, mark, next, progress, combo } = useRunner(total, onFinish);
   const q = c.questions[i];
   const [sel, setSel] = useState<number | null>(null);
   useEffect(() => setSel(null), [i]);
-  if (!q) return <ExShell back={back} progress={1}><p className="muted center">Bài này không có câu hỏi.</p></ExShell>;
+  if (!q)
+    return (
+      <ExShell back={back} progress={1}>
+        <p className="muted center">Bài này không có câu hỏi.</p>
+      </ExShell>
+    );
 
   return (
     <ExShell
       back={back}
       progress={progress}
+      combo={combo}
       footer={
         <Footer
           state={state}
@@ -418,7 +752,7 @@ function QuizRun({ c, back, onFinish }: RunProps) {
                 setSel(k);
               }}
             >
-              <span className="opt-key">{k + 1}</span>
+              <span className="opt-key">{"ABCD"[k]}</span>
               {o}
             </button>
           );
@@ -428,7 +762,7 @@ function QuizRun({ c, back, onFinish }: RunProps) {
   );
 }
 
-// ---- Speak (ELSA-style) -------------------------------------------------------------
+// ---- Speak (ELSA-style) ------------------------------------------------------------------------
 
 interface SpeakResult {
   transcript: string;
@@ -506,7 +840,7 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
         ? "Đợi mình chấm nhé…"
         : result
           ? result.grade.feedback_vi
-          : "Bấm 🔊 nghe mẫu, rồi bấm micro và đọc to câu này.";
+          : "Nghe mẫu trước, rồi bấm micro và đọc to câu này.";
 
   return (
     <ExShell
@@ -517,7 +851,7 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
           <div className="ex-foot-inner">
             {result ? (
               <button className="btn ghost" onClick={start} disabled={phase !== "idle"}>
-                THỬ LẠI
+                <ArrowCounterClockwise size={18} weight="bold" /> THỬ LẠI
               </button>
             ) : (
               <button className="btn ghost" onClick={next} disabled={phase !== "idle"}>
@@ -538,7 +872,7 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
       }
     >
       <Prompt title="Đọc to câu này" mood={mood} say={say} />
-      <div className="speak-card-x">
+      <div className="speak-card">
         <div className="speak-text">
           {result
             ? result.grade.words
@@ -550,25 +884,34 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
                 ))
             : sentence}
         </div>
-        <PlayButtons text={sentence} auto={false} />
+        <PlayButtons text={sentence} auto={false} size="small" />
       </div>
 
       <div className="mic-zone">
-        {result && <ScoreRing score={result.grade.score} />}
+        {result ? <ScoreRing score={result.grade.score} /> : <span className="mic-side" />}
         <button
           className={`mic ${phase}`}
           onClick={phase === "rec" ? stop : start}
           disabled={phase === "grading"}
           aria-label={phase === "rec" ? "Dừng ghi âm" : "Ghi âm"}
         >
-          {phase === "rec" ? "■" : phase === "grading" ? "…" : "🎤"}
+          {phase === "rec" ? <Stop size={40} weight="fill" /> : phase === "grading" ? <span className="dots" /> : <Microphone size={44} weight="fill" />}
         </button>
-        {result && (
+        {result ? (
           <button className="play" onClick={() => new Audio(result.url).play()} aria-label="Nghe lại giọng mình">
-            ▶️
+            <Play size={24} weight="fill" />
           </button>
+        ) : (
+          <span className="mic-side" />
         )}
       </div>
+      {phase === "rec" && (
+        <div className="wave" aria-hidden="true">
+          {Array.from({ length: 18 }, (_, k) => (
+            <i key={k} style={{ animationDelay: `${(k % 6) * 0.09}s` }} />
+          ))}
+        </div>
+      )}
       {error && <p className="error center">{error}</p>}
       {result && (
         <div className="speak-detail">
@@ -579,12 +922,17 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
                 .filter((w) => w.status !== "ok" && w.tip_vi)
                 .map((w, k) => (
                   <li key={k}>
-                    <b>{w.word}</b>: {w.tip_vi}
+                    <b>{w.word}</b>
+                    <span>{w.tip_vi}</span>
                   </li>
                 ))}
             </ul>
           )}
-          {result.grade.next_step_vi && <p className="next-tip">💡 {result.grade.next_step_vi}</p>}
+          {result.grade.next_step_vi && (
+            <p className="next-tip">
+              <Lightbulb size={20} weight="fill" /> {result.grade.next_step_vi}
+            </p>
+          )}
           {result.note && <p className="note">{result.note}</p>}
         </div>
       )}
@@ -593,21 +941,21 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
 }
 
 function ScoreRing({ score }: { score: number }) {
-  const r = 30;
+  const r = 34;
   const len = 2 * Math.PI * r;
   const tone = score >= 85 ? "good" : score >= 60 ? "mid" : "low";
   return (
-    <svg className={`ring ${tone}`} width="76" height="76" viewBox="0 0 76 76" role="img" aria-label={`${score} điểm`}>
-      <circle cx="38" cy="38" r={r} className="ring-bg" />
-      <circle cx="38" cy="38" r={r} className="ring-fg" strokeDasharray={len} strokeDashoffset={len * (1 - score / 100)} />
-      <text x="38" y="44" textAnchor="middle">
+    <svg className={`ring ${tone}`} width="84" height="84" viewBox="0 0 84 84" role="img" aria-label={`${score} điểm`}>
+      <circle cx="42" cy="42" r={r} className="ring-bg" />
+      <circle cx="42" cy="42" r={r} className="ring-fg" strokeDasharray={len} strokeDashoffset={len * (1 - score / 100)} />
+      <text x="42" y="49" textAnchor="middle">
         {score}
       </text>
     </svg>
   );
 }
 
-// ---- Read ------------------------------------------------------------------------------
+// ---- Read --------------------------------------------------------------------------------------
 
 interface Explain {
   translation_vi: string;
@@ -642,7 +990,15 @@ function ReadRun({ c, back, onFinish }: RunProps) {
       progress={0.5}
       footer={<Footer state="idle" canCheck onCheck={() => onFinish(100)} onNext={() => {}} checkLabel="ĐÃ ĐỌC XONG" />}
     >
-      <Prompt title={c.title} mood="idle" say="Bấm vào từ để tra nghĩa, bấm “?” cuối câu để mình giải thích." />
+      <Prompt title={c.title} mood="idle" say="Bấm vào từ để tra nghĩa, bấm ? cuối câu để mình giải thích." />
+      <div className="read-tools">
+        <button className="btn small ghost" onClick={() => speak(c.sentences.join(" "), { rate: 0.95 })}>
+          <SpeakerHigh size={18} weight="fill" /> Nghe cả bài
+        </button>
+        <button className="btn small ghost" onClick={stopSpeaking}>
+          <Stop size={18} weight="fill" /> Dừng
+        </button>
+      </div>
       <article className="reading">
         {c.sentences.map((s, k) => (
           <span key={k} className={open === k ? "rs on" : "rs"}>
@@ -655,8 +1011,8 @@ function ReadRun({ c, back, onFinish }: RunProps) {
                 </span>
               ),
             )}
-            <button className="q" onClick={() => explain(k)} title="Giải thích câu này">
-              ?
+            <button className="q" onClick={() => explain(k)} title="Giải thích câu này" aria-label="Giải thích câu này">
+              <Question size={14} weight="bold" />
             </button>{" "}
           </span>
         ))}
@@ -664,12 +1020,12 @@ function ReadRun({ c, back, onFinish }: RunProps) {
       {open !== null && (
         <div className="card explain">
           <div className="row gap">
-            <button className="play" onClick={() => speak(c.sentences[open], { rate: 0.95 })}>
-              🔊
+            <button className="play" onClick={() => speak(c.sentences[open], { rate: 0.95 })} aria-label="Nghe câu">
+              <SpeakerHigh size={20} weight="fill" />
             </button>
             <b className="grow">{c.sentences[open]}</b>
-            <button className="x" onClick={() => setOpen(null)} aria-label="Đóng">
-              ✕
+            <button className="icon-btn" onClick={() => setOpen(null)} aria-label="Đóng">
+              <X size={20} weight="bold" />
             </button>
           </div>
           {loading === open && <p className="muted">Đang giải thích…</p>}
@@ -692,16 +1048,6 @@ function ReadRun({ c, back, onFinish }: RunProps) {
         </div>
       )}
       {word && <WordPop raw={word} c={c} onClose={() => setWord(null)} />}
-      <h2 className="sub">Từ vựng</h2>
-      <div className="vocab-grid">
-        {c.vocabulary.map((v) => (
-          <button key={v.word} className="vocab-card" onClick={() => speak(v.word)}>
-            <b>{v.word}</b> <span className="muted small">{v.ipa}</span>
-            <span>{v.meaning_vi}</span>
-            <i className="muted small">“{v.example}”</i>
-          </button>
-        ))}
-      </div>
     </ExShell>
   );
 }
@@ -728,18 +1074,19 @@ function WordPop({ raw, c, onClose }: { raw: string; c: LessonContent; onClose: 
   if (!word) return null;
   const ipa = local?.ipa || (dict && dict !== "loading" ? dict.phonetic || dict.phonetics?.find((p) => p.text)?.text : "");
   return (
-    <div className="word-pop card">
+    <div className="word-pop">
       <div className="row gap">
-        <button className="play" onClick={() => speak(word)}>
-          🔊
+        <button className="play" onClick={() => speak(word)} aria-label="Nghe từ">
+          <SpeakerHigh size={20} weight="fill" />
         </button>
         <b className="big-word">{word}</b>
         <span className="muted">{ipa}</span>
-        <button className="x" onClick={onClose} aria-label="Đóng">
-          ✕
+        <span className="grow" />
+        <button className="icon-btn" onClick={onClose} aria-label="Đóng">
+          <X size={20} weight="bold" />
         </button>
       </div>
-      {local && <p>{local.meaning_vi}</p>}
+      {local && <p className="wp-mean">{local.meaning_vi}</p>}
       {dict === "loading" && <p className="muted small">Đang tra từ điển…</p>}
       {dict && dict !== "loading" && (
         <ul className="small">
@@ -755,7 +1102,7 @@ function WordPop({ raw, c, onClose }: { raw: string; c: LessonContent; onClose: 
   );
 }
 
-// ---- Completion ----------------------------------------------------------------------
+// ---- Completion --------------------------------------------------------------------------------
 
 function Complete({ lessonId, stepKey, score, res }: { lessonId: number; stepKey: Step; score: number; res: ProgressResult }) {
   const info = STEPS.find((s) => s.key === stepKey)!;
@@ -763,33 +1110,44 @@ function Complete({ lessonId, stepKey, score, res }: { lessonId: number; stepKey
   return (
     <div className="complete">
       <Confetti />
-      <Mascot name="hiyori" mood="cheer" className="complete-mascot" />
+      <div className="complete-stage">
+        <Mascot name="hiyori" mood="cheer" className="complete-mascot" />
+        <Fx name={score >= 85 ? "trophy" : "party_popper"} size={84} className="complete-fx" />
+      </div>
       <h1>{score >= 85 ? "Xuất sắc!" : score >= 60 ? "Làm tốt lắm!" : "Hoàn thành!"}</h1>
-      <p className="muted">{info.label} · xong</p>
+      <p className="muted">
+        <Fx name={info.fx} size={22} /> {info.label} · xong
+      </p>
       <div className="complete-stats">
         <div className="cstat xp">
-          <small>TỔNG XP</small>
-          <b>+{res.xpGained}</b>
+          <small>XP</small>
+          <b>
+            <Fx name="high_voltage" size={26} /> +{res.xpGained}
+          </b>
         </div>
         <div className="cstat acc">
           <small>{stepKey === "speak" ? "ĐIỂM NÓI" : "CHÍNH XÁC"}</small>
-          <b>{score}%</b>
+          <b>
+            <Fx name="bullseye" size={26} /> {score}%
+          </b>
         </div>
         <div className="cstat streak">
-          <small>CHUỖI NGÀY</small>
-          <b>🔥 {res.game.streak}</b>
+          <small>CHUỖI</small>
+          <b>
+            <Fx name="fire" size={26} /> {res.game.streak}
+          </b>
         </div>
       </div>
-      {res.streakUp && <p className="good">Chuỗi ngày học tăng lên {res.game.streak}! 🔥</p>}
-      {res.goalReached && <p className="good">Bạn đã đạt mục tiêu hôm nay! 🎯</p>}
+      {res.streakUp && <p className="good">Chuỗi ngày học tăng lên {res.game.streak}!</p>}
+      {res.goalReached && <p className="good">Bạn đã đạt mục tiêu hôm nay!</p>}
       <div className="complete-actions">
         {nextStep && (
           <a className="btn primary wide" href={`#/lesson/${lessonId}/${nextStep.key}`}>
-            TIẾP: {nextStep.label.toUpperCase()}
+            TIẾP: {nextStep.label.toUpperCase()} <ArrowRight size={18} weight="bold" />
           </a>
         )}
-        <a className={`btn wide ${nextStep ? "ghost" : "primary"}`} href={`#/lesson/${lessonId}`}>
-          VỀ BÀI HỌC
+        <a className={`btn wide ${nextStep ? "ghost" : "primary"}`} href={nextStep ? `#/lesson/${lessonId}` : "#/"}>
+          {nextStep ? "VỀ BÀI HỌC" : "VỀ LỘ TRÌNH"}
         </a>
       </div>
     </div>
@@ -799,12 +1157,13 @@ function Complete({ lessonId, stepKey, score, res }: { lessonId: number; stepKey
 function Confetti() {
   const pieces = useMemo(
     () =>
-      Array.from({ length: 48 }, (_, k) => ({
+      Array.from({ length: 56 }, (_, k) => ({
         left: Math.random() * 100,
         delay: Math.random() * 0.8,
         dur: 2.2 + Math.random() * 1.6,
-        color: ["#58cc02", "#1cb0f6", "#ffc800", "#ff4b4b", "#ce82ff", "#ff9600"][k % 6],
+        color: ["#7c5cff", "#ff6ad5", "#ffb020", "#16c172", "#2fb4ff", "#ff7a59"][k % 6],
         rot: Math.random() * 360,
+        round: k % 3 === 0,
       })),
     [],
   );
@@ -813,6 +1172,7 @@ function Confetti() {
       {pieces.map((p, k) => (
         <i
           key={k}
+          className={p.round ? "round" : ""}
           style={{ left: `${p.left}%`, background: p.color, animationDelay: `${p.delay}s`, animationDuration: `${p.dur}s`, rotate: `${p.rot}deg` }}
         />
       ))}

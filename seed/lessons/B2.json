@@ -1,0 +1,961 @@
+[
+  {
+    "slug": "b2-ai-at-work",
+    "category": "tech",
+    "topic": "AI at work",
+    "level": "B2",
+    "title": "My New Coworker Is a Bot",
+    "summary_vi": "Luyện nghe và đọc một bài bình luận về việc trí tuệ nhân tạo thay đổi công việc văn phòng, cùng các cụm từ hay dùng khi nói về công nghệ.",
+    "sentences": [
+      "When my company introduced an AI assistant last spring, I was convinced it would take my job.",
+      "Instead, it took the most tedious parts of it, and I have been wrestling with mixed feelings ever since.",
+      "My name is Linh, and I manage a small marketing team in Da Nang.",
+      "Reports that once took a whole afternoon are now drafted in minutes, which has freed us up for more creative work.",
+      "Had I known how useful it would be, I would have asked for it years ago.",
+      "However, the tool is far from flawless, and its confident mistakes can slip under the radar.",
+      "Last month a client was almost sent a proposal containing statistics that the software had simply made up.",
+      "That is why every output must be double-checked by a human before it goes out.",
+      "Some colleagues worry that juniors will never learn the craft if machines do all the groundwork.",
+      "I see their point, but I think the real danger is complacency rather than the technology itself.",
+      "If we treat AI as a shortcut, we will lose our edge; as a sparring partner, we will sharpen it.",
+      "In the long run, the people who thrive will know when to trust the machine and when to overrule it."
+    ],
+    "vocabulary": [
+      {
+        "word": "tedious",
+        "ipa": "/ˈtiːdiəs/",
+        "pos": "adjective",
+        "meaning_vi": "tẻ nhạt, nhàm chán",
+        "example": "Copying numbers from one spreadsheet to another is a tedious task."
+      },
+      {
+        "word": "wrestling with",
+        "ipa": "/ˈrɛslɪŋ wɪð/",
+        "pos": "phrase",
+        "meaning_vi": "vật lộn với (vấn đề, cảm xúc)",
+        "example": "She has been wrestling with the decision to change careers."
+      },
+      {
+        "word": "slip under the radar",
+        "ipa": "/slɪp ˈʌndər ðə ˈreɪdɑːr/",
+        "pos": "idiom",
+        "meaning_vi": "lọt qua mà không bị chú ý",
+        "example": "Small errors in the budget can easily slip under the radar."
+      },
+      {
+        "word": "made up",
+        "ipa": "/meɪd ʌp/",
+        "pos": "phrasal verb",
+        "meaning_vi": "bịa ra",
+        "example": "He made up an excuse because he had forgotten the meeting."
+      },
+      {
+        "word": "complacency",
+        "ipa": "/kəmˈpleɪsənsi/",
+        "pos": "noun",
+        "meaning_vi": "sự tự mãn, chủ quan",
+        "example": "Success often breeds complacency in large companies."
+      },
+      {
+        "word": "lose our edge",
+        "ipa": "/luːz ˈaʊər ɛdʒ/",
+        "pos": "idiom",
+        "meaning_vi": "mất lợi thế cạnh tranh",
+        "example": "If we stop learning new skills, we will lose our edge in the market."
+      },
+      {
+        "word": "sparring partner",
+        "ipa": "/ˈspɑːrɪŋ ˈpɑːrtnər/",
+        "pos": "noun",
+        "meaning_vi": "người cùng tranh luận, đối trọng giúp mình giỏi lên",
+        "example": "My brother is my favourite sparring partner when I rehearse debates."
+      },
+      {
+        "word": "in the long run",
+        "ipa": "/ɪn ðə lɔːŋ rʌn/",
+        "pos": "idiom",
+        "meaning_vi": "về lâu dài",
+        "example": "Cheap tools can cost you more in the long run."
+      }
+    ],
+    "questions": [
+      {
+        "question": "How did the AI assistant change Linh's work?",
+        "options": [
+          "It replaced her whole team",
+          "It took over the boring tasks and left time for creative work",
+          "It made reports take longer",
+          "It forced her to move to another city"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Công cụ AI đảm nhận phần việc tẻ nhạt nên cả nhóm có thêm thời gian cho việc sáng tạo."
+      },
+      {
+        "question": "Why must every output be double-checked by a human?",
+        "options": [
+          "The software is too slow",
+          "Clients dislike automated reports",
+          "The tool can state false information with confidence",
+          "Managers do not trust any technology"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Phần mềm từng tự bịa ra số liệu mà vẫn tỏ ra rất chắc chắn."
+      },
+      {
+        "question": "What does the writer see as the biggest danger?",
+        "options": [
+          "Becoming complacent about relying on AI",
+          "Machines becoming too intelligent",
+          "Juniors earning too much",
+          "Companies refusing to adopt new tools"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Tác giả cho rằng mối nguy thật sự là sự chủ quan chứ không phải bản thân công nghệ."
+      },
+      {
+        "question": "What can be inferred about the writer's attitude to AI?",
+        "options": [
+          "Strongly opposed to it",
+          "Blindly enthusiastic",
+          "Cautiously positive",
+          "Completely indifferent"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Bà ghi nhận lợi ích nhưng vẫn nhấn mạnh việc kiểm tra và dùng có chừng mực."
+      }
+    ]
+  },
+  {
+    "slug": "b2-burnout",
+    "category": "health",
+    "topic": "Burnout and mental health",
+    "level": "B2",
+    "title": "The Day My Brain Pulled the Plug",
+    "summary_vi": "Luyện đọc và nghe một bài tiểu luận cá nhân về kiệt sức do công việc, cùng các từ vựng nói về sức khỏe tinh thần.",
+    "sentences": [
+      "Two winters ago, I stopped being able to read my own emails.",
+      "The words were there, but my brain refused to hold them, as if someone had pulled the plug.",
+      "I was a software engineer in Ho Chi Minh City, and I had been running on empty for almost a year.",
+      "At the time, I called it tiredness and told myself that a long weekend would fix everything.",
+      "It was only when my sister noticed that I had stopped laughing that I finally saw a doctor.",
+      "Burnout, she explained, is not simply being overworked; it is chronic exhaustion mixed with cynicism and falling performance.",
+      "If I had taken the early warning signs seriously, I might not have lost three months to recovery.",
+      "Part of the problem was a culture that treats exhaustion as a badge of honour.",
+      "Staying late was praised, and taking a day off was quietly seen as a lack of commitment.",
+      "Recovery meant setting firm boundaries, such as switching off notifications after seven in the evening.",
+      "It also meant asking for help, which turned out to be harder than any coding problem.",
+      "Today I still care about my work, but I no longer let it define my worth."
+    ],
+    "vocabulary": [
+      {
+        "word": "pulled the plug",
+        "ipa": "/pʊld ðə plʌɡ/",
+        "pos": "idiom",
+        "meaning_vi": "ngắt, dừng hẳn (như rút phích cắm)",
+        "example": "The investors pulled the plug on the project after two years."
+      },
+      {
+        "word": "running on empty",
+        "ipa": "/ˈrʌnɪŋ ɑːn ˈɛmpti/",
+        "pos": "idiom",
+        "meaning_vi": "cạn kiệt năng lượng mà vẫn cố làm",
+        "example": "By the end of exam season, most students are running on empty."
+      },
+      {
+        "word": "chronic",
+        "ipa": "/ˈkrɑːnɪk/",
+        "pos": "adjective",
+        "meaning_vi": "mãn tính, kéo dài",
+        "example": "Chronic stress can weaken your immune system."
+      },
+      {
+        "word": "cynicism",
+        "ipa": "/ˈsɪnɪsɪzəm/",
+        "pos": "noun",
+        "meaning_vi": "thói hoài nghi, bi quan",
+        "example": "Years of broken promises had left him with a deep cynicism about politics."
+      },
+      {
+        "word": "warning signs",
+        "ipa": "/ˈwɔːrnɪŋ saɪnz/",
+        "pos": "noun",
+        "meaning_vi": "dấu hiệu cảnh báo",
+        "example": "Constant headaches can be one of the warning signs of overwork."
+      },
+      {
+        "word": "a badge of honour",
+        "ipa": "/ə bædʒ əv ˈɑːnər/",
+        "pos": "idiom",
+        "meaning_vi": "niềm tự hào, thứ để khoe",
+        "example": "For some people, sleeping only four hours is a badge of honour."
+      },
+      {
+        "word": "firm boundaries",
+        "ipa": "/fɜːrm ˈbaʊndriz/",
+        "pos": "noun",
+        "meaning_vi": "ranh giới rõ ràng",
+        "example": "Parents who set firm boundaries usually raise more confident children."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What was the first sign that something was wrong?",
+        "options": [
+          "He lost his job",
+          "He could no longer take in the words of his emails",
+          "He moved to another country",
+          "He stopped using his phone"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Ông không thể đọc nổi email của chính mình vì não không tiếp nhận được chữ."
+      },
+      {
+        "question": "According to the writer's sister, burnout is",
+        "options": [
+          "the same as feeling tired",
+          "caused only by laziness",
+          "a short-term reaction to a bad week",
+          "a long-lasting state of exhaustion with other symptoms"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Kiệt sức là sự mệt mỏi kéo dài kèm hoài nghi và hiệu suất giảm sút."
+      },
+      {
+        "question": "What does the writer criticise about workplace culture?",
+        "options": [
+          "It praises people who exhaust themselves",
+          "It pays too little",
+          "It bans weekends",
+          "It offers too many holidays"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Văn hóa công sở coi việc kiệt sức như một huy hiệu danh dự."
+      },
+      {
+        "question": "What does the final sentence suggest?",
+        "options": [
+          "He has left his career for good",
+          "He now values himself beyond his job",
+          "He regrets asking for help",
+          "He works longer hours than before"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Anh vẫn quan tâm công việc nhưng không còn lấy nó làm thước đo giá trị bản thân."
+      }
+    ]
+  },
+  {
+    "slug": "b2-gig-economy",
+    "category": "work",
+    "topic": "The gig economy",
+    "level": "B2",
+    "title": "Freedom on Two Wheels",
+    "summary_vi": "Luyện nghe và đọc một bản tin chuyên đề về lao động tự do qua ứng dụng, với từ vựng về hợp đồng, thu nhập và quyền lợi.",
+    "sentences": [
+      "Every morning at six, Minh Tuan switches on his phone and waits for the first delivery request to arrive.",
+      "He is one of hundreds of thousands of ride-hailing and delivery drivers working in Vietnam's big cities.",
+      "For many of them, gig work offers a flexibility that traditional jobs simply cannot match.",
+      "Drivers choose their own hours, and some earn more than they did in factories.",
+      "Yet this freedom comes at a price, since gig workers are classed as independent contractors rather than employees.",
+      "They receive no paid leave, no sick pay and, in many cases, no insurance unless they arrange it themselves.",
+      "Income can also be unpredictable, as the platforms adjust their commission rates with little warning.",
+      "\"One week I make a decent living, and the next I barely break even,\" Minh Tuan says.",
+      "Lawmakers in several countries are now debating whether these workers deserve a new legal category.",
+      "Supporters of the gig model argue that stricter rules would drive companies out and cost jobs.",
+      "Critics reply that a business built on workers' insecurity is not sustainable in the long term.",
+      "Whatever the outcome, it is clear that the way we define work is being rewritten."
+    ],
+    "vocabulary": [
+      {
+        "word": "comes at a price",
+        "ipa": "/kʌmz æt ə praɪs/",
+        "pos": "idiom",
+        "meaning_vi": "phải trả giá, có cái giá đi kèm",
+        "example": "Fast growth often comes at a price, usually in the form of stress."
+      },
+      {
+        "word": "independent contractors",
+        "ipa": "/ˌɪndɪˈpɛndənt ˈkɑːntræktərz/",
+        "pos": "noun",
+        "meaning_vi": "người làm hợp đồng độc lập",
+        "example": "Many designers work as independent contractors for several clients."
+      },
+      {
+        "word": "paid leave",
+        "ipa": "/peɪd liːv/",
+        "pos": "noun",
+        "meaning_vi": "nghỉ phép có lương",
+        "example": "New parents in some countries receive a year of paid leave."
+      },
+      {
+        "word": "commission",
+        "ipa": "/kəˈmɪʃən/",
+        "pos": "noun",
+        "meaning_vi": "tiền hoa hồng",
+        "example": "The salesman earns a ten percent commission on every phone he sells."
+      },
+      {
+        "word": "make a decent living",
+        "ipa": "/meɪk ə ˈdiːsənt ˈlɪvɪŋ/",
+        "pos": "phrase",
+        "meaning_vi": "kiếm đủ sống tử tế",
+        "example": "It is hard to make a decent living as a freelance musician."
+      },
+      {
+        "word": "break even",
+        "ipa": "/breɪk ˈiːvən/",
+        "pos": "phrasal verb",
+        "meaning_vi": "hòa vốn",
+        "example": "The new café hopes to break even by the end of the year."
+      },
+      {
+        "word": "sustainable",
+        "ipa": "/səˈsteɪnəbəl/",
+        "pos": "adjective",
+        "meaning_vi": "bền vững",
+        "example": "A sustainable business model does not depend on exhausting its workers."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What attracts many people to gig work?",
+        "options": [
+          "Guaranteed pensions",
+          "The freedom to choose their hours",
+          "Free insurance",
+          "Fixed monthly salaries"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Tài xế được tự chọn giờ làm, điều mà công việc truyền thống khó đáp ứng."
+      },
+      {
+        "question": "Why can gig workers' income be hard to predict?",
+        "options": [
+          "They are paid in foreign currency",
+          "Customers rarely order anything",
+          "Platforms may change their commission rates suddenly",
+          "They must pay for fuel in advance"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Các nền tảng điều chỉnh mức hoa hồng mà ít khi báo trước."
+      },
+      {
+        "question": "What is the main argument of supporters of the gig model?",
+        "options": [
+          "Strict rules could harm companies and reduce jobs",
+          "Drivers should be paid less",
+          "Insurance is unnecessary",
+          "Traditional jobs are better"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Họ cho rằng luật chặt hơn có thể khiến công ty rút đi và mất việc làm."
+      },
+      {
+        "question": "What is the tone of the final sentence?",
+        "options": [
+          "Humorous",
+          "Thoughtful about a broader change",
+          "Angry at the drivers",
+          "Certain about the result"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Câu cuối nhận định rằng khái niệm về công việc đang được viết lại, không khẳng định kết quả."
+      }
+    ]
+  },
+  {
+    "slug": "b2-overtourism",
+    "category": "travel",
+    "topic": "Tourism and local communities",
+    "level": "B2",
+    "title": "A Ticket to Walk Down My Own Street",
+    "summary_vi": "Luyện nghe và đọc một bản tin về du lịch quá tải và ảnh hưởng đến cộng đồng địa phương, cùng các cụm từ về du lịch có trách nhiệm.",
+    "sentences": [
+      "In the old quarter of Hoi An, residents now joke that they need a ticket to walk down their own street.",
+      "The town welcomed millions of visitors last year, far more than its narrow lanes were ever designed to handle.",
+      "Tourism has undoubtedly brought wealth, but it has also pushed up rents and driven out long-standing families.",
+      "Shops that once sold hardware and rice are being replaced by souvenir stalls and cafés aimed at foreigners.",
+      "The same story is told in Venice, Barcelona and Kyoto, where locals have staged protests against the crowds.",
+      "Some cities have responded by capping visitor numbers or charging an entrance fee on busy days.",
+      "Others encourage travellers to explore lesser-known districts, so that the pressure is spread more evenly.",
+      "Had authorities acted sooner, many communities might have avoided the resentment now spilling over.",
+      "Experts stress that tourists are not the enemy; it is unmanaged growth that does the damage.",
+      "Travellers can make a difference by staying in locally owned guesthouses and eating where residents eat.",
+      "They can also avoid peak season, when the strain on water and waste services is at its worst.",
+      "After all, a destination that loses its soul has little left to offer."
+    ],
+    "vocabulary": [
+      {
+        "word": "pushed up",
+        "ipa": "/pʊʃt ʌp/",
+        "pos": "phrasal verb",
+        "meaning_vi": "đẩy (giá) lên",
+        "example": "The new airport pushed up property prices across the region."
+      },
+      {
+        "word": "driven out",
+        "ipa": "/ˈdrɪvən aʊt/",
+        "pos": "phrasal verb",
+        "meaning_vi": "bị đuổi đi, buộc phải rời",
+        "example": "Small bakeries were driven out by the big supermarket chains."
+      },
+      {
+        "word": "capping",
+        "ipa": "/ˈkæpɪŋ/",
+        "pos": "verb",
+        "meaning_vi": "đặt mức trần, giới hạn",
+        "example": "The council is considering capping the number of tour buses downtown."
+      },
+      {
+        "word": "spilling over",
+        "ipa": "/ˈspɪlɪŋ ˈoʊvər/",
+        "pos": "phrasal verb",
+        "meaning_vi": "tràn ra, bùng phát",
+        "example": "The argument was spilling over into every family dinner."
+      },
+      {
+        "word": "unmanaged",
+        "ipa": "/ʌnˈmænɪdʒd/",
+        "pos": "adjective",
+        "meaning_vi": "không được quản lý",
+        "example": "Unmanaged waste has turned the beach into a health hazard."
+      },
+      {
+        "word": "make a difference",
+        "ipa": "/meɪk ə ˈdɪfrəns/",
+        "pos": "idiom",
+        "meaning_vi": "tạo ra khác biệt, có tác động",
+        "example": "Even small donations can make a difference to a village school."
+      },
+      {
+        "word": "peak season",
+        "ipa": "/piːk ˈsiːzən/",
+        "pos": "noun",
+        "meaning_vi": "mùa cao điểm",
+        "example": "Hotel rooms are twice as expensive during peak season."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What do Hoi An residents mean by their joke about a ticket?",
+        "options": [
+          "Streets are now privately owned",
+          "Crowds make it hard to move around their own neighbourhood",
+          "Local transport is free",
+          "Visitors must pay locals"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Đó là cách nói đùa về việc phố cổ quá đông đến mức dân địa phương khó đi lại."
+      },
+      {
+        "question": "What is one negative effect of tourism mentioned?",
+        "options": [
+          "Fewer foreign investors",
+          "Lower wages for guides",
+          "Cleaner rivers",
+          "Rising rents that push out long-term residents"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Giá thuê nhà tăng khiến nhiều gia đình sống lâu năm phải rời đi."
+      },
+      {
+        "question": "What do experts say about the cause of the damage?",
+        "options": [
+          "Tourists themselves are to blame",
+          "Growth that is not managed properly",
+          "Bad weather",
+          "Poor hotel service"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Chuyên gia nhấn mạnh thủ phạm là sự tăng trưởng không được quản lý, không phải du khách."
+      },
+      {
+        "question": "What can be inferred from the sentence beginning 'Had authorities acted sooner'?",
+        "options": [
+          "Authorities acted quickly enough",
+          "Tensions could have been reduced with earlier action",
+          "Residents want more tourists",
+          "The problem is exaggerated"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Câu điều kiện đảo ngữ ngụ ý rằng hành động sớm hơn có thể đã tránh được sự phẫn nộ."
+      }
+    ]
+  },
+  {
+    "slug": "b2-fast-fashion",
+    "category": "nature",
+    "topic": "The true cost of fast fashion",
+    "level": "B2",
+    "title": "The Five-Dollar T-Shirt",
+    "summary_vi": "Luyện nghe và đọc một bài nói kiểu podcast về tác động của thời trang nhanh lên môi trường và người lao động.",
+    "sentences": [
+      "Welcome back to the show.",
+      "Today I want to talk about the T-shirt you bought for the price of a coffee.",
+      "Fast fashion thrives on speed, turning catwalk trends into cheap clothes in a matter of weeks.",
+      "The industry now produces roughly twice as many garments as it did twenty years ago.",
+      "Much of that clothing is worn only a handful of times before it ends up in landfill.",
+      "A single pair of jeans can consume thousands of litres of water, while textile dyeing pollutes rivers in many countries.",
+      "Synthetic fibres such as polyester shed microplastics every time they are washed.",
+      "Meanwhile, the workers who stitch these garments are often paid wages that barely cover rent.",
+      "It would be easy to blame shoppers, but the system is designed to make buying feel effortless.",
+      "If brands were held accountable for the waste they create, prices would probably reflect the real cost.",
+      "Until then, the most sustainable garment is the one already hanging in your wardrobe.",
+      "So before you hit the buy button, ask yourself whether you will still love it in thirty wears."
+    ],
+    "vocabulary": [
+      {
+        "word": "thrives on",
+        "ipa": "/θraɪvz ɑːn/",
+        "pos": "phrasal verb",
+        "meaning_vi": "phát triển mạnh nhờ vào",
+        "example": "Social media thrives on attention and quick reactions."
+      },
+      {
+        "word": "in a matter of weeks",
+        "ipa": "/ɪn ə ˈmætər əv wiːks/",
+        "pos": "phrase",
+        "meaning_vi": "chỉ trong vài tuần",
+        "example": "The little shop became famous in a matter of weeks."
+      },
+      {
+        "word": "ends up in landfill",
+        "ipa": "/ɛndz ʌp ɪn ˈlændfɪl/",
+        "pos": "phrase",
+        "meaning_vi": "cuối cùng bị đổ ra bãi rác",
+        "example": "Most plastic packaging ends up in landfill within a year."
+      },
+      {
+        "word": "shed",
+        "ipa": "/ʃɛd/",
+        "pos": "verb",
+        "meaning_vi": "rụng ra, thải ra",
+        "example": "My cat sheds hair all over the sofa in summer."
+      },
+      {
+        "word": "barely cover",
+        "ipa": "/ˈbɛrli ˈkʌvər/",
+        "pos": "phrase",
+        "meaning_vi": "chỉ vừa đủ trang trải",
+        "example": "Her scholarship will barely cover her tuition, let alone living costs."
+      },
+      {
+        "word": "held accountable",
+        "ipa": "/hɛld əˈkaʊntəbəl/",
+        "pos": "phrase",
+        "meaning_vi": "bị buộc phải chịu trách nhiệm",
+        "example": "Company directors should be held accountable for serious safety failures."
+      },
+      {
+        "word": "sustainable",
+        "ipa": "/səˈsteɪnəbəl/",
+        "pos": "adjective",
+        "meaning_vi": "bền vững, thân thiện với môi trường",
+        "example": "Bamboo is a sustainable alternative to plastic straws."
+      }
+    ],
+    "questions": [
+      {
+        "question": "How does fast fashion work, according to the speaker?",
+        "options": [
+          "It makes clothes designed to last decades",
+          "It copies trends and sells them cheaply within weeks",
+          "It sells only in luxury stores",
+          "It produces fewer clothes every year"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Thời trang nhanh biến xu hướng sàn diễn thành quần áo giá rẻ chỉ trong vài tuần."
+      },
+      {
+        "question": "Which environmental problem is linked to washing synthetic clothes?",
+        "options": [
+          "Air pollution",
+          "Microplastics entering waterways",
+          "Soil erosion",
+          "Noise pollution"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Sợi tổng hợp như polyester thải ra vi nhựa mỗi lần giặt."
+      },
+      {
+        "question": "What does the speaker say about blaming shoppers?",
+        "options": [
+          "Shoppers are the only cause",
+          "It is easy, but the system is built to encourage buying",
+          "Shoppers have no choice at all",
+          "Brands never advertise"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Người nói cho rằng hệ thống được thiết kế để việc mua sắm trở nên dễ dàng nên không chỉ đổ lỗi cho người mua."
+      },
+      {
+        "question": "What is the speaker's final advice?",
+        "options": [
+          "Never buy clothes again",
+          "Buy only the cheapest items",
+          "Think about long-term use before buying",
+          "Give old clothes to the factory"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Người nói khuyên tự hỏi liệu mình còn thích món đồ sau ba mươi lần mặc hay không."
+      }
+    ]
+  },
+  {
+    "slug": "b2-online-learning",
+    "category": "study",
+    "topic": "Online learning versus the classroom",
+    "level": "B2",
+    "title": "Pause, Rewind, Repeat",
+    "summary_vi": "Luyện nghe và đọc một bài bình luận so sánh học trực tuyến với học trên lớp, cùng các liên từ nối ý quan trọng.",
+    "sentences": [
+      "When classes moved online in 2020, I assumed it would be a temporary inconvenience.",
+      "Five years on, I am a university lecturer in Hanoi who teaches half of her courses through a screen.",
+      "Online learning has undeniably widened access, allowing a farmer's daughter in Gia Lai to attend lectures from top universities.",
+      "It also lets students learn at their own pace, pausing and replaying a difficult explanation as often as they need.",
+      "Yet I have noticed that motivation tends to evaporate without the structure of a physical timetable.",
+      "Completion rates for free courses are strikingly low, often falling below ten percent.",
+      "In a classroom, a confused face is noticed immediately, whereas on a video call it is easily hidden behind a muted camera.",
+      "Casual conversations in corridors, which shape friendships and ideas, are almost impossible to replicate online.",
+      "That said, I would not want to go back to a purely traditional model.",
+      "The best results come from blended learning, where lectures are watched at home and class time goes on discussion.",
+      "Whichever format is chosen, success depends less on the technology than on the quality of the teaching.",
+      "A mediocre lecture does not become inspiring simply because it is streamed."
+    ],
+    "vocabulary": [
+      {
+        "word": "widened access",
+        "ipa": "/ˈwaɪdənd ˈæksɛs/",
+        "pos": "phrase",
+        "meaning_vi": "mở rộng khả năng tiếp cận",
+        "example": "Public libraries have widened access to books for poor families."
+      },
+      {
+        "word": "at their own pace",
+        "ipa": "/æt ðɛr oʊn peɪs/",
+        "pos": "phrase",
+        "meaning_vi": "theo tốc độ của riêng mình",
+        "example": "Children should be allowed to read at their own pace."
+      },
+      {
+        "word": "evaporate",
+        "ipa": "/ɪˈvæpəreɪt/",
+        "pos": "verb",
+        "meaning_vi": "tan biến, bay mất",
+        "example": "My enthusiasm began to evaporate after the third rainy day."
+      },
+      {
+        "word": "completion rates",
+        "ipa": "/kəmˈpliːʃən reɪts/",
+        "pos": "noun",
+        "meaning_vi": "tỷ lệ hoàn thành",
+        "example": "Completion rates rise when courses include short quizzes."
+      },
+      {
+        "word": "replicate",
+        "ipa": "/ˈrɛplɪkeɪt/",
+        "pos": "verb",
+        "meaning_vi": "tái tạo, sao chép lại",
+        "example": "No app can replicate the atmosphere of a live concert."
+      },
+      {
+        "word": "blended learning",
+        "ipa": "/ˈblɛndɪd ˈlɜːrnɪŋ/",
+        "pos": "noun",
+        "meaning_vi": "học kết hợp (trực tuyến và trực tiếp)",
+        "example": "Our school adopted blended learning to make better use of class time."
+      },
+      {
+        "word": "that said",
+        "ipa": "/ðæt sɛd/",
+        "pos": "phrase",
+        "meaning_vi": "tuy nhiên, dẫu vậy",
+        "example": "The film was too long; that said, the ending was brilliant."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What is one advantage of online learning mentioned?",
+        "options": [
+          "It is always cheaper than school",
+          "It lets students from remote areas attend top lectures",
+          "It removes the need for teachers",
+          "It guarantees better grades"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Học trực tuyến giúp cả những học sinh ở vùng xa tham dự bài giảng của trường hàng đầu."
+      },
+      {
+        "question": "Why does the writer say a confused student is harder to spot online?",
+        "options": [
+          "Students never ask questions",
+          "Cameras and microphones can be switched off",
+          "Lectures are too short",
+          "Teachers avoid eye contact"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Sinh viên có thể tắt camera hoặc micro nên khó nhận ra vẻ bối rối."
+      },
+      {
+        "question": "What does the writer prefer?",
+        "options": [
+          "Purely online courses",
+          "Purely traditional classrooms",
+          "A mix of home lectures and in-class discussion",
+          "Free courses only"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Tác giả thấy kết quả tốt nhất đến từ mô hình học kết hợp."
+      },
+      {
+        "question": "What is the point of the last sentence?",
+        "options": [
+          "Streaming makes lessons more fun",
+          "Technology cannot fix poor teaching",
+          "Lectures should be shorter",
+          "Video lessons are always mediocre"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Bài giảng tệ không thể trở nên hay chỉ vì được phát trực tuyến."
+      }
+    ]
+  },
+  {
+    "slug": "b2-streaming",
+    "category": "fun",
+    "topic": "How streaming changed movies",
+    "level": "B2",
+    "title": "The Cinema in My Pocket",
+    "summary_vi": "Luyện nghe và đọc một bài tiểu luận cá nhân về việc các nền tảng phát trực tuyến thay đổi ngành điện ảnh và thói quen xem phim.",
+    "sentences": [
+      "As a teenager, I once queued for two hours to see a film that had already been out abroad for months.",
+      "Today the same film would be waiting on my phone before I finished my breakfast.",
+      "Streaming platforms have turned the entertainment industry upside down in barely fifteen years.",
+      "Studios that once relied on box office takings now compete for monthly subscriptions.",
+      "As a result, thousands of hours of content are made every year, and audiences are spoilt for choice.",
+      "This has opened doors for stories from outside Hollywood, such as Korean dramas and Spanish thrillers that found global fans overnight.",
+      "Directors enjoy bigger budgets and more creative freedom than they would have been given by a traditional studio.",
+      "On the other hand, the sheer volume makes it hard for quieter films to get noticed.",
+      "Shows are cancelled after one season if the algorithm decides they are not worth the gamble.",
+      "Cinemas have suffered too, although the best ones have survived by offering an experience that a sofa cannot match.",
+      "Personally, I binge-watch more than I would like to admit, and I rarely remember what I have seen.",
+      "Perhaps the real luxury today is not having more choice, but having the patience to choose well."
+    ],
+    "vocabulary": [
+      {
+        "word": "upside down",
+        "ipa": "/ˈʌpsaɪd daʊn/",
+        "pos": "adverb",
+        "meaning_vi": "đảo lộn hoàn toàn",
+        "example": "The pandemic turned our travel plans upside down."
+      },
+      {
+        "word": "box office",
+        "ipa": "/bɑːks ˈɑːfɪs/",
+        "pos": "noun",
+        "meaning_vi": "doanh thu phòng vé",
+        "example": "The sequel was a huge success at the box office."
+      },
+      {
+        "word": "spoilt for choice",
+        "ipa": "/spɔɪlt fər tʃɔɪs/",
+        "pos": "idiom",
+        "meaning_vi": "có quá nhiều lựa chọn",
+        "example": "In this street food market, you are spoilt for choice."
+      },
+      {
+        "word": "overnight",
+        "ipa": "/ˌoʊvərˈnaɪt/",
+        "pos": "adverb",
+        "meaning_vi": "chỉ sau một đêm, rất nhanh",
+        "example": "The young singer became famous overnight after one video."
+      },
+      {
+        "word": "creative freedom",
+        "ipa": "/kriˈeɪtɪv ˈfriːdəm/",
+        "pos": "noun",
+        "meaning_vi": "sự tự do sáng tạo",
+        "example": "The writer accepted the job because she was given complete creative freedom."
+      },
+      {
+        "word": "the sheer volume",
+        "ipa": "/ðə ʃɪr ˈvɑːljuːm/",
+        "pos": "phrase",
+        "meaning_vi": "khối lượng quá lớn",
+        "example": "The sheer volume of emails made it impossible to reply to everyone."
+      },
+      {
+        "word": "worth the gamble",
+        "ipa": "/wɜːrθ ðə ˈɡæmbəl/",
+        "pos": "phrase",
+        "meaning_vi": "đáng để mạo hiểm",
+        "example": "Opening a restaurant in a quiet town seemed worth the gamble."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What contrast does the writer open with?",
+        "options": [
+          "Cinema tickets were once cheaper",
+          "Waiting for films used to take much longer",
+          "Films used to be shorter",
+          "Teenagers watched fewer films"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Trước đây phải xếp hàng và chờ hàng tháng, nay phim có sẵn ngay trên điện thoại."
+      },
+      {
+        "question": "What benefit of streaming is described?",
+        "options": [
+          "Directors always earn more",
+          "Films are always better",
+          "Cinemas are more popular",
+          "Stories from outside Hollywood can reach a global audience"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Phim Hàn và phim Tây Ban Nha tìm được khán giả toàn cầu nhờ các nền tảng."
+      },
+      {
+        "question": "Why might quieter films struggle on streaming platforms?",
+        "options": [
+          "There is so much content that they are overlooked",
+          "Algorithms ban them",
+          "They are too expensive to make",
+          "Viewers dislike subtitles"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Khối lượng nội dung khổng lồ khiến phim nhỏ khó được chú ý."
+      },
+      {
+        "question": "What is the writer's attitude in the final sentence?",
+        "options": [
+          "Excited about more choice",
+          "Angry at the platforms",
+          "Reflective, valuing patience over quantity",
+          "Uninterested in films"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Tác giả suy ngẫm rằng điều quý giá là biết chọn lọc chứ không phải có thêm lựa chọn."
+      }
+    ]
+  },
+  {
+    "slug": "b2-sleep-science",
+    "category": "health",
+    "topic": "Why we need more sleep",
+    "level": "B2",
+    "title": "Sleep Is Not Wasted Time",
+    "summary_vi": "Luyện nghe và đọc một bản tin khoa học về tầm quan trọng của giấc ngủ, cùng từ vựng về sức khỏe và thói quen sinh hoạt.",
+    "sentences": [
+      "Sleep used to be treated as wasted time, something ambitious people could cut down to make room for success.",
+      "Research over the past two decades has overturned that belief.",
+      "During deep sleep, the brain clears away waste products and moves the day's memories into long-term storage.",
+      "Adults who regularly get less than six hours are more likely to develop heart disease and depression.",
+      "Even a single bad night can dull attention, much like drinking a couple of glasses of wine.",
+      "Teenagers are especially vulnerable, since their body clocks naturally shift later, yet school often starts at dawn.",
+      "Several districts that delayed the first bell by an hour reported better grades and fewer car accidents.",
+      "Dr Ana Ferreira, a sleep researcher in Lisbon, says people routinely underestimate how impaired they are.",
+      "\"If you need an alarm and a coffee to function, you are probably carrying a sleep debt,\" she explains.",
+      "Simple habits help: a consistent bedtime, a cool dark room and no screens for an hour beforehand.",
+      "None of this is glamorous, but it works better than any supplement on the market.",
+      "In short, a good night's sleep is not a luxury; it is the foundation on which everything else is built."
+    ],
+    "vocabulary": [
+      {
+        "word": "cut down",
+        "ipa": "/kʌt daʊn/",
+        "pos": "phrasal verb",
+        "meaning_vi": "cắt giảm",
+        "example": "The doctor told him to cut down on salt and sugar."
+      },
+      {
+        "word": "overturned",
+        "ipa": "/ˌoʊvərˈtɜːrnd/",
+        "pos": "verb",
+        "meaning_vi": "lật đổ, bác bỏ",
+        "example": "The new evidence overturned the court's earlier decision."
+      },
+      {
+        "word": "vulnerable",
+        "ipa": "/ˈvʌlnərəbəl/",
+        "pos": "adjective",
+        "meaning_vi": "dễ bị tổn thương",
+        "example": "Elderly people are more vulnerable to extreme heat."
+      },
+      {
+        "word": "body clocks",
+        "ipa": "/ˈbɑːdi klɑːks/",
+        "pos": "noun",
+        "meaning_vi": "đồng hồ sinh học",
+        "example": "Flying across time zones confuses our body clocks for days."
+      },
+      {
+        "word": "underestimate",
+        "ipa": "/ˌʌndərˈɛstɪmeɪt/",
+        "pos": "verb",
+        "meaning_vi": "đánh giá thấp",
+        "example": "Never underestimate the power of a good night's rest."
+      },
+      {
+        "word": "sleep debt",
+        "ipa": "/sliːp dɛt/",
+        "pos": "noun",
+        "meaning_vi": "nợ ngủ (thiếu ngủ tích lũy)",
+        "example": "A weekend lie-in cannot repay months of sleep debt."
+      },
+      {
+        "word": "in short",
+        "ipa": "/ɪn ʃɔːrt/",
+        "pos": "phrase",
+        "meaning_vi": "tóm lại",
+        "example": "The plan was costly and slow; in short, it was a mistake."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What did research over the last two decades show?",
+        "options": [
+          "Sleep can be shortened without harm",
+          "Sleep is essential, not wasted time",
+          "Only teenagers need sleep",
+          "Coffee replaces sleep"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Nghiên cứu đã bác bỏ quan niệm coi giấc ngủ là thời gian lãng phí."
+      },
+      {
+        "question": "What happens in the brain during deep sleep?",
+        "options": [
+          "It stops working entirely",
+          "It forgets old skills",
+          "It stores memories and clears waste",
+          "It produces caffeine"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Trong giấc ngủ sâu, não dọn chất thải và đưa ký ức vào kho lưu trữ dài hạn."
+      },
+      {
+        "question": "Why are teenagers especially at risk?",
+        "options": [
+          "They dislike school",
+          "They sleep too much",
+          "They drink more wine",
+          "Their body clocks shift later but school starts early"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Đồng hồ sinh học của thiếu niên lệch muộn trong khi giờ học bắt đầu rất sớm."
+      },
+      {
+        "question": "What does Dr Ferreira imply about people who rely on alarms and coffee?",
+        "options": [
+          "They probably do not get enough sleep",
+          "They are healthier than average",
+          "They should sleep less",
+          "They have no sleep problems"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Cô cho rằng cần báo thức và cà phê để tỉnh táo là dấu hiệu đang nợ giấc ngủ."
+      }
+    ]
+  }
+]

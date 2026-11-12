@@ -6,6 +6,8 @@ export interface Game {
   practicedToday: boolean;
   todayXp: number;
   dailyGoal: number;
+  todaySteps: number;
+  bestSpeakToday: number;
 }
 
 export interface Me {
@@ -38,6 +40,9 @@ export interface LessonRow {
   my_steps: number;
   my_last: string | null;
   my_progress: string | null; // JSON {step: best}
+  category: string | null;
+  course_order: number | null;
+  summary: string | null;
 }
 
 export interface LessonDetail {
@@ -48,6 +53,8 @@ export interface LessonDetail {
     topic: string;
     level: string;
     is_public: number;
+    category: string | null;
+    course_order: number | null;
     provider: string;
     author: string;
     created_at: string;
@@ -57,7 +64,7 @@ export interface LessonDetail {
   sentences: { sentence_index: number; best: number; tries: number }[];
 }
 
-export type Step = "listen" | "dictation" | "speak" | "read" | "quiz";
+export type Step = "words" | "listen" | "dictation" | "speak" | "read" | "quiz";
 
 export interface Grade {
   score: number;
