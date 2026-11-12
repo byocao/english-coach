@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "english-coach",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-15",
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/auth/*"]
+  },
+  // Workers AI: Whisper for speech-to-text, Llama for trial users' grading.
+  "ai": { "binding": "AI", "remote": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "english-coach",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // One Durable Object holds the WebSocket to the local Claude CLI bridge.
+  "durable_objects": {
+    "bindings": [{ "name": "BRIDGE", "class_name": "BridgeHub" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BridgeHub"] }],
+  "vars": {
+    "ADMIN_LOGIN": "byocao",
+    "CONTACT_URL": "https://github.com/byocao",
+    "TRIAL_AI_LIMIT": "15",
+    "WORKERS_AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+  },
+  "observability": { "enabled": true }
+}
