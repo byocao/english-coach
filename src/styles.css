@@ -1,5 +1,5 @@
 /* English Coach — "anime study app" look: violet→pink gradients, chunky 3D buttons,
-   Fluent 3D emoji, soft glass cards. Light palette on :root, dark redefines tokens only. */
+   coloured Phosphor icons, soft glass cards. Light palette on :root, dark redefines tokens only. */
 
 :root {
   --bg: #f4f1ff;
@@ -132,12 +132,33 @@ textarea {
 button {
   cursor: pointer;
 }
-img.fx {
-  display: inline-block;
-  vertical-align: middle;
+.fx {
+  display: inline-grid;
+  place-items: center;
   flex: none;
-  object-fit: contain;
-  user-select: none;
+  vertical-align: middle;
+  line-height: 0;
+  color: var(--fx);
+}
+.fx.tile {
+  width: var(--fx-size);
+  height: var(--fx-size);
+  border-radius: 30%;
+  color: #fff;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--fx) 62%, #fff), var(--fx) 70%);
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--fx) 70%, #000),
+    inset 0 2px 0 rgb(255 255 255 / 0.35);
+}
+/* on coloured surfaces icons turn white */
+.node-face .fx,
+.lesson-hero .fx,
+.unit-head .fx,
+.lc-cover .fx:not(.lc-crown),
+.create-head .fx:not(.tile),
+.hero-kicker:not(.dark) .fx {
+  color: #fff;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.18));
 }
 code {
   background: var(--brand-soft);
@@ -627,8 +648,8 @@ code {
 .pill.streak {
   color: var(--muted);
 }
-.pill.streak:not(.lit) img {
-  filter: grayscale(1);
+.pill.streak:not(.lit) .fx {
+  color: var(--muted);
   opacity: 0.6;
 }
 .pill.streak.lit {
@@ -859,16 +880,18 @@ code {
   border-radius: 12px;
   background: rgb(255 255 255 / 0.18);
 }
-.hero-steps span img {
-  filter: grayscale(0.9);
-  opacity: 0.6;
+.hero-steps span .fx {
+  color: #fff;
+  opacity: 0.7;
 }
 .hero-steps span.on {
   background: #fff;
 }
-.hero-steps span.on img,
-.hero-steps span.now img {
-  filter: none;
+.hero-steps span.on .fx {
+  color: var(--fx);
+  opacity: 1;
+}
+.hero-steps span.now .fx {
   opacity: 1;
 }
 .hero-steps span.now {
@@ -1027,7 +1050,7 @@ code {
     0 6px 0 var(--c-edge, var(--brand-deep)),
     inset 0 4px 0 rgb(255 255 255 / 0.3);
 }
-.node-face img {
+.node-face .fx {
   filter: drop-shadow(0 3px 2px rgb(0 0 0 / 0.18));
 }
 .node.fresh:not(.current) .node-face {
@@ -1130,7 +1153,7 @@ code {
   background: var(--surface-2);
   border: 1px solid var(--line);
 }
-.pop-steps a:not(.on) img {
+.pop-steps a:not(.on) .fx {
   filter: grayscale(0.7);
   opacity: 0.7;
 }
@@ -2134,7 +2157,7 @@ code {
   background: var(--surface);
   border: 1px solid var(--line);
 }
-.gap {
+.blank {
   display: inline-block;
   min-width: 5.5rem;
   padding: 0 0.5rem;
@@ -2144,11 +2167,11 @@ code {
   color: var(--brand);
   white-space: pre;
 }
-.gap.correct {
+.blank.correct {
   color: var(--good);
   border-color: var(--good);
 }
-.gap.wrong {
+.blank.wrong {
   color: var(--bad);
   border-color: var(--bad);
 }
@@ -2788,7 +2811,7 @@ code {
     padding: 0.2rem 0.55rem 0.2rem 0.35rem;
     box-shadow: none;
   }
-  .topbar .pill img {
+  .topbar .pill .fx svg {
     width: 20px;
     height: 20px;
   }
@@ -2843,7 +2866,7 @@ code {
     width: 32px;
     height: 32px;
   }
-  .hero-steps img {
+  .hero-steps .fx svg {
     width: 18px;
     height: 18px;
   }
@@ -2855,7 +2878,7 @@ code {
     padding: 0.9rem 1rem;
     gap: 0.7rem;
   }
-  .unit-head img {
+  .unit-head .fx svg {
     width: 48px;
     height: 48px;
   }
@@ -2910,7 +2933,7 @@ code {
     padding: 1.1rem;
     border-radius: 24px;
   }
-  .create-head img {
+  .create-head .fx svg {
     width: 48px;
     height: 48px;
   }
@@ -2984,4 +3007,228 @@ code {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ---- icons: misc ------------------------------------------------------------------------------ */
+
+.slow-label {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+.play-row.big .slow-label {
+  font-size: 1.1rem;
+}
+.pop-steps a.on .fx {
+  color: var(--fx);
+}
+.lc-crown {
+  color: #fff;
+}
+.node-crown {
+  color: var(--gold);
+}
+
+/* ---- onboarding & placement ------------------------------------------------------------------- */
+
+.onboard {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem 0.6rem 0.4rem;
+  border-radius: 28px;
+  background: var(--surface);
+  border: 2px solid color-mix(in srgb, var(--brand) 35%, transparent);
+  box-shadow: var(--shadow-lg);
+}
+.onboard-mascot {
+  height: 190px;
+}
+.onboard-text {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: start;
+  padding: 0.8rem 0;
+}
+.onboard-text h2 {
+  font-size: 1.6rem;
+}
+.onboard-text p {
+  margin: 0;
+  color: var(--muted);
+}
+.hero-kicker.dark {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.here-chip {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: 0.2em;
+  font-family: var(--body);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--brand-deep);
+  text-shadow: none;
+}
+.placement .ex-body.center {
+  justify-items: center;
+  text-align: center;
+}
+.place-mascot {
+  height: 230px;
+  width: min(320px, 80vw);
+}
+.place-intro p,
+.place-result p {
+  margin: 0;
+  max-width: 34rem;
+}
+.level-ladder {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+}
+.level-ladder span {
+  display: grid;
+  justify-items: center;
+  gap: 0.2rem;
+  font-family: var(--display);
+}
+.level-ladder span:nth-child(2) {
+  transform: translateY(-8px);
+}
+.level-ladder span:nth-child(3) {
+  transform: translateY(-16px);
+}
+.level-ladder span:nth-child(4) {
+  transform: translateY(-24px);
+}
+.level-ladder span:nth-child(5) {
+  transform: translateY(-32px);
+}
+.kind-chip {
+  justify-self: start;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.place-text {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  padding: 1rem 1.2rem;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--gold);
+}
+.place-q {
+  font-size: 1.35rem;
+}
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 24px;
+  background: var(--u);
+  color: #fff;
+  box-shadow: 0 5px 0 rgb(0 0 0 / 0.15);
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+}
+.level-badge .fx {
+  color: #fff;
+}
+.level-badge b {
+  font-family: var(--display);
+  font-size: 2.6rem;
+  line-height: 1;
+}
+.level-badge span {
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* ---- profile: level & companion --------------------------------------------------------------- */
+
+.level-card p {
+  margin: 0 0 0.8rem;
+}
+.companion-row {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+}
+.companion-preview {
+  height: 200px;
+  border-radius: 20px;
+  background: var(--grad-soft);
+}
+.companion-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.6rem;
+}
+.companion {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  padding: 0.7rem 0.5rem;
+  border-radius: 18px;
+  border: 2px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: 0 4px 0 var(--line-strong);
+}
+.companion small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.companion.on {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  box-shadow: 0 4px 0 var(--brand);
+}
+.companion-emoji {
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 700px) {
+  .onboard {
+    grid-template-columns: 1fr;
+    padding: 0.4rem 1rem 1rem;
+  }
+  .onboard-mascot {
+    height: 150px;
+  }
+  .onboard-text {
+    padding: 0;
+  }
+  .onboard-text .btn {
+    flex: 1 1 auto;
+  }
+  .onboard-text h2 {
+    font-size: 1.3rem;
+  }
+  .companion-row {
+    grid-template-columns: 1fr;
+  }
+  .place-mascot {
+    height: 180px;
+  }
+}
+.dialog-fx {
+  justify-self: center;
 }

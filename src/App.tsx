@@ -25,7 +25,8 @@ import { api, onApiError, type ApiError, type LessonDetail, type LessonRow, type
 import { speak } from "./audio";
 import { Exercise } from "./Exercise";
 import { Login } from "./Login";
-import { MASCOT_CREDIT, Mascot } from "./Mascot";
+import { COMPANIONS, CompanionContext, MASCOT_CREDIT, Mascot, availableCompanions, useCompanion, type MascotName } from "./Mascot";
+import { Placement } from "./Placement";
 import { CATEGORIES, Fx, LEVELS, LEVEL_LABEL, STEPS, category, parseProgress, quests } from "./meta";
 import { setSoundOn, soundOn } from "./sound";
 import { getTheme, setTheme, type Theme } from "./theme";
@@ -37,6 +38,7 @@ type Route =
   | { name: "exercise"; id: number; step: string }
   | { name: "rank" }
   | { name: "me" }
+  | { name: "placement" }
   | { name: "admin" };
 
 function parseRoute(): Route {
@@ -49,6 +51,7 @@ function parseRoute(): Route {
   if (h === "rank") return { name: "rank" };
   if (h === "me") return { name: "me" };
   if (h === "admin") return { name: "admin" };
+  if (h === "placement") return { name: "placement" };
   return { name: "learn" };
 }
 
@@ -101,12 +104,22 @@ export function App() {
     );
   if (me === null) return <Login />;
 
+  const companion = (me.user.mascot as MascotName) || "wanko";
+
+  if (route.name === "placement") {
+    return (
+      <CompanionContext.Provider value={companion}>
+        <Placement me={me} onDone={refreshMe} />
+      </CompanionContext.Provider>
+    );
+  }
+
   if (route.name === "exercise") {
     return (
-      <>
+      <CompanionContext.Provider value={companion}>
         <Exercise key={`${route.id}/${route.step}`} lessonId={route.id} step={route.step} me={me} onGame={refreshMe} />
         {locked && <LockedDialog err={locked} onClose={() => setLocked(null)} />}
-      </>
+      </CompanionContext.Provider>
     );
   }
 
@@ -119,6 +132,7 @@ export function App() {
   ];
 
   return (
+    <CompanionContext.Provider value={companion}>
     <div className="app">
       <aside className="sidenav">
         <a className="logo" href="#/">
@@ -159,9 +173,9 @@ export function App() {
         <QuestCard me={me} />
         {me.user.role === "admin" && <BridgeCard online={!!me.bridgeOnline} />}
         {me.quota.limited && <QuotaCard me={me} />}
-        {route.name !== "learn" && (
+        {route.name !== "learn" && route.name !== "me" && (
           <div className="card mascot-card">
-            <Mascot name="hiyori" className="side-mascot" frame={0.6} say={greeting(me)} />
+            <Mascot name={companion} className="side-mascot" say={greeting(me)} />
           </div>
         )}
         <p className="credit">{MASCOT_CREDIT}</p>
@@ -178,13 +192,14 @@ export function App() {
 
       {locked && <LockedDialog err={locked} onClose={() => setLocked(null)} />}
     </div>
+    </CompanionContext.Provider>
   );
 }
 
 function Logo() {
   return (
     <span className="logo-mark" aria-hidden="true">
-      <Fx name="speech_balloon" size={30} />
+      <Fx name="paw" size={28} />
     </span>
   );
 }
@@ -236,7 +251,7 @@ function QuestCard({ me }: { me: Me }) {
       </header>
       {qs.map((q) => (
         <div key={q.id} className={q.value >= q.target ? "quest done" : "quest"}>
-          <Fx name={q.value >= q.target ? "check_mark_button" : q.fx} size={34} />
+          <Fx name={q.value >= q.target ? "check_mark_button" : q.fx} size={38} tile />
           <div className="grow">
             <b>{q.label}</b>
             <div className="quest-bar">
@@ -260,7 +275,7 @@ function QuestCard({ me }: { me: Me }) {
 function BridgeCard({ online }: { online: boolean }) {
   return (
     <section className={`card bridge ${online ? "ok" : "off"}`}>
-      <Fx name="robot" size={34} />
+      <Fx name="robot" size={38} tile />
       <div>
         <b>Claude bridge</b>
         <span className="small">{online ? "Đang online" : "Offline, đang dùng Workers AI"}</span>
@@ -289,7 +304,7 @@ function LockedDialog({ err, onClose }: { err: ApiError; onClose: () => void }) 
   return (
     <div className="overlay" onClick={onClose}>
       <div className="dialog" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
-        <Mascot name="haru" mood="sad" className="dialog-mascot" frame={0.55} />
+        <Fx name="locked" size={72} tile className="dialog-fx" />
         <h2>{err.code === "blocked" ? "Tài khoản đã bị khoá" : "Hết lượt dùng thử"}</h2>
         <p>
           {err.code === "blocked"
@@ -340,12 +355,22 @@ function Learn({ me }: { me: Me }) {
     return () => removeEventListener("click", close);
   }, [open]);
 
-  const current = useMemo(() => course?.find((l) => stepsDone(l) < STEPS.length) ?? course?.[0], [course]);
+  const myLevel = Math.max(0, LEVELS.findIndex((l) => l.key === me.user.level));
+  const levelOf = (l: LessonRow) => LEVELS.findIndex((x) => x.key === l.level);
+  // The current lesson: the first unfinished one at or above the learner's level.
+  const current = useMemo(
+    () =>
+      course?.find((l) => levelOf(l) >= myLevel && stepsDone(l) < STEPS.length) ??
+      course?.find((l) => stepsDone(l) < STEPS.length) ??
+      course?.[0],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [course, myLevel],
+  );
   const scrolled = useRef(false);
   useEffect(() => {
     if (!current || scrolled.current) return;
     scrolled.current = true;
-    if (course && course.indexOf(current) > 2) {
+    if (course && course.indexOf(current) > 1) {
       setTimeout(() => document.getElementById(`node-${current.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 400);
     }
   }, [current, course]);
@@ -354,23 +379,27 @@ function Learn({ me }: { me: Me }) {
 
   return (
     <div className="learn">
-      <Hero me={me} lesson={current} index={current ? course.indexOf(current) + 1 : 0} total={course.length} />
+      {/* Cubism renders one live model per page, so onboarding replaces the hero until placed. */}
+      {!me.user.level ? <Onboard /> : <Hero me={me} lesson={current} index={current ? course.indexOf(current) + 1 : 0} total={course.length} />}
       {narrow && <QuestCard me={me} />}
 
-      {LEVELS.map((lv) => {
+      {LEVELS.map((lv, li) => {
         const lessons = course.filter((l) => l.level === lv.key);
         if (lessons.length === 0) return null;
         const doneCount = lessons.filter((l) => stepsDone(l) === STEPS.length).length;
         return (
           <section key={lv.key} className={`unit lvl-${lv.key}`}>
             <header className="unit-head">
-              <Fx name={lv.fx} size={64} />
+              <Fx name={lv.fx} size={52} />
               <div className="grow">
                 <small>
                   Cấp {lv.key} · {lessons.length} bài
                 </small>
-                <h2>{lv.label}</h2>
-                <p>{lv.blurb}</p>
+                <h2>
+                  {lv.label}
+                  {me.user.level && li === myLevel && <span className="here-chip">Bạn ở đây</span>}
+                </h2>
+                <p>{li < myLevel ? "Bạn đã xếp lớp trên cấp này. Vẫn có thể ôn lại bất cứ bài nào." : lv.blurb}</p>
               </div>
               <div className="unit-count">
                 <b>{doneCount}</b>/{lessons.length}
@@ -395,7 +424,7 @@ function Learn({ me }: { me: Me }) {
       {mine.length > 0 && (
         <section className="unit lvl-own">
           <header className="unit-head">
-            <Fx name="sparkles" size={64} />
+            <Fx name="sparkles" size={52} />
             <div className="grow">
               <small>Từ thư viện cộng đồng</small>
               <h2>Bài bạn đang học</h2>
@@ -411,7 +440,7 @@ function Learn({ me }: { me: Me }) {
       )}
 
       <a className="more-card" href="#/library">
-        <Fx name="robot" size={56} />
+        <Fx name="robot" size={52} tile />
         <div className="grow">
           <b>Muốn chủ đề khác?</b>
           <span>Mở Thư viện để học bài của mọi người, hoặc nhờ AI soạn bài theo ý bạn.</span>
@@ -424,7 +453,38 @@ function Learn({ me }: { me: Me }) {
 
 const WAVE = [0, 70, 105, 70, 0, -70, -105, -70];
 
+function Onboard() {
+  const companion = useCompanion();
+  const [busy, setBusy] = useState(false);
+  const beginner = async () => {
+    setBusy(true);
+    await api("/api/me", { method: "PATCH", body: { level: "A1" } });
+    location.reload();
+  };
+  return (
+    <section className="onboard">
+      <Mascot name={companion} mood="happy" className="onboard-mascot" />
+      <div className="onboard-text">
+        <span className="hero-kicker dark">
+          <Fx name="bullseye" size={16} /> Xếp lớp
+        </span>
+        <h2>Bạn đang ở trình độ nào?</h2>
+        <p>Làm bài kiểm tra ngắn (tối đa 12 câu, khoảng 3 phút) để bắt đầu đúng cấp A1–C1, khỏi học lại bài quá dễ.</p>
+        <div className="row gap wrap">
+          <a className="btn primary" href="#/placement">
+            LÀM BÀI XẾP LỚP <ArrowRight size={18} weight="bold" />
+          </a>
+          <button className="btn ghost" onClick={beginner} disabled={busy}>
+            Mình mới bắt đầu
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Hero({ me, lesson, index, total }: { me: Me; lesson?: LessonRow; index: number; total: number }) {
+  const companion = useCompanion();
   if (!lesson) return null;
   const prog = parseProgress(lesson.my_progress);
   const step = nextStepOf(prog);
@@ -435,7 +495,7 @@ function Hero({ me, lesson, index, total }: { me: Me; lesson?: LessonRow; index:
         <span className="hero-kicker">
           <Sparkle size={16} weight="fill" /> {fresh ? "Bắt đầu hành trình" : `Bài ${index}/${total} · ${lesson.level} ${LEVEL_LABEL[lesson.level] ?? ""}`}
         </span>
-        <h1>{fresh ? `Chào ${me.user.login}! Mình là Hiyori.` : lesson.title}</h1>
+        <h1>{fresh ? `Chào ${me.user.login}! Mình là ${COMPANIONS[companion].label}.` : lesson.title}</h1>
         <p>{fresh ? "Mỗi ngày vài phút: học từ, nghe, chép, nói và đọc. Mình sẽ đi cùng bạn." : (lesson.summary ?? lesson.topic)}</p>
         <div className="hero-steps" aria-label="Tiến độ bài">
           {STEPS.map((s) => (
@@ -448,7 +508,7 @@ function Hero({ me, lesson, index, total }: { me: Me; lesson?: LessonRow; index:
           <Play size={20} weight="fill" /> {fresh ? "Học bài đầu tiên" : `Tiếp tục: ${step.label}`}
         </a>
       </div>
-      <Mascot name="hiyori" mood="cheer" className="hero-mascot" frame={0.62} />
+      <Mascot name={companion} mood="cheer" className="hero-mascot" />
       <span className="hero-bubble">{greeting(me)}</span>
     </section>
   );
@@ -488,7 +548,7 @@ function PathNode({
           <circle cx="52" cy="52" r={r} className="ring-fill" strokeDasharray={len} strokeDashoffset={len * (1 - done / STEPS.length)} />
         </svg>
         <span className="node-face">
-          <Fx name={cat.fx} size={46} />
+          <Fx name={cat.fx} size={40} />
         </span>
         {complete && <Fx name="crown" size={30} className="node-crown" />}
       </button>
@@ -504,7 +564,7 @@ function PathNode({
           <div className="pop-steps">
             {STEPS.map((s) => (
               <a key={s.key} href={`#/lesson/${lesson.id}/${s.key}`} className={s.key in prog ? "on" : ""} title={s.label}>
-                <Fx name={s.fx} size={26} />
+                <Fx name={s.fx} size={22} />
                 {s.key in prog && <i>{prog[s.key]}</i>}
               </a>
             ))}
@@ -565,7 +625,7 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
         <ArrowLeft size={18} weight="bold" /> {l.course_order ? "Lộ trình" : "Thư viện"}
       </a>
       <header className={`lesson-hero cat-${cat.key}`}>
-        <Fx name={cat.fx} size={92} className="lesson-hero-fx" />
+        <Fx name={cat.fx} size={80} className="lesson-hero-fx" />
         <div>
           <div className="row gap wrap">
             <span className="lvl light">
@@ -588,7 +648,7 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
           const best = prog[s.key];
           return (
             <a key={s.key} href={`#/lesson/${l.id}/${s.key}`} className={`step-card tone-${s.tone} ${s.key === next.key ? "next" : ""}`}>
-              <Fx name={s.fx} size={52} />
+              <Fx name={s.fx} size={56} tile />
               <b>{s.label}</b>
               <span className="small muted">{s.hint}</span>
               {best !== undefined ? <span className="best">{best}%</span> : s.key === next.key ? <span className="best new">TIẾP</span> : null}
@@ -599,7 +659,7 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
 
       <section className="card">
         <h2 className="card-title">
-          <Fx name="card_index_dividers" size={30} /> Từ vựng trong bài
+          <Fx name="card_index_dividers" size={34} tile /> Từ vựng trong bài
         </h2>
         <div className="vocab-list">
           {l.content.vocabulary.map((v) => (
@@ -672,7 +732,7 @@ function Library({ me, onQuota }: { me: Me; onQuota: () => void }) {
       <div className="cat-scroll" role="tablist" aria-label="Chủ đề">
         {[{ key: "", label: "Tất cả", fx: "books" as const }, ...CATEGORIES, { key: "community", label: "Cộng đồng", fx: "sparkles" as const }].map((c) => (
           <button key={c.key || "all"} className={cat === c.key ? "cat-tile on" : "cat-tile"} onClick={() => setCat(c.key)} role="tab" aria-selected={cat === c.key}>
-            <Fx name={c.fx} size={40} />
+            <Fx name={c.fx} size={44} tile />
             <span>{c.label}</span>
           </button>
         ))}
@@ -718,7 +778,7 @@ function LessonCard({ l }: { l: LessonRow }) {
       <div className={`lc-cover cat-${cat.key}`}>
         <span className="lvl light">{l.level}</span>
         {done === STEPS.length && <Fx name="crown" size={28} className="lc-crown" />}
-        <Fx name={cat.fx} size={68} className="lc-fx" />
+        <Fx name={cat.fx} size={56} className="lc-fx" />
       </div>
       <div className="lc-body">
         <span className="lc-cat">{cat.label}</span>
@@ -778,7 +838,7 @@ function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
   return (
     <section className="create">
       <div className="create-head">
-        <Fx name="robot" size={64} className="bob" />
+        <Fx name="robot" size={60} className="bob" tile />
         <div>
           <h2>AI soạn bài theo ý bạn</h2>
           <p className="small">
@@ -831,7 +891,7 @@ function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
             <b>Đã có bài giống vậy, học luôn không tốn lượt AI:</b>
             {similar.map((s) => (
               <a key={s.id} href={`#/lesson/${s.id}`} className="similar-item">
-                <Fx name={category(s.category).fx} size={24} /> <span className="grow">{s.title}</span>
+                <Fx name={category(s.category).fx} size={22} /> <span className="grow">{s.title}</span>
                 <span className="lvl">{s.level}</span>
               </a>
             ))}
@@ -866,7 +926,7 @@ function Leaderboard({ me }: { me: Me }) {
   return (
     <div className="stack-lg narrow">
       <div className="rank-hero">
-        <Fx name="trophy" size={88} className="bob" />
+        <Fx name="trophy" size={80} className="bob" tile />
         <h1 className="page-title">Giải đấu tuần</h1>
         <p className="muted">XP kiếm được từ thứ Hai. {d.myRank ? `Bạn đang hạng ${d.myRank}.` : "Học một bài để lên bảng!"}</p>
       </div>
@@ -941,8 +1001,12 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
         <div>
           <h1>{me.user.login}</h1>
           <span className="role-chip">{roleLabel(me.user.role)}</span>
+          {me.user.level && <span className="role-chip">Trình độ {me.user.level}</span>}
         </div>
       </header>
+
+      <LevelCard me={me} onChange={onChange} />
+      <CompanionPicker me={me} onChange={onChange} />
 
       <div className="stat-grid">
         <Stat fx="fire" value={me.game.streak} label="ngày liên tiếp" />
@@ -953,7 +1017,7 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
 
       <section className="card">
         <h2 className="card-title">
-          <Fx name="bar_chart" size={30} /> XP 14 ngày qua
+          <Fx name="bar_chart" size={34} tile /> XP 14 ngày qua
         </h2>
         <div className="bars">
           {days.map((d) => (
@@ -967,7 +1031,7 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
 
       <section className="card settings">
         <h2 className="card-title">
-          <Fx name="alarm_clock" size={30} /> Cài đặt
+          <Fx name="alarm_clock" size={34} tile /> Cài đặt
         </h2>
         <div className="setting">
           <span>Mục tiêu mỗi ngày</span>
@@ -1019,7 +1083,7 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
       {s && s.recent.length > 0 && (
         <section className="card">
           <h2 className="card-title">
-            <Fx name="microphone" size={30} /> Lần nói gần đây
+            <Fx name="microphone" size={34} tile /> Lần nói gần đây
           </h2>
           <ul className="recent">
             {s.recent.map((r, i) => (
@@ -1039,9 +1103,86 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
         <SignOut size={20} /> Đăng xuất
       </button>
       <p className="credit">
-        {MASCOT_CREDIT} Icon 3D: Microsoft Fluent Emoji (MIT). Icon giao diện: Phosphor Icons (MIT).
+        {MASCOT_CREDIT} Icon: Phosphor Icons (MIT).
       </p>
     </div>
+  );
+}
+
+function LevelCard({ me, onChange }: { me: Me; onChange: () => void }) {
+  const lv = LEVELS.find((l) => l.key === me.user.level);
+  const set = async (level: string) => {
+    await api("/api/me", { method: "PATCH", body: { level } });
+    onChange();
+  };
+  return (
+    <section className="card level-card">
+      <h2 className="card-title">
+        <Fx name={lv?.fx ?? "bullseye"} size={34} tile /> Trình độ của bạn
+      </h2>
+      {lv ? (
+        <p>
+          <b>
+            {lv.key} · {lv.label}
+          </b>
+          {me.user.placed_at
+            ? ` (bài xếp lớp ngày ${new Date(me.user.placed_at + "Z").toLocaleDateString("vi-VN")}, đúng ${me.user.placement_score ?? 0}%)`
+            : " (tự chọn)"}
+          . Lộ trình bắt đầu từ cấp này.
+        </p>
+      ) : (
+        <p className="muted">Chưa xếp lớp. Làm bài kiểm tra ngắn để bắt đầu đúng cấp.</p>
+      )}
+      <div className="row gap wrap">
+        <a className="btn primary small" href="#/placement">
+          {me.user.placed_at ? "Làm lại bài xếp lớp" : "Làm bài xếp lớp"}
+        </a>
+        <div className="seg">
+          {LEVELS.map((l) => (
+            <button key={l.key} className={me.user.level === l.key ? "on" : ""} onClick={() => set(l.key)} title={l.label}>
+              {l.key}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CompanionPicker({ me, onChange }: { me: Me; onChange: () => void }) {
+  const current = useCompanion();
+  const [have, setHave] = useState<MascotName[]>(["wanko"]);
+  useEffect(() => {
+    availableCompanions().then((m) => setHave((Object.keys(COMPANIONS) as MascotName[]).filter((k) => m[k])));
+  }, []);
+  const choose = async (mascot: MascotName) => {
+    await api("/api/me", { method: "PATCH", body: { mascot } });
+    onChange();
+  };
+  return (
+    <section className="card">
+      <h2 className="card-title">
+        <Fx name="paw" size={34} tile /> Bạn đồng hành
+      </h2>
+      <div className="companion-row">
+        <Mascot key={current} name={current} className="companion-preview" mood="happy" />
+        <div className="companion-list">
+          {have.map((k) => (
+            <button key={k} className={k === current ? "companion on" : "companion"} onClick={() => choose(k)}>
+              <span className="companion-emoji">{COMPANIONS[k].emoji}</span>
+              <b>{COMPANIONS[k].label}</b>
+              <small>{COMPANIONS[k].kind}</small>
+            </button>
+          ))}
+        </div>
+      </div>
+      {!have.includes("tororo") && (
+        <p className="muted small">
+          Muốn thêm hai bé mèo Tororo & Hijiki? Chủ app tải mẫu “Tororo & Hijiki” trên live2d.com/learn/sample, giải nén vào thư mục{" "}
+          <code>live2d-extra/</code> rồi deploy lại.
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -1059,7 +1200,7 @@ function lastDays(n: number): string[] {
 function Stat({ fx, value, label }: { fx: Parameters<typeof Fx>[0]["name"]; value: React.ReactNode; label: string }) {
   return (
     <div className="stat">
-      <Fx name={fx} size={40} />
+      <Fx name={fx} size={44} tile />
       <div>
         <b>{value}</b>
         <span className="muted small">{label}</span>

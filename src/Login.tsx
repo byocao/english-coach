@@ -32,10 +32,10 @@ export function Login() {
 
   return (
     <div className="login-page">
-      <Mascot name="hiyori" mood="cheer" className="login-hero" say="Hi! Mình là Hiyori. Cùng học tiếng Anh mỗi ngày nhé!" />
+      <Mascot name="wanko" mood="cheer" className="login-hero" say="Gâu! Mình là Wanko. Cùng học tiếng Anh mỗi ngày nhé!" />
       <div className="login-card">
         <span className="logo-mark">
-          <Fx name="speech_balloon" size={46} />
+          <Fx name="paw" size={40} />
         </span>
         <h1>English Coach</h1>
         <p className="lead">
@@ -44,7 +44,7 @@ export function Login() {
         <div className="login-feats">
           {STEPS.map((s) => (
             <span key={s.key}>
-              <Fx name={s.fx} size={36} />
+              <Fx name={s.fx} size={40} tile />
               {s.label}
             </span>
           ))}
@@ -108,7 +108,7 @@ export function Login() {
           </button>
         </form>
         <p className="muted small">Tài khoản mới được dùng thử miễn phí một số lượt AI.</p>
-        <p className="credit">{MASCOT_CREDIT} Icon: Microsoft Fluent Emoji (MIT).</p>
+        <p className="credit">{MASCOT_CREDIT} Icon: Phosphor Icons (MIT).</p>
       </div>
     </div>
   );

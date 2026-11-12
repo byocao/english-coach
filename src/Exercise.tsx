@@ -16,7 +16,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, type Grade, type LessonContent, type LessonDetail, type Me, type ProgressResult, type Step } from "./api";
 import { alignWords, norm, speak, startRecording, stopSpeaking, words, type Recorder } from "./audio";
-import { Mascot, type Mood } from "./Mascot";
+import { Mascot, useCompanion, type Mood } from "./Mascot";
 import { Fx, STEPS } from "./meta";
 import { sfx } from "./sound";
 
@@ -198,12 +198,13 @@ function Footer({
 }
 
 function Prompt({ title, mood, say, children }: { title: string; mood: Mood; say?: React.ReactNode; children?: React.ReactNode }) {
+  const companion = useCompanion();
   return (
     <>
       <h1 className="ex-title">{title}</h1>
       <div className="ex-prompt">
         <div className="ex-mascot-frame">
-          <Mascot name="haru" mood={mood} className="ex-mascot" frame={0.42} />
+          <Mascot name={companion} mood={mood} className="ex-mascot" shot="bust" />
         </div>
         <div className="ex-speech">
           {say && <div className="speech">{say}</div>}
@@ -226,7 +227,7 @@ function PlayButtons({ text, auto = true, size = "big" }: { text: string; auto?:
         <SpeakerHigh size={size === "big" ? 34 : 22} weight="fill" />
       </button>
       <button className="play slow" onClick={() => speak(text, { rate: 0.6 })} aria-label="Nghe chậm">
-        <Fx name="snail" size={size === "big" ? 30 : 20} />
+        <span className="slow-label">0.6×</span>
       </button>
     </div>
   );
@@ -504,7 +505,7 @@ function ChoiceItem({ item, back, run }: { item: Extract<WordItem, { kind: "gap"
           <Prompt title="Điền từ còn thiếu" mood={moodFor(run.state)} />
           <p className="gap-sentence">
             {item.before}
-            <span className={`gap ${sel ? "filled" : ""} ${run.state}`}>{sel ?? " ".repeat(8)}</span>
+            <span className={`blank ${sel ? "filled" : ""} ${run.state}`}>{sel ?? " ".repeat(8)}</span>
             {item.after}
           </p>
         </>
@@ -1111,8 +1112,8 @@ function Complete({ lessonId, stepKey, score, res }: { lessonId: number; stepKey
     <div className="complete">
       <Confetti />
       <div className="complete-stage">
-        <Mascot name="hiyori" mood="cheer" className="complete-mascot" />
-        <Fx name={score >= 85 ? "trophy" : "party_popper"} size={84} className="complete-fx" />
+        <Mascot name={useCompanion()} mood="cheer" className="complete-mascot" />
+        <Fx name={score >= 85 ? "trophy" : "party_popper"} size={72} className="complete-fx" tile />
       </div>
       <h1>{score >= 85 ? "Xuất sắc!" : score >= 60 ? "Làm tốt lắm!" : "Hoàn thành!"}</h1>
       <p className="muted">

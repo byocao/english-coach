@@ -25,6 +25,10 @@ export interface User {
   avatar_url: string | null;
   role: Role;
   ai_used: number;
+  level: string | null;
+  mascot: string | null;
+  placed_at: string | null;
+  placement_score: number | null;
 }
 
 export type AppEnv = { Bindings: Env; Variables: { user: User } };

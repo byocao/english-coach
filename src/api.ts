@@ -11,7 +11,16 @@ export interface Game {
 }
 
 export interface Me {
-  user: { id: number; login: string; role: Role; ai_used: number };
+  user: {
+    id: number;
+    login: string;
+    role: Role;
+    ai_used: number;
+    level: string | null;
+    mascot: string | null;
+    placed_at: string | null;
+    placement_score: number | null;
+  };
   quota: { limited: boolean; used: number; limit: number | null; left: number | null };
   contact: string;
   bridgeOnline: boolean | null;

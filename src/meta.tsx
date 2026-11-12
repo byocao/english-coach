@@ -1,30 +1,118 @@
-// Shared look-up tables (steps, levels, topic categories) and the 3D icon component.
-// 3D icons: Microsoft Fluent Emoji (MIT), resized into public/fx. UI icons: Phosphor (MIT).
+// Shared look-up tables (steps, levels, topic categories) and the icon component.
+// Icons: Phosphor (MIT), drawn as crisp vectors in each concept's own colour.
+import {
+  AirplaneTilt,
+  BookOpenText,
+  Briefcase,
+  Cards,
+  ChartBar,
+  ChatsCircle,
+  CheckCircle,
+  Confetti,
+  Crown,
+  Diamond,
+  FilmSlate,
+  Fire,
+  ForkKnife,
+  GearSix,
+  Gift,
+  GraduationCap,
+  Headphones,
+  Heartbeat,
+  House,
+  Laptop,
+  Leaf,
+  Lightbulb,
+  Lightning,
+  Lock,
+  Medal,
+  Microphone,
+  Mountains,
+  Notebook,
+  PawPrint,
+  PencilLine,
+  Plant,
+  PuzzlePiece,
+  Robot,
+  RocketLaunch,
+  SealCheck,
+  Sparkle,
+  SpeakerHigh,
+  Star,
+  Target,
+  Tree,
+  Trophy,
+  XCircle,
+  type Icon,
+} from "@phosphor-icons/react";
 import type { Game, Step } from "./api";
 
-export type FxName =
-  | "books" | "headphone" | "memo" | "microphone" | "open_book" | "trophy" | "fire" | "high_voltage"
-  | "bullseye" | "1st_place_medal" | "2nd_place_medal" | "3rd_place_medal" | "gem_stone" | "wrapped_gift"
-  | "glowing_star" | "party_popper" | "locked" | "check_mark_button" | "cross_mark" | "crown" | "sparkles"
-  | "robot" | "light_bulb" | "speaker_high_volume" | "snail" | "seedling" | "herb" | "deciduous_tree"
-  | "snow-capped_mountain" | "rocket" | "house" | "steaming_bowl" | "airplane" | "briefcase" | "graduation_cap"
-  | "laptop" | "stethoscope" | "clapper_board" | "four_leaf_clover" | "speech_balloon" | "puzzle_piece"
-  | "card_index_dividers" | "bar_chart" | "alarm_clock" | "hundred_points";
+const ICONS = {
+  books: [Cards, "#7c5cff"],
+  headphone: [Headphones, "#2aa8ff"],
+  memo: [PencilLine, "#18b98a"],
+  microphone: [Microphone, "#ff4fa3"],
+  open_book: [BookOpenText, "#f59e0b"],
+  trophy: [Trophy, "#ffb020"],
+  fire: [Fire, "#ff7a1a"],
+  high_voltage: [Lightning, "#ffb020"],
+  bullseye: [Target, "#ff4d6a"],
+  "1st_place_medal": [Medal, "#ffb020"],
+  "2nd_place_medal": [Medal, "#9aa6b8"],
+  "3rd_place_medal": [Medal, "#d0844a"],
+  gem_stone: [Diamond, "#2aa8ff"],
+  wrapped_gift: [Gift, "#ff4fa3"],
+  glowing_star: [Star, "#ffb020"],
+  party_popper: [Confetti, "#ff4fa3"],
+  locked: [Lock, "#9a95c0"],
+  check_mark_button: [CheckCircle, "#18b96b"],
+  cross_mark: [XCircle, "#ff4d6a"],
+  crown: [Crown, "#ffb020"],
+  sparkles: [Sparkle, "#b65cff"],
+  robot: [Robot, "#7c5cff"],
+  light_bulb: [Lightbulb, "#ffb020"],
+  speaker_high_volume: [SpeakerHigh, "#2aa8ff"],
+  seedling: [Plant, "#18b96b"],
+  herb: [Leaf, "#2aa8ff"],
+  deciduous_tree: [Tree, "#7c5cff"],
+  "snow-capped_mountain": [Mountains, "#ff4f8b"],
+  rocket: [RocketLaunch, "#ff7a1a"],
+  house: [House, "#ff9c3b"],
+  steaming_bowl: [ForkKnife, "#ff5f7e"],
+  airplane: [AirplaneTilt, "#4a78f5"],
+  briefcase: [Briefcase, "#7a4cf0"],
+  graduation_cap: [GraduationCap, "#13b38a"],
+  laptop: [Laptop, "#2283db"],
+  stethoscope: [Heartbeat, "#f2455a"],
+  clapper_board: [FilmSlate, "#e0418d"],
+  four_leaf_clover: [Leaf, "#34a853"],
+  speech_balloon: [ChatsCircle, "#f6a609"],
+  puzzle_piece: [PuzzlePiece, "#7c5cff"],
+  card_index_dividers: [Notebook, "#7c5cff"],
+  bar_chart: [ChartBar, "#7c5cff"],
+  alarm_clock: [GearSix, "#7c5cff"],
+  hundred_points: [SealCheck, "#18b96b"],
+  paw: [PawPrint, "#ff7a59"],
+} satisfies Record<string, [Icon, string]>;
 
-/** A Fluent 3D emoji picture. Decorative unless `label` is given. */
-export function Fx({ name, size = 28, label, className = "" }: { name: FxName; size?: number; label?: string; className?: string }) {
+export type FxName = keyof typeof ICONS;
+
+/**
+ * An icon in its own colour. `tile` puts it white on a rounded gradient tile (app-icon style);
+ * inside coloured surfaces (.on-color) CSS turns it white.
+ */
+export function Fx({ name, size = 28, label, className = "", tile = false }: { name: FxName; size?: number; label?: string; className?: string; tile?: boolean }) {
+  const [Glyph, color] = ICONS[name];
   return (
-    <img
-      className={`fx ${className}`}
-      src={`/fx/${name}.webp`}
-      width={size}
-      height={size}
-      alt={label ?? ""}
+    <span
+      className={`fx ${tile ? "tile" : ""} ${className}`}
+      style={{ "--fx": color, "--fx-size": `${size}px` } as React.CSSProperties}
+      role={label ? "img" : undefined}
+      aria-label={label}
       aria-hidden={label ? undefined : true}
-      draggable={false}
-      loading="lazy"
-      decoding="async"
-    />
+    >
+      <Glyph size={tile ? Math.round(size * 0.58) : size} weight="fill" />
+    </span>
   );
 }
 

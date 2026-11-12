@@ -72,10 +72,36 @@ learn.get("/me", async (c) => {
   return c.json({ user, quota: quota(c.env, user), contact: c.env.CONTACT_URL, bridgeOnline, game: gameView(g) });
 });
 
+const LEVELS = ["A1", "A2", "B1", "B2", "C1"];
+const MASCOTS = ["wanko", "tororo", "hijiki", "hiyori", "haru"];
+
+/** Daily goal, starting level (placement=true when it comes from the placement test), companion. */
 learn.patch("/me", async (c) => {
-  const body = await c.req.json<{ dailyGoal?: number }>().catch(() => ({}) as never);
-  if (!DAILY_GOALS.includes(Number(body.dailyGoal))) return c.json({ error: "Mục tiêu không hợp lệ." }, 400);
-  await c.env.DB.prepare("UPDATE users SET daily_goal = ?1 WHERE id = ?2").bind(Number(body.dailyGoal), c.get("user").id).run();
+  const user = c.get("user");
+  const body = await c.req.json<{ dailyGoal?: number; level?: string; placement?: boolean; score?: number; mascot?: string }>().catch(() => ({}) as never);
+  const stmts: D1PreparedStatement[] = [];
+  if (body.dailyGoal !== undefined) {
+    if (!DAILY_GOALS.includes(Number(body.dailyGoal))) return c.json({ error: "Mục tiêu không hợp lệ." }, 400);
+    stmts.push(c.env.DB.prepare("UPDATE users SET daily_goal = ?1 WHERE id = ?2").bind(Number(body.dailyGoal), user.id));
+  }
+  if (body.level !== undefined) {
+    if (!LEVELS.includes(body.level)) return c.json({ error: "Trình độ không hợp lệ." }, 400);
+    stmts.push(
+      body.placement
+        ? c.env.DB.prepare("UPDATE users SET level = ?1, placed_at = datetime('now'), placement_score = ?2 WHERE id = ?3").bind(
+            body.level,
+            Math.max(0, Math.min(100, Math.round(Number(body.score) || 0))),
+            user.id,
+          )
+        : c.env.DB.prepare("UPDATE users SET level = ?1 WHERE id = ?2").bind(body.level, user.id),
+    );
+  }
+  if (body.mascot !== undefined) {
+    if (!MASCOTS.includes(body.mascot)) return c.json({ error: "Nhân vật không hợp lệ." }, 400);
+    stmts.push(c.env.DB.prepare("UPDATE users SET mascot = ?1 WHERE id = ?2").bind(body.mascot, user.id));
+  }
+  if (stmts.length === 0) return c.json({ error: "Không có gì để cập nhật." }, 400);
+  await c.env.DB.batch(stmts);
   return c.json({ ok: true });
 });
 

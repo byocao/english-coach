@@ -6,3 +6,4 @@ dist/
 bridge/.env
 *.log
 public/live2d/
+live2d-extra/

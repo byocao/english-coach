@@ -8,13 +8,16 @@
 | 6 bước mỗi bài | Từ vựng (lật thẻ, ghép cặp, điền từ, nghe chọn từ) · Nghe & xếp câu · Chép chính tả · Luyện nói · Đọc hiểu · Thử thách |
 | Thư viện | Khoá học + bài ai tạo cũng vào thư viện chung, lọc theo chủ đề và cấp độ. Học lại bài có sẵn không tốn lượt AI. Gõ chủ đề sẽ gợi ý bài tương tự trước khi tạo mới |
 | Luyện nói | Ghi âm → Whisper (Workers AI) → AI chấm 0–100, tô màu từ sai/thiếu, mẹo phát âm tiếng Việt |
+| Xếp lớp | Bài kiểm tra thích ứng tối đa 12 câu (ngữ pháp, từ vựng, nghe, đọc) xếp mỗi tài khoản vào A1–C1; lộ trình bắt đầu từ cấp đó. Làm lại hoặc đổi cấp trong Hồ sơ |
 | Game | XP, chuỗi ngày, mục tiêu ngày, 3 nhiệm vụ hằng ngày, combo đúng liên tiếp, giải đấu tuần |
 
 ## Nhân vật
 
-Hai nhân vật Live2D chuyển động: **Hiyori Momose** (minh hoạ: Kani Biimu) và **Haru**, mẫu chính thức của Live2D Inc., dùng theo [Live2D Free Material License](https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html) (cá nhân và doanh nghiệp nhỏ doanh thu dưới 10 triệu yên được dùng, kể cả thương mại, có ghi credit). License cấm phát tán lại file gốc, nên file model **không nằm trong git**: `scripts/fetch-live2d.mjs` tải chúng (và Cubism Core) vào `public/live2d/` trước mỗi lần `dev`/`build`.
+Nhân vật Live2D chuyển động: **Wanko**, **Hiyori Momose** (minh hoạ: Kani Biimu) và **Haru**, mẫu chính thức của Live2D Inc., dùng theo [Live2D Free Material License](https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html) (cá nhân và doanh nghiệp nhỏ doanh thu dưới 10 triệu yên được dùng, kể cả thương mại, có ghi credit). License cấm phát tán lại file gốc, nên file model **không nằm trong git**: `scripts/fetch-live2d.mjs` tải chúng (và Cubism Core) vào `public/live2d/` trước mỗi lần `dev`/`build`.
 
-Icon 3D: [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) của Microsoft (MIT), thu nhỏ thành WebP trong `public/fx/`. Icon giao diện: [Phosphor Icons](https://phosphoricons.com) (MIT).
+Icon: [Phosphor Icons](https://phosphoricons.com) (MIT), dạng đặc, mỗi khái niệm một màu.
+
+**Bạn đồng hành** (chọn trong Hồ sơ): Wanko (cún trong tách trà, mặc định), Hiyori, Haru. Hai bé mèo **Tororo & Hijiki** cũng là mẫu miễn phí của Live2D nhưng trang tải yêu cầu bấm đồng ý điều khoản, nên không tự tải được: vào https://www.live2d.com/en/learn/sample/tororo-hijiki/, tải bản runtime, giải nén vào thư mục `live2d-extra/` (đã gitignore) rồi `npm run deploy`. Script build tự nhận mọi `*.model3.json` trong đó.
 
 ## Khoá học có sẵn
 

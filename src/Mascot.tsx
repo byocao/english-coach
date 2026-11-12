@@ -1,26 +1,39 @@
-// Live2D mascots: Hiyori Momose (guide) and Haru (coach), official Live2D sample characters
-// used under the Live2D Free Material License. Rendered with pixi-live2d-display on Cubism Core,
-// both loaded lazily so pages without a mascot stay light.
-import { useEffect, useRef, useState } from "react";
+// Live2D companions. Official Live2D sample characters used under the Live2D Free Material License:
+// Wanko (the puppy in a teacup), Hiyori Momose and Haru, plus Tororo & Hijiki (cats) when the owner
+// has added them (see scripts/fetch-live2d.mjs). Rendered with pixi-live2d-display on Cubism Core,
+// both loaded lazily so pages without a companion stay light.
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-export type MascotName = "hiyori" | "haru";
+export type MascotName = "wanko" | "tororo" | "hijiki" | "hiyori" | "haru";
 export type Mood = "idle" | "happy" | "cheer" | "sad" | "oops" | "think" | "surprised";
+export type Shot = "full" | "bust";
 
-const MODELS: Record<MascotName, string> = {
-  hiyori: "/live2d/Hiyori/Hiyori.model3.json",
-  haru: "/live2d/Haru/Haru.model3.json",
-};
+interface ModelInfo {
+  label: string;
+  kind: string;
+  emoji: string;
+  /** Share of the figure's height kept in frame: 1 = whole body. */
+  frame: Record<Shot, number>;
+  /** Extra zoom for models whose canvas is much larger than the drawing (whole-body shots). */
+  zoom?: number;
+  /** Empty model-space below the drawing (in model units). */
+  bottomGap?: number;
+  faces?: Partial<Record<Mood, string>>;
+}
 
-// Haru's expression files, read from their parameters: F05 closed-eye smile, F02 excited,
-// F04 worried, F08 disappointed, F06 surprised, F01 calm smile.
-const HARU_FACE: Record<Mood, string> = {
-  idle: "F01",
-  happy: "F05",
-  cheer: "F02",
-  sad: "F04",
-  oops: "F08",
-  think: "F01",
-  surprised: "F06",
+export const COMPANIONS: Record<MascotName, ModelInfo> = {
+  wanko: { label: "Wanko", kind: "Cún trong tách trà", emoji: "🐶", frame: { full: 1, bust: 1 }, zoom: 1.75 },
+  tororo: { label: "Tororo", kind: "Mèo trắng", emoji: "🐱", frame: { full: 1, bust: 0.75 } },
+  hijiki: { label: "Hijiki", kind: "Mèo đen", emoji: "🐈‍⬛", frame: { full: 1, bust: 0.75 } },
+  hiyori: { label: "Hiyori", kind: "Nữ sinh", emoji: "🌸", frame: { full: 0.85, bust: 0.6 } },
+  haru: {
+    label: "Haru",
+    kind: "Cô giáo",
+    emoji: "🎀",
+    frame: { full: 0.85, bust: 0.45 },
+    // Haru's expression files: F05 closed-eye smile, F02 excited, F04 worried, F08 disappointed, F06 surprised, F01 calm.
+    faces: { idle: "F01", happy: "F05", cheer: "F02", sad: "F04", oops: "F08", think: "F01", surprised: "F06" },
+  },
 };
 
 type Live2DModelT = {
@@ -40,6 +53,7 @@ interface Libs {
 }
 
 let libs: Promise<Libs> | null = null;
+let manifest: Promise<Partial<Record<MascotName, string>>> | null = null;
 
 function loadLibs(): Promise<Libs> {
   libs ??= (async () => {
@@ -64,6 +78,14 @@ function loadLibs(): Promise<Libs> {
   return libs;
 }
 
+/** Which companions this deployment actually has (the cats are optional). */
+export function availableCompanions(): Promise<Partial<Record<MascotName, string>>> {
+  manifest ??= fetch("/live2d/models.json")
+    .then((r) => (r.ok ? r.json() : {}))
+    .catch(() => ({}));
+  return manifest;
+}
+
 function webglOk(): boolean {
   try {
     return !!document.createElement("canvas").getContext("webgl");
@@ -73,26 +95,27 @@ function webglOk(): boolean {
 }
 
 /**
- * A Live2D character filling its box (framed from the head down to about the knees).
- * `mood` switches Haru's face and plays a body motion on happy moods; `say` shows a speech bubble.
+ * A Live2D companion filling its box. `mood` plays a motion (and a face, for models that have
+ * expressions); `say` shows a speech bubble. Missing models fall back to Wanko, then to an emoji.
  */
 export function Mascot({
   name,
   mood = "idle",
   say,
   className = "",
-  frame = 0.85,
+  shot = "full",
 }: {
   name: MascotName;
   mood?: Mood;
   say?: React.ReactNode;
   className?: string;
-  frame?: number;
+  shot?: Shot;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const modelRef = useRef<Live2DModelT | null>(null);
   const [failed, setFailed] = useState(() => typeof window !== "undefined" && !webglOk());
+  const [shown, setShown] = useState<MascotName>(name);
 
   useEffect(() => {
     if (failed) return;
@@ -108,10 +131,14 @@ export function Mascot({
 
     (async () => {
       try {
-        const { PIXI, Live2DModel } = await loadLibs();
+        const [{ PIXI, Live2DModel }, urls] = await Promise.all([loadLibs(), availableCompanions()]);
+        const pick: MascotName = urls[name] ? name : "wanko";
+        const url = urls[pick];
+        if (!url) throw new Error("no model");
         const box = boxRef.current;
         const canvas = canvasRef.current;
         if (disposed || !box || !canvas) return;
+        setShown(pick);
         const b = box.getBoundingClientRect();
         app = new PIXI.Application({
           view: canvas,
@@ -122,7 +149,7 @@ export function Mascot({
           width: Math.max(1, b.width),
           height: Math.max(1, b.height),
         });
-        const model = await Live2DModel.from(MODELS[name], { autoInteract: false });
+        const model = await Live2DModel.from(url, { autoInteract: false });
         if (disposed) {
           model.destroy();
           return;
@@ -131,16 +158,20 @@ export function Mascot({
         modelRef.current = model;
         model.scale.set(1);
         const fig = model.getLocalBounds();
+        // Space under the drawing inside the model canvas, so whole figures stand on the bottom edge.
+        const bottomGap = COMPANIONS[pick].bottomGap ?? 0;
+        const frame = COMPANIONS[pick].frame[shot];
         const place = () => {
           const r = box.getBoundingClientRect();
           if (!app || r.width === 0) return;
           app.renderer.resize(r.width, r.height);
-          // Full-body framing must fit the width too; a bust (frame < 0.8) may let the arms overflow.
-          const byHeight = (r.height * 0.98) / (fig.height * frame);
-          const k = frame >= 0.8 ? Math.min(byHeight, (r.width * 0.98) / fig.width) : byHeight;
+          // Whole-body framing must fit the width too; a bust may let the arms overflow.
+          const byHeight = (r.height * 0.96) / (fig.height * frame);
+          const k = (frame >= 0.8 ? Math.min(byHeight, (r.width * 0.96) / fig.width) : byHeight) * (frame >= 0.8 ? (COMPANIONS[pick].zoom ?? 1) : 1);
           model.scale.set(k);
           model.x = r.width / 2 - (fig.x + fig.width / 2) * k;
-          model.y = r.height * 0.02 - fig.y * k;
+          // Whole figures sit on the bottom edge; busts hang from the top.
+          model.y = frame >= 0.8 ? r.height * 0.98 - (fig.y + fig.height) * k + bottomGap * k : r.height * 0.02 - fig.y * k;
         };
         place();
         ro = new ResizeObserver(place);
@@ -162,28 +193,35 @@ export function Mascot({
         /* already gone */
       }
     };
-  }, [name, failed, frame]);
+  }, [name, failed, shot]);
 
   useEffect(() => {
     const model = modelRef.current;
     if (!model) return;
-    if (name === "haru") void model.expression(HARU_FACE[mood]);
-    if (mood === "happy" || mood === "cheer") void model.motion("TapBody", undefined, 3);
-  }, [mood, name]);
+    const face = COMPANIONS[shown].faces?.[mood];
+    if (face) void model.expression(face);
+    if (mood === "happy" || mood === "cheer" || mood === "surprised") void model.motion("TapBody", undefined, 3);
+    if (mood === "sad" || mood === "oops") void model.motion("Shake", undefined, 3);
+  }, [mood, shown]);
 
+  const info = COMPANIONS[shown];
   return (
-    <div className={`mascot ${className}`} ref={boxRef}>
+    <div className={`mascot ${className}`} ref={boxRef} onClick={() => void modelRef.current?.motion("TapBody", undefined, 2)}>
       {failed ? (
         <div className="mascot-fallback" aria-hidden="true">
-          {name === "hiyori" ? "🌸" : "🎀"}
+          {info.emoji}
         </div>
       ) : (
-        <canvas ref={canvasRef} aria-label={name === "hiyori" ? "Hiyori" : "Haru"} role="img" />
+        <canvas ref={canvasRef} aria-label={info.label} role="img" />
       )}
       {say && <div className="bubble">{say}</div>}
     </div>
   );
 }
 
+/** The learner's chosen companion, provided by the app shell. */
+export const CompanionContext = createContext<MascotName>("wanko");
+export const useCompanion = () => useContext(CompanionContext);
+
 export const MASCOT_CREDIT =
-  "Nhân vật Hiyori Momose (minh hoạ: Kani Biimu) và Haru là mẫu chính thức của Live2D Inc., dùng theo Live2D Free Material License. © Live2D Inc. Live2D Cubism Core © Live2D Inc.";
+  "Nhân vật Wanko, Hiyori Momose (minh hoạ: Kani Biimu), Haru, Tororo và Hijiki là mẫu chính thức của Live2D Inc., dùng theo Live2D Free Material License. © Live2D Inc. Live2D Cubism Core © Live2D Inc.";
