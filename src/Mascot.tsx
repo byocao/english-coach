@@ -18,13 +18,19 @@ interface ModelInfo {
   zoom?: number;
   /** Empty model-space below the drawing (in model units). */
   bottomGap?: number;
+  /** For busts: share of the figure's height to skip at the top (empty canvas above the head). */
+  top?: number;
   faces?: Partial<Record<Mood, string>>;
+  /** Motion groups to play when happy / sad / tapped (defaults: TapBody, Shake, TapBody). */
+  motions?: { happy: string; sad: string; tap: string };
 }
+
+const CAT_MOTIONS = { happy: "Tap", sad: "FlickDown", tap: "Tap" };
 
 export const COMPANIONS: Record<MascotName, ModelInfo> = {
   wanko: { label: "Wanko", kind: "Cún trong tách trà", emoji: "🐶", frame: { full: 1, bust: 1 }, zoom: 1.75 },
-  tororo: { label: "Tororo", kind: "Mèo trắng", emoji: "🐱", frame: { full: 1, bust: 0.75 } },
-  hijiki: { label: "Hijiki", kind: "Mèo đen", emoji: "🐈‍⬛", frame: { full: 1, bust: 0.75 } },
+  tororo: { label: "Tororo", kind: "Mèo trắng", emoji: "🐱", frame: { full: 1, bust: 0.5 }, top: 0.2, motions: CAT_MOTIONS },
+  hijiki: { label: "Hijiki", kind: "Mèo đen", emoji: "🐈‍⬛", frame: { full: 1, bust: 0.5 }, top: 0.2, motions: CAT_MOTIONS },
   hiyori: { label: "Hiyori", kind: "Nữ sinh", emoji: "🌸", frame: { full: 0.85, bust: 0.6 } },
   haru: {
     label: "Haru",
@@ -171,7 +177,7 @@ export function Mascot({
           model.scale.set(k);
           model.x = r.width / 2 - (fig.x + fig.width / 2) * k;
           // Whole figures sit on the bottom edge; busts hang from the top.
-          model.y = frame >= 0.8 ? r.height * 0.98 - (fig.y + fig.height) * k + bottomGap * k : r.height * 0.02 - fig.y * k;
+          model.y = frame >= 0.8 ? r.height * 0.98 - (fig.y + fig.height) * k + bottomGap * k : r.height * 0.02 - (fig.y + (COMPANIONS[pick].top ?? 0) * fig.height) * k;
         };
         place();
         ro = new ResizeObserver(place);
@@ -200,13 +206,14 @@ export function Mascot({
     if (!model) return;
     const face = COMPANIONS[shown].faces?.[mood];
     if (face) void model.expression(face);
-    if (mood === "happy" || mood === "cheer" || mood === "surprised") void model.motion("TapBody", undefined, 3);
-    if (mood === "sad" || mood === "oops") void model.motion("Shake", undefined, 3);
+    const m = COMPANIONS[shown].motions ?? { happy: "TapBody", sad: "Shake", tap: "TapBody" };
+    if (mood === "happy" || mood === "cheer" || mood === "surprised") void model.motion(m.happy, undefined, 3);
+    if (mood === "sad" || mood === "oops") void model.motion(m.sad, undefined, 3);
   }, [mood, shown]);
 
   const info = COMPANIONS[shown];
   return (
-    <div className={`mascot ${className}`} ref={boxRef} onClick={() => void modelRef.current?.motion("TapBody", undefined, 2)}>
+    <div className={`mascot ${className}`} ref={boxRef} onClick={() => void modelRef.current?.motion(COMPANIONS[shown].motions?.tap ?? "TapBody", undefined, 2)}>
       {failed ? (
         <div className="mascot-fallback" aria-hidden="true">
           {info.emoji}
