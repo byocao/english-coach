@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "./api";
+import { MASCOT_CREDIT, Mascot } from "./Mascot";
 
 export function Login() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -30,8 +31,9 @@ export function Login() {
 
   return (
     <div className="login-page">
+      <Mascot name="hiyori" mood="cheer" className="login-hero" say="Hi! Mình là Hiyori. Cùng học tiếng Anh mỗi ngày nhé!" />
       <div className="login-card">
-        <span className="brand-mark big">EC</span>
+        <span className="logo-mark big">EC</span>
         <h1>English Coach</h1>
         <p className="lead">
           Luyện <b>đọc</b>, <b>nghe</b> và <b>nói</b> tiếng Anh với bài học do AI soạn theo trình độ của bạn. Ghi âm giọng
@@ -91,11 +93,12 @@ export function Login() {
           )}
           {mode === "register" && <p className="muted small">3–24 ký tự: chữ thường, số và . _ -. Mật khẩu ít nhất 8 ký tự.</p>}
           {error && <p className="error">{error}</p>}
-          <button className="btn btn-primary btn-lg" disabled={busy}>
+          <button className="btn primary full" disabled={busy}>
             {busy ? "Đang xử lý…" : mode === "login" ? "Đăng nhập" : "Tạo tài khoản"}
           </button>
         </form>
         <p className="muted small">Tài khoản mới được dùng thử miễn phí một số lượt AI.</p>
+        <p className="credit">{MASCOT_CREDIT}</p>
       </div>
     </div>
   );

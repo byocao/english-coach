@@ -11,10 +11,17 @@
     "db:migrate:local": "wrangler d1 migrations apply english-coach --local",
     "db:migrate:remote": "wrangler d1 migrations apply english-coach --remote",
     "deploy": "npm run build && wrangler deploy",
-    "bridge": "node bridge/bridge.mjs"
+    "bridge": "node bridge/bridge.mjs",
+    "prebuild": "node scripts/fetch-live2d.mjs",
+    "predev": "node scripts/fetch-live2d.mjs"
   },
   "dependencies": {
     "hono": "4.13.14",
+    "pixi": {
+      "js": "6.5.10"
+    },
+    "pixi-live2d-display": "0.4.0",
+    "pixi.js": "^6.5.10",
     "react": "19.1.10",
     "react-dom": "19.1.10"
   },

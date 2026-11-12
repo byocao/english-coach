@@ -2,13 +2,16 @@
 
 Ứng dụng luyện **đọc, nghe, nói** tiếng Anh cho người Việt. AI soạn bài theo chủ đề và trình độ (A1–C1), giọng nói được nhận dạng bằng Whisper rồi chấm điểm và góp ý bằng tiếng Việt. Chạy hoàn toàn trên gói **Cloudflare Free**.
 
-| Tính năng | Cách làm |
+| Phần | Cách học |
 |---|---|
-| 📖 Đọc | Bài đọc do AI soạn, bấm từ để tra (dictionaryapi.dev), bấm `?` để AI giải thích câu, danh sách từ vựng có IPA |
-| 🎧 Nghe | Đọc từng câu hoặc cả bài bằng giọng của trình duyệt, chỉnh tốc độ, ẩn chữ, chép chính tả có chấm từng từ |
-| 🎙️ Nói | Ghi âm từng câu → Whisper (Workers AI) → AI chấm 0–100, đánh dấu từ sai/thiếu, mẹo phát âm |
-| ✅ Câu hỏi | Trắc nghiệm đọc hiểu kèm giải thích |
-| 📈 Tiến độ | Số lần luyện, điểm trung bình, biểu đồ 30 ngày |
+| 🏠 Lộ trình | Mỗi bài là một "unit" với 5 nút: 🎧 nghe & xếp câu, ✍️ chép chính tả, 🎙️ luyện nói, 📖 đọc hiểu, 🏆 câu hỏi |
+| 📚 Thư viện | Bài ai tạo cũng vào thư viện chung; học lại bài có sẵn không tốn lượt AI. Gõ chủ đề sẽ gợi ý bài tương tự trước khi tạo mới |
+| 🎙️ Luyện nói | Ghi âm → Whisper (Workers AI) → AI chấm 0–100, tô màu từ sai/thiếu, mẹo phát âm tiếng Việt |
+| ⚡ XP, 🔥 chuỗi ngày, 🎯 mục tiêu ngày, 🏅 bảng xếp hạng tuần | Kiểu Duolingo |
+
+## Nhân vật
+
+Hai nhân vật Live2D chuyển động: **Hiyori Momose** (minh hoạ: Kani Biimu) và **Haru**, mẫu chính thức của Live2D Inc., dùng theo [Live2D Free Material License](https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html) (cá nhân và doanh nghiệp nhỏ doanh thu dưới 10 triệu yên được dùng, kể cả thương mại, có ghi credit). License cấm phát tán lại file gốc, nên file model **không nằm trong git**: `scripts/fetch-live2d.mjs` tải chúng (và Cubism Core) vào `public/live2d/` trước mỗi lần `dev`/`build`.
 
 ## Ai dùng AI nào
 

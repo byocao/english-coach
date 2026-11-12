@@ -5,3 +5,4 @@ dist/
 .env
 bridge/.env
 *.log
+public/live2d/

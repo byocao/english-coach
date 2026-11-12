@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import type { Context } from "hono";
 import { AiError, runJson, transcribe, wordMatchRatio } from "./ai";
 import { authRoutes, requireAdmin, requireUser, sameString } from "./auth";
+import { learn } from "./learn";
+import { quota, trialLimit } from "./quota";
 import type { AppEnv, Env, Role, User } from "./env";
 import {
   EXPLAIN_SYSTEM,
@@ -48,18 +50,6 @@ app.get("/api/bridge/ws", async (c) => {
 const api = new Hono<AppEnv>();
 api.use("*", requireUser);
 
-function trialLimit(env: Env): number {
-  return Number(env.TRIAL_AI_LIMIT) || 15;
-}
-
-function quota(env: Env, user: User) {
-  if (user.role === "trial") {
-    const limit = trialLimit(env);
-    return { limited: true, used: user.ai_used, limit, left: Math.max(0, limit - user.ai_used) };
-  }
-  return { limited: false, used: user.ai_used, limit: null, left: null };
-}
-
 /** Stops trial users who have used up their AI actions, and blocked users. */
 function gate(c: Context<AppEnv>) {
   const user = c.get("user");
@@ -83,31 +73,7 @@ async function recordAi(env: Env, user: User, kind: string, provider: string) {
   user.ai_used += 1;
 }
 
-api.get("/me", async (c) => {
-  const user = c.get("user");
-  let bridgeOnline: boolean | null = null;
-  if (user.role === "admin") {
-    bridgeOnline = (await c.env.BRIDGE.get(c.env.BRIDGE.idFromName("bridge")).status()).online;
-  }
-  return c.json({ user, quota: quota(c.env, user), contact: c.env.CONTACT_URL, bridgeOnline });
-});
-
 // ---- Lessons -----------------------------------------------------------------
-
-api.get("/lessons", async (c) => {
-  const user = c.get("user");
-  const { results } = await c.env.DB.prepare(
-    `SELECT l.id, l.title, l.topic, l.level, l.is_public, l.created_at, l.user_id, u.login AS author,
-            (SELECT COUNT(*) FROM attempts a WHERE a.lesson_id = l.id AND a.user_id = ?1) AS attempts,
-            (SELECT ROUND(AVG(score)) FROM attempts a WHERE a.lesson_id = l.id AND a.user_id = ?1) AS avg_score
-       FROM lessons l JOIN users u ON u.id = l.user_id
-      WHERE l.user_id = ?1 OR l.is_public = 1
-      ORDER BY l.created_at DESC LIMIT 200`,
-  )
-    .bind(user.id)
-    .all();
-  return c.json({ lessons: results });
-});
 
 api.post("/lessons", async (c) => {
   const blocked = gate(c);
@@ -129,48 +95,12 @@ api.post("/lessons", async (c) => {
   if (lesson.sentences.length === 0) return c.json({ error: "AI không tạo được bài, hãy thử lại." }, 502);
 
   const row = await c.env.DB.prepare(
-    "INSERT INTO lessons (user_id, title, topic, level, content, provider) VALUES (?1, ?2, ?3, ?4, ?5, ?6) RETURNING id",
+    "INSERT INTO lessons (user_id, title, topic, level, content, provider, is_public) VALUES (?1, ?2, ?3, ?4, ?5, ?6, 1) RETURNING id",
   )
     .bind(user.id, lesson.title || topic, topic, level, JSON.stringify(lesson), result.provider)
     .first<{ id: number }>();
   await recordAi(c.env, user, "lesson", result.provider);
   return c.json({ id: row!.id, provider: result.provider, note: result.note, quota: quota(c.env, user) });
-});
-
-api.get("/lessons/:id", async (c) => {
-  const user = c.get("user");
-  const row = await c.env.DB.prepare(
-    `SELECT l.*, u.login AS author FROM lessons l JOIN users u ON u.id = l.user_id
-      WHERE l.id = ?1 AND (l.user_id = ?2 OR l.is_public = 1)`,
-  )
-    .bind(Number(c.req.param("id")), user.id)
-    .first<Record<string, unknown> & { content: string }>();
-  if (!row) return c.json({ error: "Không tìm thấy bài học." }, 404);
-  const { results: attempts } = await c.env.DB.prepare(
-    `SELECT sentence_index, MAX(score) AS best, COUNT(*) AS tries FROM attempts
-      WHERE lesson_id = ?1 AND user_id = ?2 GROUP BY sentence_index`,
-  )
-    .bind(row.id, user.id)
-    .all();
-  return c.json({ lesson: { ...row, content: JSON.parse(row.content) }, attempts });
-});
-
-api.patch("/lessons/:id", async (c) => {
-  const user = c.get("user");
-  const body = await c.req.json<{ is_public?: boolean }>().catch(() => ({}) as never);
-  if (user.role !== "admin") return c.json({ error: "Chỉ quản trị viên mới chia sẻ được bài." }, 403);
-  await c.env.DB.prepare("UPDATE lessons SET is_public = ?1 WHERE id = ?2 AND user_id = ?3")
-    .bind(body.is_public ? 1 : 0, Number(c.req.param("id")), user.id)
-    .run();
-  return c.json({ ok: true });
-});
-
-api.delete("/lessons/:id", async (c) => {
-  const user = c.get("user");
-  await c.env.DB.prepare("DELETE FROM lessons WHERE id = ?1 AND user_id = ?2")
-    .bind(Number(c.req.param("id")), user.id)
-    .run();
-  return c.json({ ok: true });
 });
 
 // ---- Speaking: Whisper + grader ------------------------------------------------
@@ -237,33 +167,11 @@ api.post("/explain", async (c) => {
   return c.json({ explain: result.data, provider: result.provider, note: result.note, quota: quota(c.env, user) });
 });
 
-// ---- Progress -------------------------------------------------------------------
-
-api.get("/stats", async (c) => {
-  const user = c.get("user");
-  const [totals, daily, recent] = await c.env.DB.batch([
-    c.env.DB.prepare(
-      `SELECT COUNT(*) AS attempts, ROUND(AVG(score)) AS avg_score,
-              (SELECT COUNT(*) FROM lessons WHERE user_id = ?1) AS lessons
-         FROM attempts WHERE user_id = ?1`,
-    ).bind(user.id),
-    c.env.DB.prepare(
-      `SELECT date(created_at) AS day, COUNT(*) AS attempts, ROUND(AVG(score)) AS avg_score
-         FROM attempts WHERE user_id = ?1 AND created_at > datetime('now', '-30 days')
-        GROUP BY day ORDER BY day`,
-    ).bind(user.id),
-    c.env.DB.prepare(
-      `SELECT target, transcript, score, created_at FROM attempts WHERE user_id = ?1 ORDER BY id DESC LIMIT 15`,
-    ).bind(user.id),
-  ]);
-  return c.json({ totals: totals.results[0], daily: daily.results, recent: recent.results });
-});
-
 // ---- Admin ------------------------------------------------------------------------
 
 api.get("/admin/users", requireAdmin, async (c) => {
   const { results } = await c.env.DB.prepare(
-    `SELECT u.id, u.login, u.name, u.avatar_url, u.role, u.ai_used, u.created_at, u.last_seen_at,
+    `SELECT u.id, u.login, u.role, u.ai_used, u.xp, u.streak, u.created_at, u.last_seen_at,
             (SELECT COUNT(*) FROM attempts a WHERE a.user_id = u.id) AS attempts
        FROM users u ORDER BY u.last_seen_at DESC NULLS LAST LIMIT 500`,
   ).all();
@@ -282,6 +190,7 @@ api.patch("/admin/users/:id", requireAdmin, async (c) => {
   return c.json({ ok: true });
 });
 
+api.route("/", learn);
 app.route("/api", api);
 app.all("/api/*", (c) => c.json({ error: "Not found" }, 404));
 
