@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, onApiError, type ApiError, type LessonRow, type Me } from "./api";
 import { LessonPage } from "./Lesson";
+import { Login } from "./Login";
 
 type Route = { name: "home" } | { name: "lesson"; id: number } | { name: "progress" } | { name: "admin" };
 
@@ -69,7 +70,7 @@ export function App() {
         </nav>
         <div className="who">
           <QuotaBadge me={me} />
-          {me.user.avatar_url && <img className="avatar" src={me.user.avatar_url} alt="" />}
+          <span className="avatar" aria-hidden="true">{me.user.login.slice(0, 1).toUpperCase()}</span>
           <span className="login">{me.user.login}</span>
           <button className="link" onClick={logout}>
             Thoát
@@ -133,37 +134,6 @@ function LockedDialog({ err, onClose }: { err: ApiError; onClose: () => void }) 
         </div>
       </div>
     </div>
-  );
-}
-
-// ---- Login ---------------------------------------------------------------------
-
-function Login() {
-  const err = new URLSearchParams(location.search).get("login_error");
-  return (
-    <div className="login-page">
-      <div className="login-card">
-        <span className="brand-mark big">EC</span>
-        <h1>English Coach</h1>
-        <p className="lead">
-          Luyện <b>đọc</b>, <b>nghe</b> và <b>nói</b> tiếng Anh với bài học do AI soạn theo trình độ của bạn. Ghi âm giọng
-          đọc và nhận điểm cùng góp ý bằng tiếng Việt.
-        </p>
-        <a className="btn btn-primary btn-lg" href="/auth/github">
-          <GithubIcon /> Đăng nhập bằng GitHub
-        </a>
-        {err && <p className="error">Đăng nhập không thành công ({err}), hãy thử lại.</p>}
-        <p className="muted small">Tài khoản mới được dùng thử miễn phí một số lượt AI.</p>
-      </div>
-    </div>
-  );
-}
-
-function GithubIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-    </svg>
   );
 }
 
@@ -433,9 +403,7 @@ function Admin() {
               {data.users.map((u) => (
                 <tr key={u.id}>
                   <td>
-                    <a href={`https://github.com/${u.login}`} target="_blank" rel="noreferrer">
-                      {u.login}
-                    </a>
+                    <b>{u.login}</b>
                   </td>
                   <td>
                     <span className={`role role-${u.role}`}>{u.role}</span>

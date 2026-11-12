@@ -135,7 +135,12 @@ export function words(s: string): string[] {
 }
 
 export function norm(w: string): string {
-  return w.toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9']/g, "");
+  return w
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[’']/g, "'")
+    .replace(/[^a-z0-9']/g, "");
 }
 
 /** Marks each target word as heard/typed correctly, using LCS alignment. */

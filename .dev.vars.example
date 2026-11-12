@@ -1,6 +1,5 @@
 # Copy to .dev.vars for local development (never commit .dev.vars).
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
+# Password for the byocao (ADMIN_LOGIN) account.
+ADMIN_PASSWORD=
+# Shared secret between the Worker and bridge/bridge.mjs.
 BRIDGE_TOKEN=
-# Enables /auth/dev?login=NAME so you can log in locally without GitHub OAuth.
-DEV_LOGIN=1

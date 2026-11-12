@@ -14,13 +14,17 @@
 
 | Tài khoản | AI | Giới hạn |
 |---|---|---|
-| `byocao` (admin) | **Claude** chạy bằng Claude Code CLI trên máy của byocao, qua bridge | Không giới hạn (theo gói Claude của bạn) |
+| `byocao` (admin, mật khẩu = secret `ADMIN_PASSWORD`) | **Claude** chạy bằng Claude Code CLI trên máy của byocao, qua bridge | Không giới hạn (theo gói Claude của bạn) |
 | Thành viên được mở khoá | Workers AI (Llama 3.3 70B) | Không giới hạn (trong hạn mức free của Cloudflare) |
 | Tài khoản mới | Workers AI | `TRIAL_AI_LIMIT` lượt (mặc định 15), hết thì phải liên hệ github.com/byocao |
 
 Người dùng khác **không bao giờ** dùng gói Claude cá nhân của bạn: điều khoản của Anthropic không cho phép dùng gói Pro/Max để phục vụ người khác. Nếu muốn cho họ dùng Claude, hãy dùng API key của Claude Console.
 
 Điểm nói phản ánh **độ rõ ràng** (Whisper nghe ra đúng chữ hay không). Nó không phân tích từng âm vị như ELSA.
+
+## Đăng nhập
+
+Tài khoản lưu trong D1: tên đăng nhập + mật khẩu băm PBKDF2-SHA256 (20.000 vòng, vừa giới hạn CPU 10 ms của gói Free). Sai mật khẩu 5 lần thì khoá 10 phút. Tên `byocao` được giữ riêng: không ai đăng ký được, và mật khẩu của nó là secret `ADMIN_PASSWORD` (không lưu trong D1).
 
 ## Kiến trúc
 
@@ -36,12 +40,12 @@ Trình duyệt (React) ──► Cloudflare Worker (Hono)
 
 ```bash
 npm install
-cp .dev.vars.example .dev.vars        # điền BRIDGE_TOKEN, để DEV_LOGIN=1
+cp .dev.vars.example .dev.vars        # điền ADMIN_PASSWORD và BRIDGE_TOKEN
 npm run db:migrate:local
 npm run dev                           # http://localhost:5173
 ```
 
-Đăng nhập local không cần GitHub: mở `http://localhost:5173/auth/dev?login=byocao`.
+Đăng nhập local: tài khoản `byocao` dùng `ADMIN_PASSWORD` trong `.dev.vars`; tài khoản khác tự đăng ký ở trang đăng nhập.
 Muốn dùng Whisper/Workers AI ở local thì Wrangler phải đăng nhập đúng tài khoản Cloudflare. Không có thì chạy `EC_OFFLINE=1 npm run dev` (mọi thứ khác vẫn chạy).
 
 Bridge Claude, chạy trong cửa sổ terminal thứ hai:
@@ -56,17 +60,13 @@ npm run bridge
 1. `npx wrangler login` bằng tài khoản Cloudflare của bạn.
 2. `npx wrangler d1 create english-coach`, rồi chép `database_id` vào `wrangler.jsonc`.
 3. `npm run db:migrate:remote`
-4. Tạo GitHub OAuth App (GitHub → Settings → Developer settings → OAuth Apps):
-   - Homepage URL: `https://english-coach.<subdomain>.workers.dev`
-   - Callback URL: `https://english-coach.<subdomain>.workers.dev/auth/github/callback`
-5. Đặt secrets:
+4. Đặt secrets:
    ```bash
-   npx wrangler secret put GITHUB_CLIENT_ID
-   npx wrangler secret put GITHUB_CLIENT_SECRET
+   npx wrangler secret put ADMIN_PASSWORD
    npx wrangler secret put BRIDGE_TOKEN
    ```
-6. `npm run deploy`
-7. Trên máy bạn: đặt `APP_URL` trong `bridge/.env` thành URL workers.dev, rồi `npm run bridge`.
+5. `npm run deploy`
+6. Trên máy bạn: đặt `APP_URL` trong `bridge/.env` thành URL workers.dev, rồi `npm run bridge`.
 
 ## Hạn mức miễn phí
 
@@ -77,7 +77,7 @@ npm run bridge
 
 | Biến | Mặc định | Ý nghĩa |
 |---|---|---|
-| `ADMIN_LOGIN` | `byocao` | GitHub login được quyền admin và dùng Claude |
+| `ADMIN_LOGIN` | `byocao` | Tên đăng nhập được quyền admin và dùng Claude |
 | `TRIAL_AI_LIMIT` | `15` | Số lượt AI cho tài khoản dùng thử |
 | `CONTACT_URL` | `https://github.com/byocao` | Link liên hệ khi hết lượt |
 | `WORKERS_AI_MODEL` | `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Model cho người không phải admin |

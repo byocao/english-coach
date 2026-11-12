@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
 import { AiError, runJson, transcribe, wordMatchRatio } from "./ai";
-import { authRoutes, requireAdmin, requireUser } from "./auth";
+import { authRoutes, requireAdmin, requireUser, sameString } from "./auth";
 import type { AppEnv, Env, Role, User } from "./env";
 import {
   EXPLAIN_SYSTEM,
@@ -38,7 +38,7 @@ app.route("/auth", authRoutes);
 
 app.get("/api/bridge/ws", async (c) => {
   const token = c.req.query("token") ?? "";
-  if (!c.env.BRIDGE_TOKEN || !(await safeEqual(token, c.env.BRIDGE_TOKEN))) return c.text("forbidden", 403);
+  if (!c.env.BRIDGE_TOKEN || !(await sameString(token, c.env.BRIDGE_TOKEN))) return c.text("forbidden", 403);
   const stub = c.env.BRIDGE.get(c.env.BRIDGE.idFromName("bridge"));
   return stub.fetch(c.req.raw);
 });
@@ -324,16 +324,6 @@ function cleanGrade(g: Grade, ratio: number): Grade {
     feedback_vi: String(g?.feedback_vi ?? ""),
     next_step_vi: String(g?.next_step_vi ?? ""),
   };
-}
-
-async function safeEqual(a: string, b: string): Promise<boolean> {
-  const enc = new TextEncoder();
-  const [ha, hb] = await Promise.all([
-    crypto.subtle.digest("SHA-256", enc.encode(a)),
-    crypto.subtle.digest("SHA-256", enc.encode(b)),
-  ]);
-  // Workers-only extension of SubtleCrypto.
-  return (crypto.subtle as SubtleCrypto & { timingSafeEqual(a: ArrayBuffer, b: ArrayBuffer): boolean }).timingSafeEqual(ha, hb);
 }
 
 export default app;

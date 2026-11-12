@@ -12,10 +12,8 @@ export interface Env {
   WORKERS_AI_MODEL: string;
 
   // Secrets (wrangler secret put / .dev.vars)
-  GITHUB_CLIENT_ID: string;
-  GITHUB_CLIENT_SECRET: string;
+  ADMIN_PASSWORD: string; // password for the ADMIN_LOGIN account (not stored in D1)
   BRIDGE_TOKEN: string;
-  DEV_LOGIN?: string; // "1" only in .dev.vars: enables /auth/dev for local testing
 }
 
 export type Role = "admin" | "member" | "trial" | "blocked";

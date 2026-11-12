@@ -104,6 +104,8 @@ export function wordMatchRatio(target: string, heard: string): number {
 
 export function normWords(s: string): string[] {
   return s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "") // café -> cafe
     .toLowerCase()
     .replace(/[’']/g, "'")
     .replace(/[^a-z0-9' ]+/g, " ")
