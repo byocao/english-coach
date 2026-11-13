@@ -974,6 +974,29 @@ code {
 .unit-count b {
   font-size: 1.5rem;
 }
+/* Levels below the learner's level fold away; the level card opens them again. */
+.unit.foldable .unit-head {
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.unit.foldable .unit-head:hover {
+  filter: brightness(1.05);
+}
+.unit.foldable .unit-head:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand) 60%, transparent);
+  outline-offset: 3px;
+}
+.unit-caret {
+  flex: none;
+  transition: transform 0.2s;
+}
+.unit.collapsed .unit-caret {
+  transform: rotate(-90deg);
+}
+.unit.collapsed .unit-head {
+  opacity: 0.85;
+  box-shadow: 0 3px 0 rgb(0 0 0 / 0.12);
+}
 .lvl-A1 {
   --u: linear-gradient(135deg, #3ccf8e, #12a46b);
 }
