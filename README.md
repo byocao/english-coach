@@ -25,8 +25,8 @@ classes. Speaking is graded by speech recognition plus an AI coach. Everything r
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/demo-exercise.gif" alt="Flipping vocabulary cards, then answering the quiz: a right answer, a wrong one with a hint and a retry" width="100%"></td>
-    <td width="50%">
+    <td width="340" align="center"><img src="docs/screenshots/demo-exercise.gif" alt="Flipping vocabulary cards, then answering the quiz: a right answer, a wrong one with a hint and a retry" width="320"></td>
+    <td>
       <b>Every lesson is a short passage, learnt through six steps:</b>
       <ol>
         <li><b>Từ vựng</b>: flashcards, matching, fill the gap, listen and pick</li>
