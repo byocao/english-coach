@@ -1,0 +1,79 @@
+name: CI/CD
+
+# CI: every pull request and every push to main is typechecked and built (including the landing-page prerender).
+# CD: a push to main that passes CI applies pending D1 migrations and deploys the Worker (wancha.byocao.com).
+#
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN  Cloudflare API token with "Workers Scripts: Edit", "D1: Edit" and, for the custom domain,
+#                         "Workers Routes: Edit" + "Zone: Read" on byocao.com.
+#   ASSETS_TOKEN          Fine-grained GitHub token with read-only "Contents" access to byocao/wancha-assets
+#                         (private: licensed Live2D models that may not be published).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Typecheck and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+        env:
+          EC_OFFLINE: "1" # no remote Cloudflare bindings during the build
+
+  deploy:
+    name: Deploy to Cloudflare
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://wancha.byocao.com
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out private assets (Tororo & Hijiki)
+        uses: actions/checkout@v4
+        with:
+          repository: byocao/wancha-assets
+          token: ${{ secrets.ASSETS_TOKEN }}
+          path: live2d-extra
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Apply D1 migrations
+        run: npx wrangler d1 migrations apply english-coach --remote
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Build and deploy
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          EC_OFFLINE: "1"
+      - name: Smoke test
+        run: |
+          curl -fsS https://wancha.byocao.com/ | grep -q "Wancha"
+          test "$(curl -s -o /dev/null -w '%{http_code}' https://wancha.byocao.com/api/me)" = "401"
