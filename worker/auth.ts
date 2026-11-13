@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { Context, Next } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
-import type { AppEnv, User } from "./env";
+import type { AppEnv, Env, User } from "./env";
 
 const SESSION_COOKIE = "ec_sid";
 const SESSION_DAYS = 30;
@@ -79,7 +79,7 @@ authRoutes.post("/register", async (c) => {
     return c.json({ error: "Tên đăng nhập 3–24 ký tự, chỉ gồm chữ thường, số và . _ -" }, 400);
   }
   if (password.length < 8 || password.length > 128) return c.json({ error: "Mật khẩu cần từ 8 đến 128 ký tự." }, 400);
-  if (username === c.env.ADMIN_LOGIN.toLowerCase()) return c.json({ error: "Tên đăng nhập này đã có người dùng." }, 409);
+  if (username === adminLogin(c.env)) return c.json({ error: "Tên đăng nhập này đã có người dùng." }, 409);
 
   const hash = await hashPassword(password);
   const row = await c.env.DB.prepare(
@@ -99,7 +99,7 @@ authRoutes.post("/login", async (c) => {
   const bad = () => c.json({ error: "Sai tên đăng nhập hoặc mật khẩu." }, 401);
   if (!username || !password || password.length > 128) return bad();
 
-  const isAdmin = username === c.env.ADMIN_LOGIN.toLowerCase();
+  const isAdmin = username === adminLogin(c.env);
   let user = await c.env.DB.prepare(
     `SELECT id, password_hash, failed_logins, locked_until > datetime('now') AS locked
        FROM users WHERE login = ?1`,
@@ -155,6 +155,11 @@ authRoutes.post("/logout", async (c) => {
   deleteCookie(c, SESSION_COOKIE, { path: "/" });
   return c.json({ ok: true });
 });
+
+/** The admin's username (a secret, so it is not in the public repo). Empty when unset: then nobody is admin. */
+function adminLogin(env: Env): string {
+  return (env.ADMIN_LOGIN ?? "").trim().toLowerCase();
+}
 
 /** Loads the signed-in user; 401 when there is none. */
 export async function requireUser(c: Context<AppEnv>, next: Next) {

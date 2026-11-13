@@ -3,7 +3,6 @@ export interface Env {
   DB: D1Database;
   ASSETS: Fetcher;
 
-  ADMIN_LOGIN: string;
   CONTACT_URL: string;
   WORKERS_AI_MODEL: string; // sentence explanations (free)
   LESSON_MODEL: string; // custom lessons
@@ -13,6 +12,7 @@ export interface Env {
   MONTHLY_BUDGET_USD: string; // Claude API spend per month before lesson creation and grading pause
 
   // Secrets (wrangler secret put / .dev.vars)
+  ADMIN_LOGIN?: string; // username of the admin account; unset = no admin
   ADMIN_PASSWORD: string; // password for the ADMIN_LOGIN account (not stored in D1)
   ANTHROPIC_API_KEY: string;
 }
