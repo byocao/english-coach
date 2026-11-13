@@ -89,6 +89,8 @@ learn.get("/me", async (c) => {
 });
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1"];
+/** Lessons per page in the library. */
+const LIBRARY_PAGE = 24;
 const MASCOTS = ["wanko", "tororo", "hijiki", "fox"];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -165,18 +167,41 @@ learn.get("/lessons", async (c) => {
     return c.json({ lessons: results });
   }
 
-  const { results } = await c.env.DB.prepare(
-    `SELECT ${LESSON_COLUMNS} FROM lessons l JOIN users u ON u.id = l.user_id
-      WHERE ${visible}
+  const where = `WHERE ${visible}
         AND (?2 = '' OR l.level = ?2)
         AND (?3 = '' OR l.title LIKE '%' || ?3 || '%' OR l.topic LIKE '%' || ?3 || '%')
         AND (?4 = '' OR (?4 = 'community' AND l.course_order IS NULL) OR (?4 = 'mine' AND l.user_id = ?1)
-             OR (?4 = 'class' AND ${IN_MY_CLASS}) OR l.category = ?4)
-      ORDER BY (l.course_order IS NULL), l.course_order, learners DESC, l.created_at DESC LIMIT 200`,
-  )
-    .bind(user.id, level, q, cat)
-    .all();
-  return c.json({ lessons: results });
+             OR (?4 = 'class' AND ${IN_MY_CLASS}) OR l.category = ?4)`;
+  const order = "ORDER BY (l.course_order IS NULL), l.course_order, learners DESC, l.created_at DESC, l.id";
+
+  // With ?page=N (from 1): one page of LIBRARY_PAGE lessons and the total. Without it: up to 200 (lesson picker).
+  const pageParam = c.req.query("page");
+  if (pageParam === undefined) {
+    const { results } = await c.env.DB.prepare(`SELECT ${LESSON_COLUMNS} FROM lessons l JOIN users u ON u.id = l.user_id ${where} ${order} LIMIT 200`)
+      .bind(user.id, level, q, cat)
+      .all();
+    return c.json({ lessons: results });
+  }
+  const pageOf = (page: number) =>
+    c.env.DB.prepare(`SELECT ${LESSON_COLUMNS} FROM lessons l JOIN users u ON u.id = l.user_id ${where} ${order} LIMIT ?5 OFFSET ?6`).bind(
+      user.id,
+      level,
+      q,
+      cat,
+      LIBRARY_PAGE,
+      (page - 1) * LIBRARY_PAGE,
+    );
+  let page = Math.max(1, Math.trunc(Number(pageParam)) || 1);
+  const [count, rows] = await c.env.DB.batch([c.env.DB.prepare(`SELECT COUNT(*) AS n FROM lessons l ${where}`).bind(user.id, level, q, cat), pageOf(page)]);
+  const total = (count.results[0] as { n: number }).n;
+  const pages = Math.max(1, Math.ceil(total / LIBRARY_PAGE));
+  let lessons = rows.results;
+  if (page > pages) {
+    // Past the end (the list shrank since the page was picked): show the last page.
+    page = pages;
+    lessons = (await pageOf(page).all()).results;
+  }
+  return c.json({ lessons, total, page, pages, size: LIBRARY_PAGE });
 });
 
 /** The built-in course, in order: levels A1 to C1, each a run of lessons. */

@@ -41,7 +41,7 @@ import { Placement } from "./Placement";
 import { CATEGORIES, Fx, LEVELS, LEVEL_LABEL, STEPS, category, parseProgress, quests } from "./meta";
 import { setSoundOn, soundOn } from "./sound";
 import { getTheme, setTheme, type Theme } from "./theme";
-import { LessonCard, Loading, Meter, stepsDone } from "./ui";
+import { LessonCard, Loading, Meter, Pager, stepsDone } from "./ui";
 import { ISSUES_URL, SUPPORT_EMAIL, deviceInfo, issueUrl, lessonErrorUrl, mailtoUrl } from "./support";
 
 type Route =
@@ -960,20 +960,66 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
 
 // ---- Library -----------------------------------------------------------------------------
 
+/** The library's filters and page, kept for the browser session so coming back from a lesson lands on the same page. */
+interface LibraryView {
+  level: string;
+  cat: string;
+  q: string;
+  page: number;
+}
+const LIBRARY_VIEW = "wancha_library_view";
+
+function readLibraryView(): LibraryView {
+  const fresh = { level: "", cat: "", q: "", page: 1 };
+  try {
+    return { ...fresh, ...JSON.parse(sessionStorage.getItem(LIBRARY_VIEW) ?? "{}") };
+  } catch {
+    return fresh;
+  }
+}
+
+interface LibraryPage {
+  lessons: LessonRow[];
+  total: number;
+  page: number;
+  pages: number;
+}
+
 function Library({ me, onQuota, classId }: { me: Me; onQuota: () => void; classId?: number }) {
-  const [lessons, setLessons] = useState<LessonRow[] | null>(null);
-  const [level, setLevel] = useState("");
-  const [cat, setCat] = useState("");
-  const [q, setQ] = useState("");
+  const [view, setView] = useState<LibraryView>(readLibraryView);
+  const { level, cat, q, page } = view;
+  const [data, setData] = useState<LibraryPage | null>(null);
+  const [busy, setBusy] = useState(false);
+  const listTop = useRef<HTMLDivElement>(null);
+  // A new search, topic or level starts again from page 1.
+  const filter = (patch: Partial<LibraryView>) => setView((v) => ({ ...v, ...patch, page: 1 }));
+  const goPage = (p: number) => {
+    setView((v) => ({ ...v, page: p }));
+    listTop.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   useEffect(() => {
+    try {
+      sessionStorage.setItem(LIBRARY_VIEW, JSON.stringify(view));
+    } catch {
+      /* storage blocked: the view just isn't kept */
+    }
+  }, [view]);
+
+  useEffect(() => {
+    setBusy(true);
     const t = setTimeout(() => {
-      api<{ lessons: LessonRow[] }>(`/api/lessons?scope=library&level=${level}&cat=${cat}&q=${encodeURIComponent(q)}`).then((r) =>
-        setLessons(r.lessons),
-      );
+      api<LibraryPage>(`/api/lessons?scope=library&level=${level}&cat=${cat}&q=${encodeURIComponent(q)}&page=${page}`)
+        .then((r) => {
+          setData(r);
+          // The server clamps a page past the end (the list got shorter).
+          if (r.page !== page) setView((v) => ({ ...v, page: r.page }));
+        })
+        .finally(() => setBusy(false));
     }, 200);
     return () => clearTimeout(t);
-  }, [level, q, cat]);
+  }, [level, q, cat, page]);
+  const lessons = data?.lessons;
 
   return (
     <div className="stack-lg">
@@ -993,21 +1039,21 @@ function Library({ me, onQuota, classId }: { me: Me; onQuota: () => void; classI
           ...CATEGORIES,
           { key: "community", label: "Cộng đồng", fx: "sparkles" as const },
         ].map((c) => (
-          <button key={c.key || "all"} className={cat === c.key ? "cat-tile on" : "cat-tile"} onClick={() => setCat(c.key)} role="tab" aria-selected={cat === c.key}>
+          <button key={c.key || "all"} className={cat === c.key ? "cat-tile on" : "cat-tile"} onClick={() => filter({ cat: c.key })} role="tab" aria-selected={cat === c.key}>
             <Fx name={c.fx} size={44} tile />
             <span>{c.label}</span>
           </button>
         ))}
       </div>
 
-      <div className="filters">
+      <div className="filters" ref={listTop}>
         <label className="search">
           <MagnifyingGlass size={20} />
-          <input placeholder="Tìm theo tên hoặc chủ đề…" value={q} onChange={(e) => setQ(e.target.value)} />
+          <input placeholder="Tìm theo tên hoặc chủ đề…" value={q} onChange={(e) => filter({ q: e.target.value })} />
         </label>
         <div className="seg" role="group" aria-label="Trình độ">
           {["", "A1", "A2", "B1", "B2", "C1"].map((lv) => (
-            <button key={lv || "all"} className={level === lv ? "on" : ""} onClick={() => setLevel(lv)}>
+            <button key={lv || "all"} className={level === lv ? "on" : ""} onClick={() => filter({ level: lv })}>
               {lv || "Mọi cấp"}
             </button>
           ))}
@@ -1028,11 +1074,14 @@ function Library({ me, onQuota, classId }: { me: Me; onQuota: () => void; classI
           </p>
         </div>
       ) : (
-        <div className="lib-grid">
-          {lessons.map((l) => (
-            <LessonCard key={l.id} l={l} />
-          ))}
-        </div>
+        <>
+          <div className={busy ? "lib-grid is-busy" : "lib-grid"} aria-busy={busy}>
+            {lessons.map((l) => (
+              <LessonCard key={l.id} l={l} />
+            ))}
+          </div>
+          {data && <Pager page={data.page} pages={data.pages} total={data.total} onPage={goPage} />}
+        </>
       )}
     </div>
   );
