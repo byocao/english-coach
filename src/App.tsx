@@ -544,7 +544,7 @@ function Onboard() {
         <p>Làm bài kiểm tra ngắn (tối đa 12 câu, khoảng 3 phút) để bắt đầu đúng cấp A1–C1, khỏi học lại bài quá dễ.</p>
         <div className="row gap wrap">
           <a className="btn primary" href="#/placement">
-            LÀM BÀI XẾP LỚP <ArrowRight size={18} weight="bold" />
+            Làm bài xếp lớp <ArrowRight size={18} weight="bold" />
           </a>
           <button className="btn ghost" onClick={beginner} disabled={busy}>
             Mình mới bắt đầu
@@ -642,7 +642,7 @@ function PathNode({
             ))}
           </div>
           <a className="btn primary full" href={`#/lesson/${lesson.id}/${step.key}`}>
-            {complete ? "ÔN LẠI" : done ? `TIẾP: ${step.label.toUpperCase()}` : "BẮT ĐẦU"}
+            {complete ? "Ôn lại" : done ? `Tiếp: ${step.label}` : "Bắt đầu"}
           </a>
           <a className="pop-link" href={`#/lesson/${lesson.id}`}>
             Xem chi tiết bài <ArrowRight size={14} />

@@ -1996,59 +1996,121 @@ code {
 }
 
 .ex-foot {
-  border-top: 2px solid var(--line);
-  background: var(--surface);
   position: sticky;
   bottom: 0;
-}
-.ex-foot.correct {
-  background: var(--good-soft);
-  border-color: transparent;
-}
-.ex-foot.wrong {
-  background: var(--bad-soft);
-  border-color: transparent;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(12px);
 }
 .ex-foot-inner {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 1.1rem 1.2rem calc(1.1rem + env(safe-area-inset-bottom, 0px));
+  padding: 1rem 1.2rem calc(1rem + env(safe-area-inset-bottom, 0px));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
 }
-.verdict {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  flex: 1;
+/* Feedback card: neutral surface, the colour lives on the left edge and the icon tile.
+   Correct = green, wrong (retry) = warm amber, answer shown = sky. */
+.ex-foot.correct {
+  --fb: var(--good);
+}
+.ex-foot.wrong {
+  --fb: var(--gold);
+}
+.ex-foot.reveal {
+  --fb: var(--sky);
+}
+.feedback-card {
+  flex: 1 1 320px;
   min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--fb);
+  box-shadow: var(--shadow);
+  animation: fb-in 0.28s cubic-bezier(0.2, 1.2, 0.4, 1);
 }
-.verdict b {
-  font-family: var(--display);
-  font-size: 1.4rem;
-}
-.correct .verdict {
-  color: var(--good-deep);
-}
-.wrong .verdict {
-  color: var(--bad-deep);
-}
-.verdict-icon {
+.feedback-icon {
   display: grid;
   place-items: center;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: var(--surface);
   flex: none;
-  animation: pop 0.3s cubic-bezier(0.3, 1.8, 0.5, 1);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: var(--fb);
+  background: color-mix(in srgb, var(--fb) 15%, transparent);
 }
-.verdict-detail {
+.feedback-text {
+  min-width: 0;
+}
+.feedback-text b {
+  display: block;
+  font-family: var(--display);
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.feedback-detail {
+  margin-top: 0.15rem;
   font-size: 0.92rem;
   color: var(--ink-2);
+}
+.feedback-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.feedback-actions .btn {
+  white-space: nowrap;
+}
+.btn.warm {
+  --b: linear-gradient(135deg, #ffd25e, #ffb020);
+  --b-edge: var(--gold-deep);
+  --b-ink: #3d2600;
+}
+@keyframes fb-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+.review-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, var(--line));
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+  font-weight: 700;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .ex-foot-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+    padding: 0.8rem 0.9rem calc(0.8rem + env(safe-area-inset-bottom, 0px));
+  }
+  .feedback-card {
+    flex: none;
+    padding: 0.65rem 0.8rem;
+  }
+  .feedback-text b {
+    font-size: 1.08rem;
+  }
+  .feedback-actions .btn {
+    flex: 1;
+  }
 }
 
 /* vocabulary: flashcards */
@@ -3051,13 +3113,6 @@ code {
   }
   .gap-sentence {
     font-size: 1.15rem;
-  }
-  .verdict b {
-    font-size: 1.2rem;
-  }
-  .verdict-icon {
-    width: 46px;
-    height: 46px;
   }
   .login-page {
     grid-template-columns: minmax(0, 1fr);

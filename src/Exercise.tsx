@@ -20,7 +20,7 @@ import { Mascot, useCompanion, type Mood } from "./Mascot";
 import { Fx, STEPS } from "./meta";
 import { sfx } from "./sound";
 
-type Check = "idle" | "correct" | "wrong";
+type Check = "idle" | "correct" | "wrong" | "reveal";
 
 /** Vietnamese translation of sentence `i`, when the lesson has one. */
 const viOf = (c: LessonContent, i: number) => c.sentences_vi?.[i]?.trim() || "";
@@ -111,12 +111,14 @@ function ExShell({
   back,
   progress,
   combo = 0,
+  review = null,
   children,
   footer,
 }: {
   back: string;
   progress: number;
   combo?: number;
+  review?: { left: number } | null;
   children: React.ReactNode;
   footer?: React.ReactNode;
 }) {
@@ -129,6 +131,11 @@ function ExShell({
         <div className="ex-progress grow">
           <span style={{ width: `${Math.max(3, Math.round(progress * 100))}%` }} />
         </div>
+        {review && (
+          <span className="review-pill" title="Ôn lại những câu chưa đúng">
+            <ArrowCounterClockwise size={16} weight="bold" /> Ôn lại · còn {review.left}
+          </span>
+        )}
         {combo >= 2 && (
           <span className="combo" key={combo}>
             <Fx name="fire" size={22} /> {combo}
@@ -141,60 +148,100 @@ function ExShell({
   );
 }
 
+const NUDGE = ["Gần đúng rồi!", "Suýt nữa thôi!", "Chưa chuẩn lắm", "Thử lại nhé!"];
+
+/**
+ * The feedback card under an exercise. Correct: praise and "Tiếp tục". Wrong: a nudge with a hint,
+ * "Thử lại" (fix your answer) or "Xem đáp án"; the answer stays hidden until then. Reveal: the answer
+ * and "Tiếp tục". Enter triggers the main button.
+ */
 function Footer({
   state,
   canCheck,
   onCheck,
   onNext,
+  onRetry,
+  onReveal,
   detail,
-  checkLabel = "KIỂM TRA",
+  hint,
+  checkLabel = "Kiểm tra",
   extra,
+  retried = false,
 }: {
   state: Check;
   canCheck: boolean;
   onCheck: () => void;
   onNext: () => void;
+  onRetry?: () => void;
+  onReveal?: () => void;
+  /** Shown once the answer is known (correct or revealed). */
   detail?: React.ReactNode;
+  /** Shown on a wrong answer, before the answer is revealed. */
+  hint?: React.ReactNode;
   checkLabel?: string;
   extra?: React.ReactNode;
+  retried?: boolean;
 }) {
   const [praise, setPraise] = useState(() => pick(PRAISE));
+  const [nudge, setNudge] = useState(() => pick(NUDGE));
+  const main = state === "wrong" ? onRetry ?? onNext : onNext;
   useEffect(() => {
     if (state === "idle") {
       setPraise(pick(PRAISE));
+      setNudge(pick(NUDGE));
       return;
     }
-    const onKey = (e: KeyboardEvent) => e.key === "Enter" && onNext();
+    const onKey = (e: KeyboardEvent) => e.key === "Enter" && main();
     const t = setTimeout(() => addEventListener("keydown", onKey), 150);
     return () => {
       clearTimeout(t);
       removeEventListener("keydown", onKey);
     };
-  }, [state, onNext]);
+  }, [state, main]);
+
+  if (state === "idle") {
+    return (
+      <footer className="ex-foot idle">
+        <div className="ex-foot-inner">
+          {extra ?? <span />}
+          <button className="btn primary wide" disabled={!canCheck} onClick={onCheck}>
+            {checkLabel}
+          </button>
+        </div>
+      </footer>
+    );
+  }
+
+  const title = state === "correct" ? (retried ? "Sửa đúng rồi!" : praise) : state === "wrong" ? nudge : "Đáp án đây";
+  const Icon = state === "correct" ? Check : state === "wrong" ? ArrowCounterClockwise : Lightbulb;
   return (
     <footer className={`ex-foot ${state}`}>
       <div className="ex-foot-inner">
-        {state === "idle" ? (
-          <>
-            {extra ?? <span />}
-            <button className="btn primary wide" disabled={!canCheck} onClick={onCheck}>
-              {checkLabel}
+        <div className="feedback-card" role="status">
+          <span className="feedback-icon">
+            <Icon size={24} weight="bold" />
+          </span>
+          <div className="feedback-text">
+            <b>{title}</b>
+            {state === "wrong" ? hint && <div className="feedback-detail">{hint}</div> : detail && <div className="feedback-detail">{detail}</div>}
+          </div>
+        </div>
+        <div className="feedback-actions">
+          {state === "wrong" && onReveal && (
+            <button className="btn ghost" onClick={onReveal}>
+              Xem đáp án
             </button>
-          </>
-        ) : (
-          <>
-            <div className="verdict">
-              <span className="verdict-icon">{state === "correct" ? <Check size={30} weight="bold" /> : <X size={30} weight="bold" />}</span>
-              <div>
-                <b>{state === "correct" ? praise : "Chưa đúng rồi"}</b>
-                {detail && <div className="verdict-detail">{detail}</div>}
-              </div>
-            </div>
-            <button className={`btn wide ${state === "correct" ? "good" : "danger"}`} onClick={onNext} autoFocus>
-              TIẾP TỤC
-            </button>
-          </>
-        )}
+          )}
+          <button className={`btn wide ${state === "wrong" ? "warm" : "primary"}`} onClick={main} autoFocus>
+            {state === "wrong" && onRetry ? (
+              <>
+                <ArrowCounterClockwise size={18} weight="bold" /> Thử lại
+              </>
+            ) : (
+              "Tiếp tục"
+            )}
+          </button>
+        </div>
       </div>
     </footer>
   );
@@ -236,41 +283,84 @@ function PlayButtons({ text, auto = true, size = "big" }: { text: string; auto?:
   );
 }
 
-/** Runs `total` items one by one with check / continue; reports the average score at the end. */
+/** How many extra times a missed item comes back in the review round at the end. */
+const MAX_REVIEWS = 2;
+
+/**
+ * Runs `total` items with check / continue. A wrong answer can be retried (the answer stays hidden),
+ * then revealed; every item that was missed comes back in a review round at the end, until it is
+ * answered right or has come back MAX_REVIEWS times. The score is the first appearance only: right
+ * first time = full, right on a retry = 60 %, revealed = what the first try got.
+ */
 function useRunner(total: number, onFinish: (score: number) => void) {
-  const [i, setI] = useState(0);
+  const [queue, setQueue] = useState(() => Array.from({ length: total }, (_, k) => k));
+  const [pos, setPos] = useState(0);
   const [state, setState] = useState<Check>("idle");
+  const [attempt, setAttempt] = useState(0);
   const [combo, setCombo] = useState(0);
-  const scores = useRef<number[]>([]);
+  const scores = useRef<(number | undefined)[]>([]);
+  const reviews = useRef<number[]>([]);
+  const i = queue[pos] ?? 0;
+  const inReview = pos >= total;
+
   const mark = useCallback(
     (score: number, ok: boolean) => {
-      scores.current[i] = score;
-      setState(ok ? "correct" : "wrong");
-      setCombo((c) => (ok ? c + 1 : 0));
+      if (!inReview) {
+        const s = scores.current;
+        if (attempt === 0) s[i] = score;
+        else if (ok) s[i] = Math.max(s[i] ?? 0, Math.round(score * 0.6));
+      }
+      setState(ok ? "correct" : attempt >= 1 ? "reveal" : "wrong");
+      setAttempt((a) => a + 1);
+      setCombo((c) => (ok && attempt === 0 ? c + 1 : 0));
       if (ok) sfx.correct();
       else sfx.wrong();
     },
-    [i],
+    [i, attempt, inReview],
   );
+  const retry = useCallback(() => setState("idle"), []);
+  const reveal = useCallback(() => setState("reveal"), []);
   const next = useCallback(() => {
-    if (i + 1 >= total) {
-      const avg = scores.current.reduce((a, b) => a + (b ?? 0), 0) / Math.max(1, total);
+    let q = queue;
+    const missed = attempt > 1 || state === "reveal";
+    if (missed && (reviews.current[i] ?? 0) < MAX_REVIEWS) {
+      reviews.current[i] = (reviews.current[i] ?? 0) + 1;
+      q = [...queue, i];
+      setQueue(q);
+    }
+    if (pos + 1 >= q.length) {
+      const avg = scores.current.slice(0, total).reduce<number>((a, b) => a + (b ?? 0), 0) / Math.max(1, total);
       onFinish(Math.round(avg));
       return;
     }
-    setI(i + 1);
+    setPos(pos + 1);
     setState("idle");
-  }, [i, total, onFinish]);
+    setAttempt(0);
+  }, [queue, pos, i, attempt, state, total, onFinish]);
   /** For items that are not graded (flashcards): count as full marks and move on. */
   const pass = useCallback(() => {
     scores.current[i] = 100;
     next();
   }, [i, next]);
-  return { i, state, mark, next, pass, combo, progress: (i + (state === "idle" ? 0 : 1)) / total };
+  return {
+    i,
+    /** Changes for every appearance of an item, so a reviewed item starts fresh. */
+    key: pos,
+    state,
+    mark,
+    retry,
+    reveal,
+    next,
+    pass,
+    combo,
+    retried: attempt > 1,
+    review: inReview ? { left: queue.length - pos } : null,
+    progress: (pos + (state === "idle" || state === "wrong" ? 0 : 1)) / queue.length,
+  };
 }
 
 function moodFor(state: Check): Mood {
-  return state === "correct" ? "happy" : state === "wrong" ? "oops" : "idle";
+  return state === "correct" ? "happy" : state === "wrong" ? "think" : state === "reveal" ? "oops" : "idle";
 }
 
 // ---- Words: flashcards, match pairs, fill the gap, listen & pick -----------------------------
@@ -319,9 +409,9 @@ function WordsRun({ c, back, onFinish }: RunProps) {
         <p className="muted center">Bài này chưa có từ vựng.</p>
       </ExShell>
     );
-  if (item.kind === "cards") return <CardsItem key={run.i} vocab={item.vocab} back={back} run={run} total={items.length} />;
-  if (item.kind === "match") return <MatchItem key={run.i} vocab={item.vocab} back={back} run={run} />;
-  return <ChoiceItem key={run.i} item={item} back={back} run={run} />;
+  if (item.kind === "cards") return <CardsItem key={run.key} vocab={item.vocab} back={back} run={run} total={items.length} />;
+  if (item.kind === "match") return <MatchItem key={run.key} vocab={item.vocab} back={back} run={run} />;
+  return <ChoiceItem key={run.key} item={item} back={back} run={run} />;
 }
 
 type Run = ReturnType<typeof useRunner>;
@@ -349,7 +439,7 @@ function CardsItem({ vocab, back, run, total }: { vocab: Vocab[]; back: string; 
               Đã lật {flipped.size}/{vocab.length} thẻ
             </span>
             <button className="btn primary wide" onClick={run.pass}>
-              {flipped.size >= vocab.length ? "ĐÃ NHỚ HẾT" : "TIẾP TỤC"}
+              {flipped.size >= vocab.length ? "Đã nhớ hết" : "Tiếp tục"}
             </button>
           </div>
         </footer>
@@ -431,7 +521,7 @@ function MatchItem({ vocab, back, run }: { vocab: Vocab[]; back: string; run: Ru
           canCheck={false}
           onCheck={() => {}}
           onNext={run.next}
-          checkLabel={`${matched.size}/${vocab.length} CẶP`}
+          checkLabel={`${matched.size}/${vocab.length} cặp`}
           detail={mistakes.current ? `Sai ${mistakes.current} lần` : "Không sai lần nào!"}
         />
       }
@@ -487,15 +577,23 @@ function ChoiceItem({ item, back, run }: { item: Extract<WordItem, { kind: "gap"
       back={back}
       progress={run.progress}
       combo={run.combo}
+      review={run.review}
       footer={
         <Footer
           state={run.state}
           canCheck={sel !== null}
           onCheck={check}
           onNext={run.next}
+          onRetry={() => {
+            setSel(null);
+            run.retry();
+          }}
+          onReveal={run.reveal}
+          retried={run.retried}
+          hint={item.kind === "gap" ? "Đọc lại cả câu rồi chọn từ khác xem." : "Bấm loa nghe lại rồi chọn từ khác xem."}
           detail={
             <>
-              {run.state === "wrong" && <div>Đáp án: {answer}</div>}
+              {run.state === "reveal" && <div>Đáp án: {answer}</div>}
               <span>
                 <b>{item.v.word}</b> {item.v.ipa}: {item.v.meaning_vi}
               </span>
@@ -515,7 +613,7 @@ function ChoiceItem({ item, back, run }: { item: Extract<WordItem, { kind: "gap"
           <Prompt title="Điền từ còn thiếu" mood={moodFor(run.state)} />
           <p className="gap-sentence">
             {item.before}
-            <span className={`blank ${sel ? "filled" : ""} ${run.state}`}>{sel ?? " ".repeat(8)}</span>
+            <span className={`blank ${sel ? "filled" : ""} ${run.state}`}>{run.state === "reveal" ? answer : sel ?? " ".repeat(8)}</span>
             {item.after}
           </p>
         </>
@@ -526,13 +624,13 @@ function ChoiceItem({ item, back, run }: { item: Extract<WordItem, { kind: "gap"
       )}
       <div className="options grid2">
         {item.options.map((o) => {
-          const reveal = run.state !== "idle";
-          const cls = reveal && o === answer ? "right" : reveal && sel === o ? "wrong" : sel === o ? "sel" : "";
+          const known = run.state === "correct" || run.state === "reveal";
+          const cls = known && o === answer ? "right" : run.state !== "idle" && sel === o ? "wrong" : sel === o ? "sel" : "";
           return (
             <button
               key={o}
               className={`option ${cls}`}
-              disabled={reveal}
+              disabled={run.state !== "idle"}
               onClick={() => {
                 sfx.tap();
                 setSel(o);
@@ -561,7 +659,8 @@ function tileWords(s: string): string[] {
 }
 
 function WordBankRun({ c, back, onFinish }: RunProps) {
-  const { i, state, mark, next, progress, combo } = useRunner(c.sentences.length, onFinish);
+  const run = useRunner(c.sentences.length, onFinish);
+  const { i, state, mark, next, progress, combo } = run;
   const sentence = c.sentences[i];
   const target = useMemo(() => tileWords(sentence), [sentence]);
   const bank = useMemo<Tile[]>(() => {
@@ -570,10 +669,10 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
     const extras = [...new Set(pool.map((w) => w.toLowerCase()))].slice(0, Math.min(3, Math.max(2, Math.floor(target.length / 4))));
     return shuffle([...target, ...extras]).map((text, id) => ({ id, text }));
   }, [target, c.sentences]);
-  // Picks belong to one sentence; a new sentence starts empty (stale ids would point past a shorter bank).
-  const [picked, setPicked] = useState<{ i: number; ids: number[] }>({ i: 0, ids: [] });
-  const answer = picked.i === i ? picked.ids.filter((id) => bank[id]) : [];
-  const setAnswer = (ids: number[]) => setPicked({ i, ids });
+  // Picks belong to one appearance of a sentence; the next one (or its review) starts empty.
+  const [picked, setPicked] = useState<{ key: number; ids: number[] }>({ key: 0, ids: [] });
+  const answer = picked.key === run.key ? picked.ids.filter((id) => bank[id]) : [];
+  const setAnswer = (ids: number[]) => setPicked({ key: run.key, ids });
 
   const check = () => {
     const got = answer.map((id) => norm(bank[id].text)).join(" ");
@@ -587,21 +686,32 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
       back={back}
       progress={progress}
       combo={combo}
+      review={run.review}
       footer={
         <Footer
           state={state}
           canCheck={answer.length > 0}
           onCheck={check}
           onNext={next}
+          onRetry={run.retry}
+          onReveal={run.reveal}
+          retried={run.retried}
+          hint="Thứ tự chưa đúng. Bấm vào từ ở trên để bỏ ra rồi xếp lại."
           detail={
             <>
-              {state === "wrong" && <div>Đáp án: {sentence}</div>}
+              {state === "reveal" && <div>Đáp án: {sentence}</div>}
               {viOf(c, i) && <span className="vi">{viOf(c, i)}</span>}
             </>
           }
           extra={
-            <button className="btn ghost" onClick={() => mark(0, false)}>
-              BỎ QUA
+            <button
+              className="btn ghost"
+              onClick={() => {
+                mark(0, false);
+                run.reveal();
+              }}
+            >
+              Bỏ qua
             </button>
           }
         />
@@ -651,14 +761,15 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
 // ---- Dictation ---------------------------------------------------------------------------------
 
 function DictationRun({ c, back, onFinish }: RunProps) {
-  const { i, state, mark, next, progress, combo } = useRunner(c.sentences.length, onFinish);
+  const run = useRunner(c.sentences.length, onFinish);
+  const { i, state, mark, next, progress, combo } = run;
   const sentence = c.sentences[i];
   const [text, setText] = useState("");
   const [diff, setDiff] = useState<{ word: string; ok: boolean }[] | null>(null);
   useEffect(() => {
     setText("");
     setDiff(null);
-  }, [i]);
+  }, [run.key]);
 
   const check = () => {
     const d = alignWords(sentence, text);
@@ -672,12 +783,17 @@ function DictationRun({ c, back, onFinish }: RunProps) {
       back={back}
       progress={progress}
       combo={combo}
+      review={run.review}
       footer={
         <Footer
           state={state}
           canCheck={text.trim().length > 0}
           onCheck={check}
           onNext={next}
+          onRetry={run.retry}
+          onReveal={run.reveal}
+          retried={run.retried}
+          hint={diff && `Đúng ${diff.filter((w) => w.ok).length}/${diff.length} từ. Nghe lại rồi sửa câu của bạn nhé.`}
           detail={
             diff && (
               <>
@@ -693,8 +809,15 @@ function DictationRun({ c, back, onFinish }: RunProps) {
             )
           }
           extra={
-            <button className="btn ghost" onClick={() => mark(0, false)}>
-              BỎ QUA
+            <button
+              className="btn ghost"
+              onClick={() => {
+                setDiff(alignWords(sentence, text));
+                mark(0, false);
+                run.reveal();
+              }}
+            >
+              Bỏ qua
             </button>
           }
         />
@@ -727,10 +850,11 @@ function DictationRun({ c, back, onFinish }: RunProps) {
 
 function QuizRun({ c, back, onFinish }: RunProps) {
   const total = Math.max(1, c.questions.length);
-  const { i, state, mark, next, progress, combo } = useRunner(total, onFinish);
+  const run = useRunner(total, onFinish);
+  const { i, state, mark, next, progress, combo } = run;
   const q = c.questions[i];
   const [sel, setSel] = useState<number | null>(null);
-  useEffect(() => setSel(null), [i]);
+  useEffect(() => setSel(null), [run.key]);
   if (!q)
     return (
       <ExShell back={back} progress={1}>
@@ -743,15 +867,23 @@ function QuizRun({ c, back, onFinish }: RunProps) {
       back={back}
       progress={progress}
       combo={combo}
+      review={run.review}
       footer={
         <Footer
           state={state}
           canCheck={sel !== null}
           onCheck={() => mark(sel === q.answer_index ? 100 : 0, sel === q.answer_index)}
           onNext={next}
+          onRetry={() => {
+            setSel(null);
+            run.retry();
+          }}
+          onReveal={run.reveal}
+          retried={run.retried}
+          hint="Đọc lại câu hỏi và bài đọc rồi chọn lại xem."
           detail={
             <>
-              {state === "wrong" && <div>Đáp án: {q.options[q.answer_index]}</div>}
+              {state === "reveal" && <div>Đáp án: {q.options[q.answer_index]}</div>}
               {q.explanation_vi}
             </>
           }
@@ -761,13 +893,13 @@ function QuizRun({ c, back, onFinish }: RunProps) {
       <Prompt title="Chọn đáp án đúng" mood={moodFor(state)} say={q.question} />
       <div className="options">
         {q.options.map((o, k) => {
-          const reveal = state !== "idle";
-          const cls = reveal && k === q.answer_index ? "right" : reveal && sel === k ? "wrong" : sel === k ? "sel" : "";
+          const known = state === "correct" || state === "reveal";
+          const cls = known && k === q.answer_index ? "right" : state !== "idle" && sel === k ? "wrong" : sel === k ? "sel" : "";
           return (
             <button
               key={k}
               className={`option ${cls}`}
-              disabled={reveal}
+              disabled={state !== "idle"}
               onClick={() => {
                 sfx.tap();
                 setSel(k);
@@ -874,16 +1006,16 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
           <div className="ex-foot-inner">
             {result ? (
               <button className="btn ghost" onClick={start} disabled={phase !== "idle"}>
-                <ArrowCounterClockwise size={18} weight="bold" /> THỬ LẠI
+                <ArrowCounterClockwise size={18} weight="bold" /> Thử lại
               </button>
             ) : (
               <button className="btn ghost" onClick={next} disabled={phase !== "idle"}>
-                BỎ QUA
+                Bỏ qua
               </button>
             )}
             {result ? (
               <button className="btn primary wide" onClick={next}>
-                TIẾP TỤC
+                Tiếp tục
               </button>
             ) : (
               <span className="muted small">
@@ -1018,7 +1150,7 @@ function ReadRun({ c, back, onFinish }: RunProps) {
     <ExShell
       back={back}
       progress={0.5}
-      footer={<Footer state="idle" canCheck onCheck={() => onFinish(100)} onNext={() => {}} checkLabel="ĐÃ ĐỌC XONG" />}
+      footer={<Footer state="idle" canCheck onCheck={() => onFinish(100)} onNext={() => {}} checkLabel="Đã đọc xong" />}
     >
       <Prompt title={c.title} mood="idle" say="Bấm vào từ để tra nghĩa, bấm ? cuối câu để xem nghĩa cả câu." />
       <div className="read-tools">
@@ -1195,7 +1327,7 @@ function Complete({ lessonId, stepKey, score, res }: { lessonId: number; stepKey
           </a>
         )}
         <a className={`btn wide ${nextStep ? "ghost" : "primary"}`} href={nextStep ? `#/lesson/${lessonId}` : "#/"}>
-          {nextStep ? "VỀ BÀI HỌC" : "VỀ LỘ TRÌNH"}
+          {nextStep ? "Về bài học" : "Về lộ trình"}
         </a>
       </div>
     </div>
