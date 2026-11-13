@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /auth/
 
-Sitemap: https://english-coach.byocao.workers.dev/sitemap.xml
+Sitemap: https://wancha.byocao.com/sitemap.xml

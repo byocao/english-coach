@@ -4,6 +4,8 @@
   "account_id": "f330997b66e28a6012d7e1f5a2d5485e",
   "main": "worker/index.ts",
   "workers_dev": true,
+  // Production address. byocao.com is a zone in this Cloudflare account; Cloudflare creates the DNS record and certificate.
+  "routes": [{ "pattern": "wancha.byocao.com", "custom_domain": true }],
   "preview_urls": false,
   "compatibility_date": "2026-10-15",
   "assets": {
