@@ -1,24 +1,25 @@
-/* English Coach — "anime study app" look: violet→pink gradients, chunky 3D buttons,
-   coloured Phosphor icons, soft glass cards. Light palette on :root, dark redefines tokens only. */
+/* Wancha — matcha-latte look: matcha greens with a latte-cream accent, chunky 3D buttons,
+   coloured Phosphor icons, soft cards. Light palette on :root, dark redefines tokens only. */
 
 :root {
-  --bg: #f4f1ff;
-  --bg-glow-1: #e2d9ff;
-  --bg-glow-2: #ffe1f3;
+  --bg: #f2f7ec;
+  --bg-glow-1: #d9eccb;
+  --bg-glow-2: #f5ecd7;
   --surface: #ffffff;
-  --surface-2: #f8f6ff;
-  --ink: #1f1a3d;
-  --ink-2: #3d3766;
-  --muted: #6e6a92;
-  --line: #e6e1fa;
-  --line-strong: #d4ccf5;
+  --surface-2: #f5faf0;
+  --ink: #1a2b1d;
+  --ink-2: #344a37;
+  --muted: #5f7263;
+  --line: #dfe9d6;
+  --line-strong: #c9dabb;
 
-  --brand: #7c5cff;
-  --brand-deep: #5a3ee0;
-  --brand-soft: #efeaff;
-  --pink: #ff5fb8;
-  --grad: linear-gradient(135deg, #7c5cff 0%, #b65cff 50%, #ff5fb8 100%);
-  --grad-soft: linear-gradient(135deg, #f1ecff, #ffeaf6);
+  --brand: #4c8a2a;
+  --brand-deep: #36681c;
+  --brand-soft: #e6f2da;
+  --pink: #d9a066; /* latte accent (kept under its old name) */
+  --latte: #94652a; /* latte text, readable on light surfaces */
+  --grad: linear-gradient(135deg, #3c7a20 0%, #4f8f2b 50%, #6f9f38 100%);
+  --grad-soft: linear-gradient(135deg, #eaf4df, #f7efdc);
 
   --good: #18b96b;
   --good-deep: #0e9152;
@@ -33,8 +34,8 @@
   --sky: #2aa8ff;
 
   --radius: 22px;
-  --shadow: 0 1px 2px rgb(40 20 120 / 0.05), 0 10px 30px rgb(80 50 200 / 0.08);
-  --shadow-lg: 0 2px 6px rgb(40 20 120 / 0.08), 0 24px 60px rgb(80 50 200 / 0.16);
+  --shadow: 0 1px 2px rgb(30 60 20 / 0.06), 0 10px 30px rgb(50 90 30 / 0.09);
+  --shadow-lg: 0 2px 6px rgb(30 60 20 / 0.08), 0 24px 60px rgb(50 90 30 / 0.16);
   --display: "Baloo 2", "Be Vietnam Pro", system-ui, sans-serif;
   --body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: light;
@@ -42,18 +43,20 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e0c22;
-    --bg-glow-1: #2b1d6e;
-    --bg-glow-2: #4a1546;
-    --surface: #18153a;
-    --surface-2: #1f1b47;
-    --ink: #f2efff;
-    --ink-2: #d6d1f7;
-    --muted: #a39fcc;
-    --line: #2d2860;
-    --line-strong: #3d3780;
-    --brand-soft: #2a2366;
-    --grad-soft: linear-gradient(135deg, #251f5c, #3a1a4f);
+    --bg: #0c140e;
+    --bg-glow-1: #183420;
+    --bg-glow-2: #2f2914;
+    --surface: #131f16;
+    --surface-2: #19291d;
+    --ink: #eef6ea;
+    --ink-2: #d3e3cd;
+    --muted: #97ab93;
+    --line: #22352a;
+    --line-strong: #2f4a35;
+    --brand: #8cc265;
+    --brand-soft: #1f3a1c;
+    --latte: #e2b47e;
+    --grad-soft: linear-gradient(135deg, #18301b, #2b2817);
     --good-soft: #10352a;
     --bad-soft: #3d1626;
     --gold-soft: #3a2c10;
@@ -63,18 +66,20 @@
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0e0c22;
-  --bg-glow-1: #2b1d6e;
-  --bg-glow-2: #4a1546;
-  --surface: #18153a;
-  --surface-2: #1f1b47;
-  --ink: #f2efff;
-  --ink-2: #d6d1f7;
-  --muted: #a39fcc;
-  --line: #2d2860;
-  --line-strong: #3d3780;
-  --brand-soft: #2a2366;
-  --grad-soft: linear-gradient(135deg, #251f5c, #3a1a4f);
+  --bg: #0c140e;
+  --bg-glow-1: #183420;
+  --bg-glow-2: #2f2914;
+  --surface: #131f16;
+  --surface-2: #19291d;
+  --ink: #eef6ea;
+  --ink-2: #d3e3cd;
+  --muted: #97ab93;
+  --line: #22352a;
+  --line-strong: #2f4a35;
+  --brand: #8cc265;
+  --brand-soft: #1f3a1c;
+  --latte: #e2b47e;
+  --grad-soft: linear-gradient(135deg, #18301b, #2b2817);
   --good-soft: #10352a;
   --bad-soft: #3d1626;
   --gold-soft: #3a2c10;
@@ -143,6 +148,10 @@ button {
 .fx.tile {
   width: var(--fx-size);
   height: var(--fx-size);
+  /* .tile is also the word-bank button class; undo its padding and border so the glyph stays centred */
+  padding: 0;
+  border: 0;
+  animation: none;
   border-radius: 30%;
   color: #fff;
   background: linear-gradient(150deg, color-mix(in srgb, var(--fx) 62%, #fff), var(--fx) 70%);
@@ -204,6 +213,7 @@ code {
 }
 .stack-lg {
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* wide tables scroll inside .table-wrap instead of widening the page */
   gap: 1.4rem;
 }
 .narrow {
@@ -578,12 +588,11 @@ code {
   font-weight: 800;
 }
 .logo-mark {
-  display: inline-grid;
-  place-items: center;
+  display: block;
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: var(--grad);
+  object-fit: cover;
   box-shadow: 0 4px 0 var(--brand-deep);
 }
 .navlink {
@@ -752,10 +761,13 @@ code {
 .mascot {
   position: relative;
   width: 100%;
+  min-width: 0;
 }
+/* Pixi writes a fixed pixel size on the canvas (autoDensity); the box must stay in charge, or the
+   canvas keeps its first width and pushes the page sideways when the window gets narrower. */
 .mascot canvas {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   display: block;
 }
 .mascot-fallback {
@@ -788,7 +800,7 @@ code {
   display: grid;
   place-items: center;
   padding: 1rem;
-  background: rgb(15 10 40 / 0.55);
+  background: rgb(8 22 10 / 0.55);
   backdrop-filter: blur(6px);
 }
 .dialog {
@@ -906,7 +918,7 @@ code {
 }
 .hero .btn.primary {
   --b: #fff;
-  --b-edge: rgb(60 20 140 / 0.45);
+  --b-edge: rgb(30 70 20 / 0.45);
   --b-ink: var(--brand-deep);
 }
 .hero-mascot {
@@ -977,7 +989,7 @@ code {
   --u: linear-gradient(135deg, #3bb8ff, #2a6cf0);
 }
 .lvl-B1 {
-  --u: linear-gradient(135deg, #9b7bff, #6a43f0);
+  --u: linear-gradient(135deg, #3cc6b4, #12917f);
 }
 .lvl-B2 {
   --u: linear-gradient(135deg, #ff8fb5, #e8457d);
@@ -986,7 +998,7 @@ code {
   --u: linear-gradient(135deg, #ffb547, #f2711c);
 }
 .lvl-own {
-  --u: linear-gradient(135deg, #8c84b8, #5a5390);
+  --u: linear-gradient(135deg, #9aa892, #66765f);
 }
 
 .trail {
@@ -1217,8 +1229,8 @@ code {
   --c-edge: #3155c4;
 }
 .cat-work {
-  --c: linear-gradient(145deg, #b79bff, #7a4cf0);
-  --c-edge: #5a31c6;
+  --c: linear-gradient(145deg, #7fd3c9, #2a9d8f);
+  --c-edge: #1f7a6f;
 }
 .cat-study {
   --c: linear-gradient(145deg, #6fe3c0, #13b38a);
@@ -1328,7 +1340,7 @@ code {
   color: #fff;
 }
 .tone-violet {
-  --t: #7c5cff;
+  --t: #4c8a2a;
 }
 .tone-sky {
   --t: #2aa8ff;
@@ -1374,7 +1386,7 @@ code {
   border-radius: 28px;
   padding: 1.4rem;
   color: #fff;
-  background: linear-gradient(135deg, #5a3ee0 0%, #8f4fff 55%, #e2489f 100%);
+  background: linear-gradient(135deg, #2f6a1c 0%, #4f8f2b 55%, #8a7a3a 100%);
   box-shadow: var(--shadow-lg);
   display: grid;
   gap: 1rem;
@@ -1747,6 +1759,7 @@ code {
 }
 .settings {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.9rem;
 }
 .setting {
@@ -1756,6 +1769,24 @@ code {
   justify-content: space-between;
   gap: 0.6rem;
   font-weight: 700;
+}
+.voice-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+}
+.voice-pick .select {
+  flex: 1 1 160px;
+  min-width: 0;
+  max-width: 260px;
+  text-overflow: ellipsis;
+}
+.voice-hint {
+  flex-basis: 100%;
+  font-weight: 500;
 }
 .switch {
   appearance: none;
@@ -2647,12 +2678,45 @@ code {
   padding: 2rem 1.5rem;
 }
 .login-hero {
-  height: 600px;
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  min-width: 0;
 }
-.login-hero .bubble {
-  top: 1rem;
-  max-width: 300px;
-  margin: 0 auto;
+.login-mascot {
+  height: 400px;
+  max-width: 440px;
+}
+/* The greeting sits under Wanko, with its tail pointing up at him. */
+.login-bubble {
+  position: relative;
+  margin: 0;
+  max-width: 320px;
+  padding: 0.7rem 1rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+@media (min-width: 701px) {
+  .login-bubble {
+    margin-top: -5rem; /* the model leaves empty canvas below the bowl */
+  }
+}
+.login-bubble::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  transform: translateX(-50%) rotate(45deg);
 }
 .login-card {
   display: grid;
@@ -2664,36 +2728,53 @@ code {
   background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-lg);
+  min-width: 0;
 }
-.login-card .logo-mark {
-  width: 72px;
-  height: 72px;
-  border-radius: 22px;
-}
-.login-card h1 {
-  font-size: 2.4rem;
+.login-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-size: 2.6rem;
   font-weight: 800;
-  background: var(--grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--brand);
+}
+.login-title img {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  box-shadow: 0 4px 0 var(--brand-deep);
+}
+.login-tagline {
+  margin: -0.7rem 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--latte);
 }
 .login-card .lead {
   margin: 0;
   color: var(--muted);
 }
 .login-feats {
-  display: flex;
-  justify-content: center;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-}
-.login-feats span {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
   display: grid;
-  justify-items: center;
-  font-size: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem 0.5rem;
+}
+.login-feats li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
   font-weight: 700;
+  line-height: 1.2;
   color: var(--muted);
+  text-align: center;
 }
 .login-tabs {
   display: flex;
@@ -2701,6 +2782,8 @@ code {
 }
 .login-tabs .tab {
   flex: 1;
+  justify-content: center; /* .seg buttons are inline-flex, which left-aligns the label */
+  font-size: 0.95rem;
   border: 0;
   background: transparent;
   padding: 0.5rem;
@@ -2984,15 +3067,41 @@ code {
     height: 46px;
   }
   .login-page {
-    grid-template-columns: 1fr;
-    gap: 0;
-    padding: 1rem;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 0.9rem;
+    padding: calc(0.8rem + env(safe-area-inset-top, 0px)) 0.9rem calc(1.2rem + env(safe-area-inset-bottom, 0px));
+  }
+  .login-mascot {
+    height: 190px;
+    max-width: 220px;
   }
   .login-hero {
-    height: 300px;
+    gap: 0.3rem;
+  }
+  .login-bubble {
+    font-size: 0.88rem;
+    padding: 0.55rem 0.85rem;
   }
   .login-card {
-    padding: 1.4rem 1.1rem;
+    padding: 1.3rem 1rem 1.4rem;
+    border-radius: 26px;
+    gap: 0.85rem;
+  }
+  .login-title {
+    font-size: 2.1rem;
+  }
+  .login-title img {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+  }
+  .login-tagline {
+    margin-top: -0.6rem;
+    font-size: 1rem;
+  }
+  .login-card .lead {
+    font-size: 0.92rem;
   }
   .stat b {
     font-size: 1.25rem;
@@ -3231,4 +3340,52 @@ code {
 }
 .dialog-fx {
   justify-self: center;
+}
+
+/* ---- crash screen & translations ---------------------------------------------------------- */
+
+.crash {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+.crash .card {
+  max-width: 440px;
+  display: grid;
+  gap: 0.7rem;
+}
+.crash p {
+  margin: 0;
+}
+.vi {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--ink-2);
+  font-style: italic;
+}
+.vi::before {
+  content: "🇻🇳 ";
+  font-style: normal;
+}
+.speak-vi {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.rs-vi {
+  display: block;
+  margin: 0.1rem 0 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--muted);
+  font-style: italic;
+}
+.reading.with-vi .rs {
+  display: block;
+}
+.flash-back em {
+  font-size: 0.72rem;
+  opacity: 0.85;
 }

@@ -1,19 +1,20 @@
-import type { BridgeHub } from "./bridge-hub";
-
 export interface Env {
   AI: Ai;
   DB: D1Database;
-  BRIDGE: DurableObjectNamespace<BridgeHub>;
   ASSETS: Fetcher;
 
   ADMIN_LOGIN: string;
   CONTACT_URL: string;
-  TRIAL_AI_LIMIT: string;
-  WORKERS_AI_MODEL: string;
+  WORKERS_AI_MODEL: string; // sentence explanations (free)
+  LESSON_MODEL: string; // custom lessons
+  GRADE_MODEL: string; // speaking grades
+  LESSON_LIMIT: string; // custom lessons per account (admin unlimited)
+  GRADE_LIMIT: string; // speaking grades per account (admin unlimited)
+  MONTHLY_BUDGET_USD: string; // Claude API spend per month before lesson creation and grading pause
 
   // Secrets (wrangler secret put / .dev.vars)
   ADMIN_PASSWORD: string; // password for the ADMIN_LOGIN account (not stored in D1)
-  BRIDGE_TOKEN: string;
+  ANTHROPIC_API_KEY: string;
 }
 
 export type Role = "admin" | "member" | "trial" | "blocked";
@@ -25,6 +26,8 @@ export interface User {
   avatar_url: string | null;
   role: Role;
   ai_used: number;
+  lessons_used: number;
+  grades_used: number;
   level: string | null;
   mascot: string | null;
   placed_at: string | null;
