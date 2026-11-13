@@ -1,0 +1,38 @@
+name: Bài học có lỗi
+description: Sai chính tả, dịch sai, đáp án câu hỏi sai, âm thanh không đúng…
+title: "[Bài học] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Cảm ơn bạn giúp bài học tốt hơn! Issue trên GitHub **ai cũng xem được**: đừng ghi mật khẩu hay thông tin cá nhân.
+  - type: input
+    id: lesson
+    attributes:
+      label: Bài nào?
+      description: Tên bài và đường link (nút "Báo lỗi bài này" trong bài đã điền sẵn).
+      placeholder: "Hi, I'm Linh! – https://wancha.byocao.com/#/lesson/12"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Loại lỗi
+      options:
+        - Sai chính tả hoặc ngữ pháp tiếng Anh
+        - Dịch tiếng Việt sai hoặc khó hiểu
+        - Đáp án câu hỏi sai
+        - Từ vựng, phiên âm hoặc nghĩa sai
+        - Âm thanh, phát âm hoặc chấm điểm nói
+        - Khác
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Chỗ sai và nên sửa thành gì
+      placeholder: |
+        Câu 3: "She go to school" → "She goes to school"
+    validations:
+      required: true

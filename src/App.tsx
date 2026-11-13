@@ -1,13 +1,18 @@
 import {
   ArrowLeft,
   ArrowRight,
+  ArrowSquareOut,
   Bell,
   BookOpenText,
+  Bug,
   ChalkboardTeacher,
   Desktop,
+  EnvelopeSimple,
   Eye,
   EyeSlash,
+  Flag,
   House,
+  Lightbulb,
   LockSimple,
   MagnifyingGlass,
   Moon,
@@ -36,6 +41,7 @@ import { CATEGORIES, Fx, LEVELS, LEVEL_LABEL, STEPS, category, parseProgress, qu
 import { setSoundOn, soundOn } from "./sound";
 import { getTheme, setTheme, type Theme } from "./theme";
 import { LessonCard, Loading, Meter, stepsDone } from "./ui";
+import { ISSUES_URL, SUPPORT_EMAIL, deviceInfo, issueUrl, lessonErrorUrl, mailtoUrl } from "./support";
 
 type Route =
   | { name: "learn" }
@@ -857,6 +863,10 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
         </div>
       </section>
 
+      <a className="btn small ghost report-link" href={lessonErrorUrl({ id: l.id, title: l.content.title })} target="_blank" rel="noreferrer">
+        <Flag size={18} /> Báo lỗi bài này
+      </a>
+
       {(canHide || canDelete) && (
         <div className="row gap wrap">
           {canHide && (
@@ -1334,6 +1344,8 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
         </section>
       )}
 
+      <SupportCard me={me} />
+
       <button className="btn ghost full" onClick={logout}>
         <SignOut size={20} /> Đăng xuất
       </button>
@@ -1398,6 +1410,52 @@ function EmailCard({ me, onChange }: { me: Me; onChange: () => void }) {
         )}
       </form>
       {msg && <p className={msg.ok ? "ok-text small" : "error"}>{msg.text}</p>}
+    </section>
+  );
+}
+
+/** Bug reports, lesson errors and ideas go to GitHub issues; anything private goes by email. */
+function SupportCard({ me }: { me: Me }) {
+  const device = deviceInfo();
+  const items = [
+    { href: issueUrl("bug_report.yml", { device }), Icon: Bug, title: "Báo lỗi", text: "Ứng dụng chạy sai hoặc hiện lỗi" },
+    { href: issueUrl("lesson_error.yml", { device }), Icon: Flag, title: "Bài học có lỗi", text: "Sai chính tả, dịch sai, đáp án sai" },
+    { href: issueUrl("feature_request.yml", { device }), Icon: Lightbulb, title: "Đề xuất tính năng", text: "Bạn muốn Wancha có thêm gì?" },
+  ];
+  return (
+    <section className="card">
+      <h2 className="card-title">
+        <Fx name="speech_balloon" size={34} tile /> Góp ý & hỗ trợ
+      </h2>
+      <p className="small muted">
+        Báo lỗi và góp ý trên GitHub (cần tài khoản GitHub). Nội dung ở đó <b>ai cũng xem được</b>, nên đừng ghi mật khẩu hay
+        thông tin cá nhân. Chuyện riêng tư như tài khoản hay nâng cấp VIP thì gửi email.
+      </p>
+      <div className="support-grid">
+        {items.map(({ href, Icon, title, text }) => (
+          <a key={title} className="support-item" href={href} target="_blank" rel="noreferrer">
+            <Icon size={26} weight="duotone" />
+            <span>
+              <b>{title}</b>
+              <small>{text}</small>
+            </span>
+            <ArrowSquareOut size={16} className="support-out" />
+          </a>
+        ))}
+        <a className="support-item" href={mailtoUrl(me.user.login)}>
+          <EnvelopeSimple size={26} weight="duotone" />
+          <span>
+            <b>Gửi email</b>
+            <small>{SUPPORT_EMAIL}</small>
+          </span>
+        </a>
+      </div>
+      <p className="small muted">
+        Xem các góp ý khác:{" "}
+        <a href={ISSUES_URL} target="_blank" rel="noreferrer">
+          {ISSUES_URL.replace(/^https:\/\//, "")}
+        </a>
+      </p>
     </section>
   );
 }

@@ -2921,6 +2921,53 @@ code {
   background: var(--surface);
 }
 
+/* ---- support -------------------------------------------------------------------------------- */
+
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.6rem;
+  margin: 0.8rem 0;
+}
+.support-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  text-decoration: none;
+  min-width: 0;
+}
+.support-item:hover {
+  border-color: var(--accent-line);
+  background: var(--brand-soft);
+}
+.support-item > svg:first-child {
+  color: var(--brand);
+  flex: none;
+}
+.support-item span {
+  display: grid;
+  min-width: 0;
+}
+.support-item small {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.support-out {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.6rem;
+  color: var(--muted);
+}
+.report-link {
+  justify-self: start;
+}
+
 /* ---- classes, notifications, email ------------------------------------------------------------ */
 
 .stack {

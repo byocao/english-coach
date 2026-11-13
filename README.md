@@ -66,6 +66,12 @@ VIP accounts (and the admin) can run classes:
 - In-app notifications cover invites (accepted or declined right in the list), replies, removals, new class
   lessons and deleted classes.
 
+### Feedback
+
+The profile page has a "Góp ý & hỗ trợ" card, and every lesson has a "Báo lỗi bài này" link. They open the GitHub
+issue forms in [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE) (bug, lesson error, feature request) with the
+lesson and device filled in, or an email to the support address. Both addresses live in `src/support.ts`.
+
 ### Accounts
 
 Accounts live in D1: a username plus a PBKDF2-SHA256 password hash (20,000 iterations, which fits the Workers Free

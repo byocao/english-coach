@@ -1,4 +1,5 @@
 // Public landing page for visitors who are not signed in. Sign-in lives on its own page (#/login, #/register).
+import { ISSUES_URL, SUPPORT_EMAIL } from "./support";
 import { COMPANIONS, MASCOT_CREDIT, type MascotName } from "./Mascot";
 import { CATEGORIES, Fx, LEVELS, STEPS } from "./meta";
 
@@ -257,9 +258,10 @@ export function Landing() {
 
       <footer className="lp-footer">
         <span>© Wancha</span>
-        <a href="https://github.com/byocao" target="_blank" rel="noreferrer">
-          Liên hệ
+        <a href={ISSUES_URL} target="_blank" rel="noreferrer">
+          Góp ý & báo lỗi
         </a>
+        <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
         <p className="credit">{MASCOT_CREDIT} Icon: Phosphor Icons (MIT).</p>
       </footer>
     </div>
