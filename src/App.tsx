@@ -5,6 +5,7 @@ import {
   Bell,
   BookOpenText,
   Bug,
+  CaretDown,
   ChalkboardTeacher,
   Desktop,
   EnvelopeSimple,
@@ -473,6 +474,24 @@ function LockedDialog({ err, onClose }: { err: ApiError; onClose: () => void }) 
 const PATH_PAGE = 8;
 const PATH_MORE = 3;
 
+/** Levels below the learner's level that they opened again, remembered per account on this device. */
+function readOpenLevels(userId: number): string[] {
+  try {
+    const v = JSON.parse(localStorage.getItem(`wancha_open_levels_${userId}`) ?? "[]");
+    return Array.isArray(v) ? v : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeOpenLevels(userId: number, levels: string[]) {
+  try {
+    localStorage.setItem(`wancha_open_levels_${userId}`, JSON.stringify(levels));
+  } catch {
+    /* private mode: the choice just isn't remembered */
+  }
+}
+
 /** How many "Học thêm" clicks each level has had, remembered per account on this device. */
 function readExtra(userId: number): Record<string, number> {
   try {
@@ -548,6 +567,14 @@ function Learn({ me }: { me: Me }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [shown, myLevel],
   );
+  // Levels below the learner's level start collapsed; a click opens one again for review.
+  const [openLevels, setOpenLevels] = useState<string[]>(() => readOpenLevels(me.user.id));
+  const toggleLevel = (key: string) => {
+    const next = openLevels.includes(key) ? openLevels.filter((k) => k !== key) : [...openLevels, key];
+    setOpenLevels(next);
+    writeOpenLevels(me.user.id, next);
+  };
+
   const scrolled = useRef(false);
   useEffect(() => {
     if (!current || scrolled.current) return;
@@ -573,9 +600,26 @@ function Learn({ me }: { me: Me }) {
         const visible = lessons.slice(0, count);
         const unfinished = visible.filter((l) => stepsDone(l) < STEPS.length).length;
         const hidden = lessons.length - count;
+        // Below the learner's level (and not where "Tiếp tục" points): collapsed unless opened.
+        const below = !!me.user.level && li < myLevel && current?.level !== lv.key;
+        const collapsed = below && !openLevels.includes(lv.key);
+        const toggle = below
+          ? {
+              role: "button",
+              tabIndex: 0,
+              "aria-expanded": !collapsed,
+              onClick: () => toggleLevel(lv.key),
+              onKeyDown: (e: React.KeyboardEvent) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  toggleLevel(lv.key);
+                }
+              },
+            }
+          : {};
         return (
-          <section key={lv.key} className={`unit lvl-${lv.key}`}>
-            <header className="unit-head">
+          <section key={lv.key} className={`unit lvl-${lv.key}${below ? " foldable" : ""}${collapsed ? " collapsed" : ""}`}>
+            <header className="unit-head" {...toggle}>
               <Fx name={lv.fx} size={52} />
               <div className="grow">
                 <small>
@@ -585,35 +629,46 @@ function Learn({ me }: { me: Me }) {
                   {lv.label}
                   {me.user.level && li === myLevel && <span className="here-chip">Bạn ở đây</span>}
                 </h2>
-                <p>{li < myLevel ? "Bạn đã xếp lớp trên cấp này. Vẫn có thể ôn lại bất cứ bài nào." : lv.blurb}</p>
+                <p>
+                  {collapsed
+                    ? "Bạn đã ở cấp cao hơn nên các bài này đang ẩn. Bấm để mở ôn lại."
+                    : li < myLevel
+                      ? "Bạn đã xếp lớp trên cấp này. Vẫn có thể ôn lại bất cứ bài nào."
+                      : lv.blurb}
+                </p>
               </div>
               <div className="unit-count">
                 <b>{doneCount}</b>/{lessons.length}
               </div>
+              {below && <CaretDown size={22} weight="bold" className="unit-caret" aria-hidden />}
             </header>
-            <div className="trail">
-              {visible.map((l, i) => (
-                <PathNode
-                  key={l.id}
-                  lesson={l}
-                  offset={WAVE[i % WAVE.length]}
-                  isCurrent={l.id === current?.id}
-                  open={open === l.id}
-                  onToggle={() => setOpen(open === l.id ? null : l.id)}
-                />
-              ))}
-            </div>
-            {hidden > 0 &&
-              (unfinished === 0 ? (
-                <button className="btn primary path-more" onClick={() => showMore(lv.key, count)}>
-                  <Plus size={18} weight="bold" /> Học thêm {Math.min(PATH_MORE, hidden)} bài
-                </button>
-              ) : (
-                <p className="path-more-hint">
-                  <LockSimple size={16} weight="bold" /> Hoàn thành {unfinished} bài ở trên để mở thêm bài mới
-                  <span> · còn {hidden} bài</span>
-                </p>
-              ))}
+            {!collapsed && (
+              <>
+                <div className="trail">
+                  {visible.map((l, i) => (
+                    <PathNode
+                      key={l.id}
+                      lesson={l}
+                      offset={WAVE[i % WAVE.length]}
+                      isCurrent={l.id === current?.id}
+                      open={open === l.id}
+                      onToggle={() => setOpen(open === l.id ? null : l.id)}
+                    />
+                  ))}
+                </div>
+                {hidden > 0 &&
+                  (unfinished === 0 ? (
+                    <button className="btn primary path-more" onClick={() => showMore(lv.key, count)}>
+                      <Plus size={18} weight="bold" /> Học thêm {Math.min(PATH_MORE, hidden)} bài
+                    </button>
+                  ) : (
+                    <p className="path-more-hint">
+                      <LockSimple size={16} weight="bold" /> Hoàn thành {unfinished} bài ở trên để mở thêm bài mới
+                      <span> · còn {hidden} bài</span>
+                    </p>
+                  ))}
+              </>
+            )}
           </section>
         );
       })}
