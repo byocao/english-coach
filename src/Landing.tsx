@@ -45,6 +45,39 @@ const FAQ: [string, string][] = [
 
 const COMPANION_LIST: MascotName[] = ["wanko", "tororo", "hijiki", "fox"];
 
+/** A screenshot in a browser window; `dark` is used when the visitor's system is in dark mode. */
+function Browser({ src, dark, alt, eager = false }: { src: string; dark?: string; alt: string; eager?: boolean }) {
+  return (
+    <div className="lp-browser">
+      <div className="lp-browser-bar" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <span>wancha.byocao.com</span>
+      </div>
+      <picture>
+        {dark && <source media="(prefers-color-scheme: dark)" srcSet={dark} />}
+        <img src={src} alt={alt} width={1280} height={800} loading={eager ? "eager" : "lazy"} decoding="async" />
+      </picture>
+    </div>
+  );
+}
+
+/** A phone screenshot (or video) in a phone frame. */
+function Phone({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+  return (
+    <div className={`lp-phone ${className}`}>
+      <img src={src} alt={alt} width={560} height={1212} loading="lazy" decoding="async" />
+    </div>
+  );
+}
+
+const TOUR_PRACTICE = [
+  "Lật thẻ từ, nghe phát âm, ghép nghĩa, xếp câu, chép chính tả",
+  "Sai thì có gợi ý và được thử lại, câu sai quay lại ở vòng ôn cuối bài",
+  "Combo, XP và chuỗi ngày học giữ bạn quay lại mỗi ngày",
+];
+
 /** In-page links: the app's router owns location.hash, so scroll instead of navigating. */
 function jump(id: string) {
   return (e: React.MouseEvent) => {
@@ -130,6 +163,16 @@ export function Landing() {
           </div>
         </section>
 
+        <section className="lp-showcase" aria-label="Wancha trên máy tính và điện thoại">
+          <Browser
+            src="/screens/path.webp"
+            dark="/screens/path-dark.webp"
+            alt="Lộ trình học trên máy tính: bài hôm nay, các cấp A1 đến C1, nhiệm vụ và XP"
+            eager
+          />
+          <Phone src="/screens/phone-path.webp" alt="Lộ trình học trên điện thoại" className="lp-showcase-phone" />
+        </section>
+
         <section className="lp-section" id="features">
           <h2>Mỗi bài học là 6 bước luyện tập</h2>
           <p className="lp-lead">Một đoạn văn ngắn, học trọn bốn kỹ năng: từ vựng, nghe, nói và đọc.</p>
@@ -141,6 +184,31 @@ export function Landing() {
                 <p>{STEP_DETAIL[s.key] ?? s.hint}</p>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="lp-section lp-tour">
+          <div className="lp-tour-media">
+            <div className="lp-phone lp-phone-video">
+              <video autoPlay muted loop playsInline preload="none" poster="/screens/practice-poster.webp" width={390} height={844} aria-label="Lật thẻ từ vựng rồi làm thử thách: trả lời đúng, trả lời sai được gợi ý và thử lại">
+                <source src="/screens/practice.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <Phone src="/screens/phone-quiz.webp" alt="Câu trả lời đúng kèm giải thích bằng tiếng Việt" className="lp-phone-back" />
+          </div>
+          <div className="lp-tour-text">
+            <span className="lp-kicker">
+              <Fx name="high_voltage" size={16} /> Luyện tập
+            </span>
+            <h2>Học như chơi, mà nhớ lâu</h2>
+            <p className="lp-lead">Mỗi bước là một trò chơi nhỏ, chỉ vài phút. Sai cũng không sao, Wanko nhắc bạn làm lại cho đến khi đúng.</p>
+            <ul className="lp-ticks">
+              {TOUR_PRACTICE.map((t) => (
+                <li key={t}>
+                  <Fx name="check_mark_button" size={20} /> {t}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -175,6 +243,39 @@ export function Landing() {
                 <b>oat</b>: bạn bỏ mất từ này, đọc /əʊt/.
               </li>
             </ul>
+          </div>
+        </section>
+
+        <section className="lp-section lp-tour lp-tour-reverse">
+          <div className="lp-tour-media lp-tour-pair">
+            <Phone src="/screens/phone-rank.webp" alt="Giải đấu tuần: bảng xếp hạng XP từ thứ Hai" />
+            <Phone src="/screens/phone-notices.webp" alt="Thông báo: giáo viên thêm bài mới vào lớp" />
+          </div>
+          <div className="lp-tour-text">
+            <span className="lp-kicker">
+              <Fx name="trophy" size={16} /> Thi đua
+            </span>
+            <h2>Giải đấu mỗi tuần, có bạn cùng học</h2>
+            <p className="lp-lead">
+              XP bạn kiếm được từ thứ Hai đưa bạn lên bảng xếp hạng. Nhiệm vụ hằng ngày, mục tiêu XP và chuỗi ngày học giúp bạn giữ thói
+              quen, còn thông báo cho bạn biết khi lớp có bài mới.
+            </p>
+          </div>
+        </section>
+
+        <section className="lp-section lp-tour">
+          <div className="lp-tour-media">
+            <Browser src="/screens/class-members.webp" alt="Trang lớp học của giáo viên: mời học sinh bằng tên đăng nhập hoặc email, xem tiến độ và XP tuần" />
+          </div>
+          <div className="lp-tour-text">
+            <span className="lp-kicker">
+              <Fx name="classroom" size={16} /> Lớp học
+            </span>
+            <h2>Giáo viên mở lớp riêng</h2>
+            <p className="lp-lead">
+              Tài khoản VIP mở lớp, mời học sinh bằng tên đăng nhập hoặc email, giao bài có sẵn hoặc bài riêng soạn bằng AI, rồi theo dõi
+              từng em đã học xong bao nhiêu bài.
+            </p>
           </div>
         </section>
 
