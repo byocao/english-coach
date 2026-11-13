@@ -3910,7 +3910,7 @@ code {
   }
 }
 
-/* ---- Kitsu the fox (SVG companion) ------------------------------------------------------- */
+/* ---- Kitsu the fox (low-poly SVG companion) ----------------------------------------------- */
 
 /* The drawing always fits the box it is given (like the Live2D canvas). */
 .fox-svg {
@@ -3922,68 +3922,166 @@ code {
   cursor: pointer;
   overflow: visible;
 }
+.fox-svg.bust {
+  overflow: hidden; /* close-up: keep the body inside the frame */
+}
+.fox-svg * {
+  transform-box: view-box;
+}
 .fox-shadow {
   fill: rgb(0 0 0 / 0.12);
 }
+/* breathing: the whole sitting body rises a little, from the ground */
 .fox-body {
-  transform-box: view-box;
-  transform-origin: 100px 205px;
-  animation: fox-breathe 3.2s ease-in-out infinite;
+  transform-origin: 100px 256px;
+  animation: fox-breathe 3.4s ease-in-out infinite;
+}
+/* the head turns on the neck: slow curious tilt */
+.fox-head {
+  transform-origin: 104px 124px;
+  animation: fox-look 6.5s ease-in-out infinite;
 }
 .fox-tail {
-  transform-box: view-box;
-  transform-origin: 124px 186px;
-  animation: fox-wag 2.4s ease-in-out infinite;
+  transform-origin: 104px 236px;
+  animation: fox-sway 3s ease-in-out infinite;
+}
+.fox-ear-r {
+  transform-origin: 127px 88px;
+  animation: fox-twitch 5.2s ease-in-out infinite;
+}
+.fox-ear-l {
+  transform-origin: 82px 86px;
+  animation: fox-twitch 7.3s ease-in-out 1.2s infinite;
 }
 .fox-eyes {
-  transform-box: view-box;
-  transform-origin: 100px 96px;
+  transform-origin: 105px 94px;
   animation: fox-blink 4.6s infinite;
 }
-.fox-ear-l,
-.fox-ear-r {
-  transition: transform 0.3s;
+
+/* moods */
+.fox-svg.mood-happy .fox-head,
+.fox-svg.mood-cheer .fox-head {
+  animation: fox-nod 0.9s ease-in-out 2;
+  rotate: -5deg;
 }
 .fox-svg.mood-happy .fox-tail,
 .fox-svg.mood-cheer .fox-tail {
-  animation-duration: 0.9s;
+  animation: fox-wag 0.45s ease-in-out infinite;
 }
 .fox-svg.mood-happy,
 .fox-svg.mood-cheer,
 .fox-svg.hop {
   animation: fox-hop 0.55s ease-out 2;
 }
+.fox-svg.mood-sad .fox-head,
+.fox-svg.mood-oops .fox-head {
+  animation: none;
+  rotate: 9deg;
+  translate: 0 3px;
+}
 .fox-svg.mood-sad .fox-tail,
 .fox-svg.mood-oops .fox-tail {
-  animation: none;
-  transform: rotate(10deg);
+  animation: fox-sway 6s ease-in-out infinite;
+  rotate: 8deg;
 }
+.fox-svg.mood-sad .fox-ear-l,
+.fox-svg.mood-sad .fox-ear-r,
+.fox-svg.mood-oops .fox-ear-l,
+.fox-svg.mood-oops .fox-ear-r {
+  animation: none;
+}
+.fox-svg.mood-sad .fox-ear-l,
+.fox-svg.mood-oops .fox-ear-l {
+  rotate: -7deg;
+}
+.fox-svg.mood-sad .fox-ear-r,
+.fox-svg.mood-oops .fox-ear-r {
+  rotate: 7deg;
+}
+.fox-svg.mood-think .fox-head {
+  animation: none;
+  rotate: -9deg;
+  transition: rotate 0.4s;
+}
+.fox-svg.mood-surprised .fox-head {
+  animation: fox-startle 0.5s ease-out;
+}
+.fox-svg.mood-surprised .fox-ear-l,
+.fox-svg.mood-surprised .fox-ear-r {
+  animation: none;
+  scale: 1.06;
+}
+
 @keyframes fox-breathe {
   50% {
-    transform: scale(1.012, 0.985);
+    transform: scale(1.008, 0.988);
+  }
+}
+@keyframes fox-look {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-4deg);
+  }
+  60% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes fox-sway {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(7deg);
   }
 }
 @keyframes fox-wag {
   0%,
   100% {
-    transform: rotate(-4deg);
+    transform: rotate(-8deg);
   }
   50% {
-    transform: rotate(9deg);
+    transform: rotate(12deg);
+  }
+}
+@keyframes fox-twitch {
+  0%,
+  88%,
+  100% {
+    transform: rotate(0deg);
+  }
+  91% {
+    transform: rotate(-9deg);
+  }
+  94% {
+    transform: rotate(4deg);
   }
 }
 @keyframes fox-blink {
   0%,
-  94%,
+  93%,
   100% {
     transform: scaleY(1);
   }
-  96% {
-    transform: scaleY(0.12);
+  95.5% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes fox-nod {
+  50% {
+    transform: rotate(-6deg);
   }
 }
 @keyframes fox-hop {
   40% {
     transform: translateY(-7%);
+  }
+}
+@keyframes fox-startle {
+  30% {
+    transform: translateY(-3px) rotate(-3deg);
   }
 }
