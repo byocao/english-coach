@@ -4,7 +4,8 @@ import { AiError, runJson, transcribe, wordMatchRatio } from "./ai";
 import { authRoutes, requireAdmin, requireUser } from "./auth";
 import { budgetUsd, claudeJson, monthSpend, overBudget } from "./claude";
 import { learn } from "./learn";
-import { limits, quota, refund, reserve, type Allowance, usedNow, vipLimits, weekResetsAt } from "./quota";
+import { access, addLesson, classes } from "./classes";
+import { canTeach, limits, quota, refund, reserve, type Allowance, usedNow, vipLimits, weekResetsAt } from "./quota";
 import type { AppEnv, Env, Role, User } from "./env";
 import {
   EXPLAIN_SYSTEM,
@@ -96,12 +97,22 @@ const CATEGORIES = ["daily", "food", "travel", "work", "study", "tech", "health"
 
 api.post("/lessons", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json<{ topic?: string; level?: string; length?: string; category?: string }>().catch(() => ({}) as never);
+  const body = await c.req
+    .json<{ topic?: string; level?: string; length?: string; category?: string; visibility?: string; classId?: number }>()
+    .catch(() => ({}) as never);
   const category = CATEGORIES.includes(body.category ?? "") ? body.category! : null;
   const topic = (body.topic ?? "").trim().slice(0, 200);
   const level = (LEVELS as readonly string[]).includes(body.level ?? "") ? (body.level as Level) : "B1";
   const length: LengthKey = body.length && body.length in LENGTHS ? (body.length as LengthKey) : "medium";
   if (!topic) return c.json({ error: "Hãy nhập chủ đề." }, 400);
+  // Free accounts learn from the library; writing lessons with AI is for VIP (and the admin).
+  if (!canTeach(user)) {
+    return c.json({ error: "Soạn bài bằng AI dành cho tài khoản VIP.", code: "vip_only", contact: c.env.CONTACT_URL }, 403);
+  }
+  // A private lesson stays out of the shared library: only the classes it is added to can open it.
+  const isPublic = body.visibility !== "private";
+  const cls = body.classId == null ? null : await access(c.env, Number(body.classId), user);
+  if (body.classId != null && !cls?.manage) return c.json({ error: "Bạn không dạy lớp này." }, 403);
 
   const stop = await claudeGate(c, "lessons");
   if (stop) return stop;
@@ -128,11 +139,12 @@ api.post("/lessons", async (c) => {
   const result = { provider: "claude" };
 
   const row = await c.env.DB.prepare(
-    "INSERT INTO lessons (user_id, title, topic, level, content, provider, is_public, category) VALUES (?1, ?2, ?3, ?4, ?5, ?6, 1, ?7) RETURNING id",
+    "INSERT INTO lessons (user_id, title, topic, level, content, provider, is_public, category) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8) RETURNING id",
   )
-    .bind(user.id, lesson.title || topic, topic, level, JSON.stringify(lesson), result.provider, category)
+    .bind(user.id, lesson.title || topic, topic, level, JSON.stringify(lesson), result.provider, isPublic ? 1 : 0, category)
     .first<{ id: number }>();
   await recordAi(c.env, user, "lesson", result.provider);
+  if (cls) await addLesson(c.env, cls.cls, { id: row!.id, title: lesson.title || topic }, user);
   return c.json({ id: row!.id, provider: result.provider, quota: quota(c.env, user) });
 });
 
@@ -272,6 +284,7 @@ api.patch("/admin/users/:id", requireAdmin, async (c) => {
 });
 
 api.route("/", learn);
+api.route("/", classes);
 app.route("/api", api);
 app.all("/api/*", (c) => c.json({ error: "Not found" }, 404));
 

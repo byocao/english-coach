@@ -20,6 +20,8 @@ export interface Me {
     mascot: string | null;
     placed_at: string | null;
     placement_score: number | null;
+    /** Optional; teachers can invite by it. Never shown to other people. */
+    email: string | null;
   };
   quota: Quota;
   contact: string;
@@ -28,6 +30,87 @@ export interface Me {
   /** Admin only: Claude API spend this month. */
   spend: { usd: number; budget: number } | null;
   game: Game;
+  /** VIP and admin: write lessons with AI and run classes. */
+  canTeach: boolean;
+  /** Classes the user is an active member of (teaching or learning). */
+  classes: number;
+  /** Unread notifications. */
+  unread: number;
+}
+
+export type ClassRole = "owner" | "teacher" | "student";
+
+export interface ClassInfo {
+  id: number;
+  name: string;
+  description: string;
+  level: string | null;
+  owner_id: number;
+  owner: string;
+  created_at: string;
+  my_role: ClassRole | null;
+  my_status: "invited" | "active" | null;
+  /** Who invited me (pending invites). */
+  invited_by: string | null;
+}
+
+export interface ClassSummary extends ClassInfo {
+  students: number;
+  lessons: number;
+  /** My finished and started lessons of the class. */
+  done: number;
+  started: number;
+}
+
+export interface ClassLimits {
+  classes: number;
+  students: number;
+  teachers: number;
+}
+
+export interface ClassList {
+  classes: ClassSummary[];
+  canTeach: boolean;
+  owned: number;
+  limits: ClassLimits;
+  unlimited: boolean;
+}
+
+export interface ClassMember {
+  id: number;
+  login: string;
+  role: ClassRole;
+  status: "invited" | "active";
+  created_at: string;
+  joined_at: string | null;
+  invited_by: string | null;
+  done: number;
+  started: number;
+  week_xp: number;
+  last_active: string | null;
+}
+
+export interface ClassDetail {
+  class: ClassInfo;
+  me: { role: ClassRole | null; status: "invited" | "active" | null; manage: boolean; own: boolean };
+  members: ClassMember[];
+  lessons: LessonRow[];
+  limits: ClassLimits;
+}
+
+export type NoticeKind = "invite" | "accepted" | "declined" | "removed" | "left" | "lesson" | "class_deleted";
+
+export interface Notice {
+  id: number;
+  kind: NoticeKind;
+  class_id: number | null;
+  lesson_id: number | null;
+  data: { className?: string; lessonTitle?: string; role?: string };
+  read_at: string | null;
+  created_at: string;
+  actor: string | null;
+  /** My membership in the class now: tells whether an invite is still waiting. */
+  my_status: "invited" | "active" | null;
 }
 
 export interface Allowance {

@@ -26,7 +26,7 @@ const DEMO: { w: string; s: "ok" | "unclear" | "missing" }[] = [
 const FAQ: [string, string][] = [
   [
     "Wancha có miễn phí không?",
-    "Có. Toàn bộ bài học có sẵn, nghe, chép chính tả, đọc hiểu và thử thách đều miễn phí. Mỗi tài khoản mới còn được tạo 1 bài học riêng bằng AI và chấm điểm phát âm 10 lần.",
+    "Có. Toàn bộ bài học có sẵn, nghe, chép chính tả, đọc hiểu và thử thách đều miễn phí. Mỗi tài khoản mới còn được AI chấm điểm phát âm 10 lần. Soạn bài riêng bằng AI và mở lớp học dành cho tài khoản VIP.",
   ],
   [
     "AI chấm phát âm như thế nào?",

@@ -2,7 +2,9 @@
 import { Hono } from "hono";
 import type { AppEnv, Env, User } from "./env";
 import { budgetUsd, monthSpend } from "./claude";
-import { quota } from "./quota";
+import { canTeach, quota } from "./quota";
+import { unreadCount } from "./classes";
+import { IN_MY_CLASS, LESSON_COLUMNS, WEEK_START, canSee } from "./visibility";
 
 export const STEPS = ["words", "listen", "dictation", "speak", "read", "quiz"] as const;
 export type Step = (typeof STEPS)[number];
@@ -65,7 +67,12 @@ function gameView(g: Gamer) {
 
 learn.get("/me", async (c) => {
   const user = c.get("user");
-  const [g, spent] = await Promise.all([gamer(c.env, user.id), monthSpend(c.env)]);
+  const [g, spent, unread, classes] = await Promise.all([
+    gamer(c.env, user.id),
+    monthSpend(c.env),
+    unreadCount(c.env, user.id),
+    c.env.DB.prepare("SELECT COUNT(*) AS n FROM class_members WHERE user_id = ?1 AND status = 'active'").bind(user.id).first<{ n: number }>(),
+  ]);
   const budget = budgetUsd(c.env);
   return c.json({
     user,
@@ -75,16 +82,22 @@ learn.get("/me", async (c) => {
     maintenance: spent >= budget,
     spend: user.role === "admin" ? { usd: spent, budget } : null,
     game: gameView(g),
+    canTeach: canTeach(user),
+    classes: classes?.n ?? 0,
+    unread,
   });
 });
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1"];
 const MASCOTS = ["wanko", "tororo", "hijiki", "fox"];
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Daily goal, starting level (placement=true when it comes from the placement test), companion. */
 learn.patch("/me", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json<{ dailyGoal?: number; level?: string; placement?: boolean; score?: number; mascot?: string }>().catch(() => ({}) as never);
+  const body = await c.req
+    .json<{ dailyGoal?: number; level?: string; placement?: boolean; score?: number; mascot?: string; email?: string | null }>()
+    .catch(() => ({}) as never);
   const stmts: D1PreparedStatement[] = [];
   if (body.dailyGoal !== undefined) {
     if (!DAILY_GOALS.includes(Number(body.dailyGoal))) return c.json({ error: "Mục tiêu không hợp lệ." }, 400);
@@ -106,24 +119,32 @@ learn.patch("/me", async (c) => {
     if (!MASCOTS.includes(body.mascot)) return c.json({ error: "Nhân vật không hợp lệ." }, 400);
     stmts.push(c.env.DB.prepare("UPDATE users SET mascot = ?1 WHERE id = ?2").bind(body.mascot, user.id));
   }
+  if (body.email !== undefined) {
+    // One email per account, unique across accounts; empty or null removes it.
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    if (email && (email.length > 254 || !EMAIL_RE.test(email))) return c.json({ error: "Email không hợp lệ." }, 400);
+    if (email) {
+      const taken = await c.env.DB.prepare("SELECT 1 FROM users WHERE email = ?1 AND id != ?2").bind(email, user.id).first();
+      if (taken) return c.json({ error: "Email này đã có tài khoản khác dùng." }, 409);
+    }
+    stmts.push(c.env.DB.prepare("UPDATE users SET email = ?1 WHERE id = ?2").bind(email || null, user.id));
+  }
   if (stmts.length === 0) return c.json({ error: "Không có gì để cập nhật." }, 400);
-  await c.env.DB.batch(stmts);
+  try {
+    await c.env.DB.batch(stmts);
+  } catch (err) {
+    if (String(err).includes("UNIQUE")) return c.json({ error: "Email này đã có tài khoản khác dùng." }, 409);
+    throw err;
+  }
   return c.json({ ok: true });
 });
 
 // ---- Library ---------------------------------------------------------------------
 
-const LESSON_COLUMNS = `l.id, l.title, l.topic, l.level, l.is_public, l.created_at, l.user_id, u.login AS author,
-  l.category, l.course_order, json_extract(l.content, '$.summary_vi') AS summary,
-  json_array_length(l.content, '$.sentences') AS sentences,
-  (SELECT COUNT(DISTINCT p.user_id) FROM lesson_progress p WHERE p.lesson_id = l.id) AS learners,
-  (SELECT COUNT(*) FROM lesson_progress p WHERE p.lesson_id = l.id AND p.user_id = ?1) AS my_steps,
-  (SELECT MAX(p.updated_at) FROM lesson_progress p WHERE p.lesson_id = l.id AND p.user_id = ?1) AS my_last,
-  (SELECT json_group_object(p.step, p.best) FROM lesson_progress p WHERE p.lesson_id = l.id AND p.user_id = ?1) AS my_progress`;
-
 /**
  * scope=mine    lessons I started or wrote, most recently practised first (my learning path);
- * scope=library every visible lesson, filterable by level and search text.
+ * scope=library every visible lesson, filterable by level and search text;
+ *               cat=mine lessons I wrote, cat=class lessons of my classes, cat=community lessons written by people.
  */
 learn.get("/lessons", async (c) => {
   const user = c.get("user");
@@ -131,7 +152,7 @@ learn.get("/lessons", async (c) => {
   const level = c.req.query("level") ?? "";
   const q = (c.req.query("q") ?? "").trim().slice(0, 80);
   const cat = (c.req.query("cat") ?? "").slice(0, 20);
-  const visible = user.role === "admin" ? "1 = 1" : "(l.is_public = 1 OR l.user_id = ?1)";
+  const visible = canSee(user);
 
   if (scope === "mine") {
     const { results } = await c.env.DB.prepare(
@@ -149,7 +170,8 @@ learn.get("/lessons", async (c) => {
       WHERE ${visible}
         AND (?2 = '' OR l.level = ?2)
         AND (?3 = '' OR l.title LIKE '%' || ?3 || '%' OR l.topic LIKE '%' || ?3 || '%')
-        AND (?4 = '' OR (?4 = 'community' AND l.course_order IS NULL) OR l.category = ?4)
+        AND (?4 = '' OR (?4 = 'community' AND l.course_order IS NULL) OR (?4 = 'mine' AND l.user_id = ?1)
+             OR (?4 = 'class' AND ${IN_MY_CLASS}) OR l.category = ?4)
       ORDER BY (l.course_order IS NULL), l.course_order, learners DESC, l.created_at DESC LIMIT 200`,
   )
     .bind(user.id, level, q, cat)
@@ -194,9 +216,9 @@ learn.get("/lessons/:id", async (c) => {
   const id = Number(c.req.param("id"));
   const row = await c.env.DB.prepare(
     `SELECT l.*, u.login AS author FROM lessons l JOIN users u ON u.id = l.user_id
-      WHERE l.id = ?1 AND (l.user_id = ?2 OR l.is_public = 1 OR ?3)`,
+      WHERE l.id = ?2 AND ${canSee(user)}`,
   )
-    .bind(id, user.id, user.role === "admin" ? 1 : 0)
+    .bind(user.id, id)
     .first<Record<string, unknown> & { content: string }>();
   if (!row) return c.json({ error: "Không tìm thấy bài học." }, 404);
   const [progress, sentences] = await c.env.DB.batch([
@@ -209,10 +231,16 @@ learn.get("/lessons/:id", async (c) => {
   return c.json({ lesson: { ...row, content: JSON.parse(row.content) }, progress: progress.results, sentences: sentences.results });
 });
 
+/** Public or private: the author of a lesson they wrote, or the admin for any lesson. */
 learn.patch("/lessons/:id", async (c) => {
-  if (c.get("user").role !== "admin") return c.json({ error: "Chỉ quản trị viên mới ẩn/hiện được bài." }, 403);
+  const user = c.get("user");
   const body = await c.req.json<{ is_public?: boolean }>().catch(() => ({}) as never);
-  await c.env.DB.prepare("UPDATE lessons SET is_public = ?1 WHERE id = ?2").bind(body.is_public ? 1 : 0, Number(c.req.param("id"))).run();
+  const row = await c.env.DB.prepare(
+    "UPDATE lessons SET is_public = ?1 WHERE id = ?2 AND (?4 OR (user_id = ?3 AND course_order IS NULL)) RETURNING id",
+  )
+    .bind(body.is_public ? 1 : 0, Number(c.req.param("id")), user.id, user.role === "admin" ? 1 : 0)
+    .first();
+  if (!row) return c.json({ error: "Chỉ tác giả của bài mới ẩn/hiện được bài." }, 403);
   return c.json({ ok: true });
 });
 
@@ -234,7 +262,7 @@ learn.post("/progress", async (c) => {
   if (!STEPS.includes(step) || !Number.isInteger(lessonId)) return c.json({ error: "Dữ liệu không hợp lệ." }, 400);
   const score = Math.max(0, Math.min(100, Math.round(Number(body.score) || 0)));
 
-  const exists = await c.env.DB.prepare("SELECT 1 FROM lessons WHERE id = ?1").bind(lessonId).first();
+  const exists = await c.env.DB.prepare(`SELECT 1 FROM lessons l WHERE l.id = ?2 AND ${canSee(user)}`).bind(user.id, lessonId).first();
   if (!exists) return c.json({ error: "Không tìm thấy bài học." }, 404);
   const prev = await c.env.DB.prepare("SELECT best FROM lesson_progress WHERE user_id = ?1 AND lesson_id = ?2 AND step = ?3")
     .bind(user.id, lessonId, step)
@@ -270,11 +298,10 @@ learn.post("/progress", async (c) => {
 /** XP earned since Monday 00:00 Vietnam time. */
 learn.get("/leaderboard", async (c) => {
   const user = c.get("user");
-  const weekStart = `datetime(date('now', '+7 hours', 'weekday 0', '-6 days'), '-7 hours')`;
   const { results } = await c.env.DB.prepare(
     `SELECT u.id, u.login, u.streak, u.last_active_day, SUM(x.amount) AS week_xp
        FROM xp_events x JOIN users u ON u.id = x.user_id
-      WHERE x.created_at >= ${weekStart} AND u.role != 'blocked'
+      WHERE x.created_at >= ${WEEK_START} AND u.role != 'blocked'
       GROUP BY u.id ORDER BY week_xp DESC LIMIT 30`,
   ).all<{ id: number; login: string; streak: number; last_active_day: string; week_xp: number }>();
   const mine = results.findIndex((r) => r.id === user.id);

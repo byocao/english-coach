@@ -7,10 +7,12 @@ export interface Env {
   WORKERS_AI_MODEL: string; // sentence explanations (free)
   LESSON_MODEL: string; // custom lessons
   GRADE_MODEL: string; // speaking grades
-  LESSON_LIMIT: string; // custom lessons per account (admin unlimited)
-  GRADE_LIMIT: string; // speaking grades per account (admin unlimited)
+  GRADE_LIMIT: string; // speaking grades per account (admin unlimited); free accounts cannot write lessons
   VIP_LESSON_LIMIT: string; // custom lessons per week for VIP accounts
   VIP_GRADE_LIMIT: string; // speaking grades per week for VIP accounts
+  CLASS_LIMIT: string; // classes a VIP account can own (admin unlimited)
+  CLASS_STUDENT_LIMIT: string; // students per class, pending invites included
+  CLASS_TEACHER_LIMIT: string; // co-teachers per class
   MONTHLY_BUDGET_USD: string; // Claude API spend per month before lesson creation and grading pause
 
   // Secrets (wrangler secret put / .dev.vars)
@@ -30,7 +32,8 @@ export interface User {
   ai_used: number;
   lessons_used: number;
   grades_used: number;
-  quota_week: string | null; // VIP only: the week lessons_used / grades_used count from
+  quota_week: string | null;
+  email: string | null; // VIP only: the week lessons_used / grades_used count from
   level: string | null;
   mascot: string | null;
   placed_at: string | null;
