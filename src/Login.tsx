@@ -47,7 +47,7 @@ export function Login({ mode: initial = "login" }: { mode?: "login" | "register"
         </h1>
         <p className="login-tagline">Học tiếng Anh cùng Wanko</p>
         <p className="lead">
-          40 bài học có sẵn từ A1 đến C1. Học từ, nghe, chép chính tả, <b>nói và được AI chấm phát âm</b>, góp ý bằng tiếng Việt.
+          Hơn 80 bài học có sẵn từ A1 đến C1, thêm bài mới mỗi ngày. Học từ, nghe, chép chính tả, <b>nói và được AI chấm phát âm</b>, góp ý bằng tiếng Việt.
         </p>
         <ul className="login-feats">
           {STEPS.map((s) => (

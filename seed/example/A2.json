@@ -1,0 +1,136 @@
+[
+  {
+    "slug": "a2-restaurant",
+    "category": "food",
+    "topic": "Ordering food at a restaurant",
+    "level": "A2",
+    "title": "Table for Two",
+    "summary_vi": "Bạn sẽ luyện cách gọi món, hỏi đồ uống và thanh toán ở nhà hàng.",
+    "sentences": [
+      "Linh and her brother Minh went to a small restaurant in Hanoi.",
+      "The waiter showed them to a table by the window.",
+      "\"Are you ready to order?\" he asked with a smile.",
+      "Linh wanted something light, so she chose a vegetable soup.",
+      "Minh was very hungry, so he ordered grilled chicken with rice.",
+      "\"Would you like anything to drink?\" the waiter asked.",
+      "They both asked for iced tea, and the waiter wrote it down.",
+      "The food arrived quickly, and everything tasted delicious.",
+      "After the meal, Minh asked for the bill and left a small tip."
+    ],
+    "sentences_vi": [
+      "Linh và anh trai Minh đến một nhà hàng nhỏ ở Hà Nội.",
+      "Người phục vụ dẫn họ đến một bàn cạnh cửa sổ.",
+      "\"Hai bạn đã sẵn sàng gọi món chưa ạ?\", anh ấy hỏi với nụ cười.",
+      "Linh muốn ăn món gì đó nhẹ nhàng nên chọn một bát súp rau.",
+      "Minh rất đói nên gọi gà nướng với cơm.",
+      "\"Hai bạn muốn uống gì không ạ?\", người phục vụ hỏi.",
+      "Cả hai đều gọi trà đá, và người phục vụ ghi lại.",
+      "Đồ ăn được mang ra rất nhanh, và món nào cũng ngon.",
+      "Ăn xong, Minh xin hóa đơn và để lại một ít tiền boa."
+    ],
+    "vocabulary": [
+      {
+        "word": "waiter",
+        "ipa": "/ˈweɪtər/",
+        "pos": "noun",
+        "meaning_vi": "nam phục vụ bàn",
+        "example": "The waiter brought us two glasses of water.",
+        "example_vi": "Người phục vụ mang cho chúng tôi hai ly nước."
+      },
+      {
+        "word": "order",
+        "ipa": "/ˈɔːrdər/",
+        "pos": "verb",
+        "meaning_vi": "gọi món",
+        "example": "I would like to order the fish, please.",
+        "example_vi": "Tôi muốn gọi món cá, làm ơn."
+      },
+      {
+        "word": "vegetable",
+        "ipa": "/ˈvedʒtəbəl/",
+        "pos": "noun",
+        "meaning_vi": "rau củ",
+        "example": "My sister eats a vegetable at every meal.",
+        "example_vi": "Chị gái tôi bữa nào cũng ăn rau."
+      },
+      {
+        "word": "hungry",
+        "ipa": "/ˈhʌŋɡri/",
+        "pos": "adjective",
+        "meaning_vi": "đói",
+        "example": "I am hungry because I skipped breakfast.",
+        "example_vi": "Tôi đói vì đã bỏ bữa sáng."
+      },
+      {
+        "word": "delicious",
+        "ipa": "/dɪˈlɪʃəs/",
+        "pos": "adjective",
+        "meaning_vi": "rất ngon",
+        "example": "Your homemade cake is delicious.",
+        "example_vi": "Chiếc bánh nhà làm của bạn rất ngon."
+      },
+      {
+        "word": "bill",
+        "ipa": "/bɪl/",
+        "pos": "noun",
+        "meaning_vi": "hóa đơn",
+        "example": "Can we have the bill, please?",
+        "example_vi": "Cho chúng tôi xin hóa đơn nhé?"
+      },
+      {
+        "word": "tip",
+        "ipa": "/tɪp/",
+        "pos": "noun",
+        "meaning_vi": "tiền boa",
+        "example": "In some countries, you must leave a tip.",
+        "example_vi": "Ở một số nước, bạn phải để lại tiền boa."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Where did Linh and Minh sit?",
+        "options": [
+          "Next to the door",
+          "By the window",
+          "In the garden",
+          "At the bar"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Người phục vụ dẫn họ đến một bàn cạnh cửa sổ."
+      },
+      {
+        "question": "Why did Minh order grilled chicken?",
+        "options": [
+          "He did not like soup",
+          "It was cheap",
+          "He was very hungry",
+          "The waiter suggested it"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Minh rất đói nên gọi gà nướng với cơm."
+      },
+      {
+        "question": "What did they drink?",
+        "options": [
+          "Orange juice",
+          "Coffee",
+          "Water",
+          "Iced tea"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Cả hai đều gọi trà đá."
+      },
+      {
+        "question": "What did Minh do at the end?",
+        "options": [
+          "He paid the bill and left a tip",
+          "He complained about the food",
+          "He ordered more soup",
+          "He took photos of the food"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Minh xin hóa đơn và để lại một ít tiền boa."
+      }
+    ]
+  }
+]

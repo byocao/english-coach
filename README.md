@@ -3,7 +3,7 @@
 [![CI/CD](https://github.com/byocao/english-coach/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/byocao/english-coach/actions/workflows/ci-cd.yml)
 
 Wancha is an English practice app for Vietnamese speakers: **reading, listening, dictation and speaking**, with
-explanations in Vietnamese. A built-in 40-lesson course goes from A1 to C1, an AI can write extra lessons on any
+explanations in Vietnamese. A built-in course goes from A1 to C1, an AI can write extra lessons on any
 topic, and speaking is graded by speech recognition plus an AI coach. It runs on Cloudflare Workers.
 
 Live at **https://wancha.byocao.com**.
@@ -12,7 +12,7 @@ Live at **https://wancha.byocao.com**.
 
 | Area | What it does |
 |---|---|
-| Course | 40 built-in lessons, A1 → C1, across 10 topics (daily life, food, travel, work, study, tech, health, fun, nature, people). Each lesson is a node on a learning path with 6 steps. |
+| Course | A built-in course, A1 → C1, across 10 topics (daily life, food, travel, work, study, tech, health, fun, nature, people). Each lesson is a node on a learning path with 6 steps. |
 | 6 steps per lesson | Vocabulary (flashcards, matching, fill the gap, listen and pick) · Listen and order the words · Dictation · Speaking · Reading · Quiz |
 | Practice loop | A wrong answer gives a hint and a retry before the answer is shown; missed items come back in a review round at the end of the step. |
 | Library | The course and every AI-written lesson, filterable by topic and level. Typing a topic suggests similar existing lessons first. |
@@ -64,7 +64,7 @@ CPU limit). Five wrong passwords lock an account for 10 minutes. The admin accou
 npm install
 cp .dev.vars.example .dev.vars        # fill in ADMIN_LOGIN, ADMIN_PASSWORD and ANTHROPIC_API_KEY
 npm run db:migrate:local
-npm run db:seed:local                 # load the 40 built-in lessons
+npm run db:seed:local                 # load the sample course (seed/example)
 npm run dev                           # http://localhost:5173
 ```
 
@@ -126,13 +126,17 @@ Worker secrets (`wrangler secret put`, or `.dev.vars` locally; never committed):
 
 ## Built-in course
 
-Lessons live in `seed/lessons/A1.json` … `C1.json` (8 lessons each), with a Vietnamese translation for every
-sentence and example. After editing:
+The live site's lessons are not published here. `seed/example/` has one sample lesson per level so you can see the
+format; put your own course in `seed/live/<LEVEL>.json` (gitignored) and the scripts will use it instead. Every
+sentence and example carries a Vietnamese translation. Details in [`seed/README.md`](seed/README.md).
 
 ```bash
 npm run seed:check          # validates format, sentence length, vocabulary appearing in the passage, …
-npm run db:seed:remote      # upserts into D1 (safe to run repeatedly)
+npm run db:seed:remote      # upserts into D1 by slug (safe to run repeatedly)
 ```
+
+The live course grows by 3 lessons per level every day through a scheduled Claude Code task; the method is in
+[`scripts/daily-lessons.md`](scripts/daily-lessons.md).
 
 ## Live2D models and credits
 
