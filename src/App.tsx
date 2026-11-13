@@ -338,12 +338,19 @@ function MaintenanceCard() {
   );
 }
 
+/** "thứ Hai 17/11" for the Monday a weekly allowance comes back. */
+function resetDay(iso: string) {
+  return new Date(iso).toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "numeric", timeZone: "Asia/Ho_Chi_Minh" });
+}
+
 function QuotaCard({ me }: { me: Me }) {
-  const { lessons, grades } = me.quota;
+  const { lessons, grades, period, resetsAt } = me.quota;
+  const weekly = period === "week";
   return (
     <section className="card quota">
       <header>
-        <h3>Lượt AI của bạn</h3>
+        <h3>{weekly ? "Lượt AI tuần này" : "Lượt AI của bạn"}</h3>
+        {weekly && <span className="role vip">VIP</span>}
       </header>
       <span className="small">
         Tạo bài riêng: còn <b>{lessons.left}</b>/{lessons.limit}
@@ -353,6 +360,7 @@ function QuotaCard({ me }: { me: Me }) {
         Chấm điểm phát âm: còn <b>{grades.left}</b>/{grades.limit}
       </span>
       <Meter value={grades.left} max={grades.limit} tone="violet" />
+      {weekly && resetsAt && <span className="small muted">Lượt mới vào {resetDay(resetsAt)}.</span>}
     </section>
   );
 }
@@ -378,10 +386,11 @@ function LockedDialog({ err, onClose }: { err: ApiError; onClose: () => void }) 
             : err.code === "maintenance"
               ? "Chức năng tạo bài và chấm điểm phát âm đang bảo trì. Bạn vẫn học được toàn bộ khoá học có sẵn."
               : err.code === "lesson_limit"
-                ? "Bạn đã dùng hết lượt tạo bài học riêng bằng AI. Bạn vẫn học được toàn bộ khoá học và các bài trong thư viện."
-                : "Bạn đã dùng hết lượt chấm điểm phát âm. Bạn vẫn luyện từ vựng, nghe, chép chính tả, đọc và thử thách."}
+                ? `Bạn đã dùng hết lượt tạo bài học riêng bằng AI${err.resetsAt ? " của tuần này" : ""}. Bạn vẫn học được toàn bộ khoá học và các bài trong thư viện.`
+                : `Bạn đã dùng hết lượt chấm điểm phát âm${err.resetsAt ? " của tuần này" : ""}. Bạn vẫn luyện từ vựng, nghe, chép chính tả, đọc và thử thách.`}
         </p>
-        {err.code !== "maintenance" && (
+        {err.resetsAt && <p>Lượt mới sẽ có vào {resetDay(err.resetsAt)}.</p>}
+        {err.code !== "maintenance" && !err.resetsAt && (
           <p>
             Muốn dùng tiếp, hãy liên hệ{" "}
             <a href={contact} target="_blank" rel="noreferrer">
@@ -917,7 +926,8 @@ function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
             Gõ một chủ đề bất kỳ, AI viết đoạn văn kèm từ vựng và câu hỏi rồi lưu vào thư viện cho mọi người.
             {me.maintenance
               ? " Chức năng này đang bảo trì."
-              : me.quota.limited && ` Tốn 1 lượt (còn ${me.quota.lessons.left}/${me.quota.lessons.limit}).`}
+              : me.quota.limited &&
+                ` Tốn 1 lượt (còn ${me.quota.lessons.left}/${me.quota.lessons.limit}${me.quota.period === "week" ? " tuần này" : ""}).`}
           </p>
         </div>
       </div>
@@ -1261,8 +1271,10 @@ function CompanionPicker({ me, onChange }: { me: Me; onChange: () => void }) {
   );
 }
 
+const ROLE_CHOICES = ["trial", "member", "vip", "blocked"] as const;
+
 function roleLabel(r: string) {
-  return { admin: "Quản trị viên · Claude", member: "Thành viên", trial: "Dùng thử", blocked: "Đã khoá" }[r] ?? r;
+  return { admin: "Quản trị viên · Claude", vip: "VIP", member: "Thành viên", trial: "Dùng thử", blocked: "Đã khoá" }[r] ?? r;
 }
 
 function lastDays(n: number): string[] {
@@ -1349,6 +1361,7 @@ interface AdminUser {
 interface AdminData {
   users: AdminUser[];
   limits: { lessons: number; grades: number };
+  vipLimits: { lessons: number; grades: number };
   spend: {
     usd: number;
     budget: number;
@@ -1367,6 +1380,17 @@ function Admin() {
     load();
   };
   if (!data) return <Loading />;
+  const allowance = (u: AdminUser, what: "lessons" | "grades") => {
+    const used = what === "lessons" ? u.lessons_used : u.grades_used;
+    if (u.role === "admin") return used;
+    const limit = (u.role === "vip" ? data.vipLimits : data.limits)[what];
+    return (
+      <span className="nowrap">
+        {used}/{limit}
+        {u.role === "vip" && <span className="muted small"> /tuần</span>}
+      </span>
+    );
+  };
   return (
     <div className="stack-lg">
       <h1 className="page-title">Quản trị</h1>
@@ -1403,8 +1427,9 @@ function Admin() {
         <h2 className="card-title">Người dùng</h2>
         <p className="muted small">
           Mỗi tài khoản (trừ quản trị viên) được tạo {data.limits.lessons} bài riêng bằng Claude Opus và chấm điểm phát âm{" "}
-          {data.limits.grades} lần bằng Claude Haiku. Khi chi phí tháng chạm {usd(data.spend.budget)}, hai chức năng này
-          chuyển sang "bảo trì". Bài học: mở bài để ẩn hoặc xoá.
+          {data.limits.grades} lần bằng Claude Haiku. Tài khoản VIP được {data.vipLimits.lessons} bài và{" "}
+          {data.vipLimits.grades} lần chấm mỗi tuần (làm mới vào thứ Hai). Khi chi phí tháng chạm {usd(data.spend.budget)},
+          hai chức năng này chuyển sang "bảo trì". Bài học: mở bài để ẩn hoặc xoá.
         </p>
         <div className="table-wrap">
           <table className="table">
@@ -1429,27 +1454,29 @@ function Admin() {
                   <td>
                     <span className={`role ${u.role}`}>{u.role}</span>
                   </td>
-                  <td>{u.role === "admin" ? u.lessons_used : `${u.lessons_used}/${data.limits.lessons}`}</td>
-                  <td>{u.role === "admin" ? u.grades_used : `${u.grades_used}/${data.limits.grades}`}</td>
+                  <td>{allowance(u, "lessons")}</td>
+                  <td>{allowance(u, "grades")}</td>
                   <td>{u.xp}</td>
                   <td>{u.attempts}</td>
                   <td className="small muted">{u.last_seen_at ? new Date(u.last_seen_at + "Z").toLocaleString("vi-VN") : "–"}</td>
                   <td className="actions">
                     {u.role !== "admin" && (
                       <>
-                        {u.role === "blocked" && (
-                          <button className="btn small" onClick={() => update(u.id, { role: "trial" })}>
-                            Mở khoá
-                          </button>
-                        )}
+                        <select
+                          className="role-select"
+                          value={u.role}
+                          aria-label={`Quyền của ${u.login}`}
+                          onChange={(e) => update(u.id, { role: e.target.value })}
+                        >
+                          {ROLE_CHOICES.map((r) => (
+                            <option key={r} value={r}>
+                              {roleLabel(r)}
+                            </option>
+                          ))}
+                        </select>
                         {(u.lessons_used > 0 || u.grades_used > 0) && (
                           <button className="btn small ghost" onClick={() => update(u.id, { resetUsage: true })}>
                             Cấp lại lượt
-                          </button>
-                        )}
-                        {u.role !== "blocked" && (
-                          <button className="btn small danger" onClick={() => update(u.id, { role: "blocked" })}>
-                            Khoá
                           </button>
                         )}
                       </>

@@ -36,11 +36,14 @@ Browser (React 19, Vite) ──► Cloudflare Worker (Hono)
 
 ### AI usage and limits
 
-| Feature | Model | Allowance per account (the admin is unlimited) |
-|---|---|---|
-| Write a custom lesson | Claude (`LESSON_MODEL`) | `LESSON_LIMIT` lessons |
-| Grade a spoken sentence | Whisper transcribes, Claude (`GRADE_MODEL`) grades | `GRADE_LIMIT` grades |
-| Explain a sentence | Workers AI (`WORKERS_AI_MODEL`) | Unlimited, within Cloudflare's free daily allowance |
+| Feature | Model | Trial / member account | VIP account (per week) |
+|---|---|---|---|
+| Write a custom lesson | Claude (`LESSON_MODEL`) | `LESSON_LIMIT` lessons | `VIP_LESSON_LIMIT` lessons |
+| Grade a spoken sentence | Whisper transcribes, Claude (`GRADE_MODEL`) grades | `GRADE_LIMIT` grades | `VIP_GRADE_LIMIT` grades |
+| Explain a sentence | Workers AI (`WORKERS_AI_MODEL`) | Unlimited, within Cloudflare's free daily allowance | Unlimited |
+
+The admin is unlimited. Trial and member allowances are per account and never reset; VIP allowances start again
+every Monday at 00:00 Vietnam time. The admin gives or removes VIP (or blocks an account) from the users table.
 
 Every Claude API call is priced from its token usage and stored in `ai_spend`. When a calendar month's spend
 reaches `MONTHLY_BUDGET_USD`, lesson writing and grading show a maintenance notice for everyone until the next
@@ -108,6 +111,8 @@ Plain settings live in `wrangler.jsonc` → `vars`:
 | `GRADE_MODEL` | Claude model that grades speaking |
 | `LESSON_LIMIT` | Custom lessons per account |
 | `GRADE_LIMIT` | Speaking grades per account |
+| `VIP_LESSON_LIMIT` | Custom lessons per week for VIP accounts |
+| `VIP_GRADE_LIMIT` | Speaking grades per week for VIP accounts |
 | `MONTHLY_BUDGET_USD` | Monthly Claude API spend before lesson writing and grading pause |
 | `WORKERS_AI_MODEL` | Workers AI model for sentence explanations |
 

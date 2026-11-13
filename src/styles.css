@@ -1860,6 +1860,23 @@ code {
   background: var(--good-soft);
   color: var(--good);
 }
+.role.vip {
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+}
+.nowrap {
+  white-space: nowrap;
+}
+.role-select {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.3rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
 
 /* ---- exercises -------------------------------------------------------------------------------- */
 
