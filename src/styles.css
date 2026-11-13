@@ -2944,6 +2944,59 @@ code {
   background: var(--surface);
 }
 
+/* ---- pager -------------------------------------------------------------------------------- */
+
+.pager {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+}
+.pager-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+}
+.pager-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.6rem;
+  border-radius: 12px;
+  border: 2px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-weight: 800;
+  box-shadow: 0 3px 0 var(--line-strong);
+}
+.pager-btn:hover:not(:disabled):not(.on) {
+  border-color: var(--accent-line);
+  color: var(--brand);
+}
+.pager-btn.on {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand);
+  box-shadow: 0 3px 0 var(--brand);
+  cursor: default;
+}
+.pager-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.pager-gap {
+  min-width: 1.4rem;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 800;
+}
+.lib-grid.is-busy {
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+
 /* ---- support -------------------------------------------------------------------------------- */
 
 .support-grid {
