@@ -278,7 +278,7 @@ export function Placement({ me, onDone }: { me: Me; onDone: () => void }) {
             ))}
           </div>
           <button className="btn primary big" onClick={start}>
-            BẮT ĐẦU <ArrowRight size={20} weight="bold" />
+            Bắt đầu <ArrowRight size={20} weight="bold" />
           </button>
         </main>
       )}
@@ -319,7 +319,7 @@ export function Placement({ me, onDone }: { me: Me; onDone: () => void }) {
           <footer className="ex-foot idle">
             <div className="ex-foot-inner">
               <button className="btn ghost" onClick={() => answer(null)}>
-                MÌNH CHƯA BIẾT
+                Mình chưa biết
               </button>
               <button className="btn primary wide" disabled={sel === null} onClick={() => answer(sel)}>
                 TIẾP
@@ -352,7 +352,7 @@ export function Placement({ me, onDone }: { me: Me; onDone: () => void }) {
             ))}
           </div>
           <button className="btn primary big" onClick={save} disabled={saving}>
-            HỌC TỪ CẤP {LEVELS[pick].key} <ArrowRight size={20} weight="bold" />
+            Học từ cấp {LEVELS[pick].key} <ArrowRight size={20} weight="bold" />
           </button>
         </main>
       )}
