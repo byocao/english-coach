@@ -2428,10 +2428,54 @@ code {
   border: 2px dashed var(--line-strong);
 }
 .wb-slot {
+  position: relative;
   min-width: 56px;
   min-height: 46px;
   touch-action: none;
   user-select: none;
+  /* The translate property (not transform), so stepping aside never fights the FLIP glide, which animates transform. */
+  transition: translate 0.18s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.wb-slot.push-left {
+  translate: -6px 0;
+}
+.wb-slot.push-right {
+  translate: 6px 0;
+}
+/* The insertion caret, in the gap before (or after the last) word. */
+.wb-slot.ins-before::before,
+.wb-slot.ins-after::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  width: 4px;
+  border-radius: 4px;
+  background: var(--brand);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--brand) 80%, transparent);
+  animation: caret-pulse 0.9s ease-in-out infinite;
+  pointer-events: none;
+}
+.wb-slot.ins-before::before {
+  left: -12px;
+}
+.wb-slot.ins-after::after {
+  right: -12px;
+}
+@keyframes caret-pulse {
+  50% {
+    opacity: 0.45;
+    transform: scaleY(0.8);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wb-slot {
+    transition: none;
+  }
+  .wb-slot.ins-before::before,
+  .wb-slot.ins-after::after {
+    animation: none;
+  }
 }
 .wb-slot.empty {
   display: inline-grid;
@@ -2497,7 +2541,7 @@ code {
   position: fixed;
   z-index: 100;
   pointer-events: none;
-  transform: translate(-50%, -60%) rotate(-3deg) scale(1.08);
+  transform: translate(-50%, -115%) rotate(-3deg) scale(1.08);
   box-shadow: var(--shadow-lg);
   animation: none;
 }

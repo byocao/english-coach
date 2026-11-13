@@ -15,7 +15,7 @@ import {
   Translate,
   X,
 } from "@phosphor-icons/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { api, type Grade, type LessonContent, type LessonDetail, type Me, type ProgressResult, type Quota, type Step } from "./api";
 import { alignWords, norm, speak, startRecording, stopSpeaking, words, type Recorder } from "./audio";
 import { Mascot, useCompanion, type Mood } from "./Mascot";
@@ -693,8 +693,42 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
   const placed = new Set(b.slots.filter((x): x is number => x !== null));
   const filled = placed.size;
 
+  // ---- FLIP: every word that changes place glides from where it was ----
+  const flipFrom = useRef<Map<number, DOMRect> | null>(null);
+  const tileEl = (id: number) =>
+    document.querySelector<HTMLElement>(`[data-slot-tile="${id}"]`) ??
+    document.querySelector<HTMLElement>(`[data-bank-tile="${id}"]:not(.used)`);
+  /** Remembers where each word is before a change; a dropped word starts from the floating copy instead. */
+  const remember = (dropped?: Dropped) => {
+    const m = new Map<number, DOMRect>();
+    for (const t of bank) {
+      const el = tileEl(t.id);
+      if (el) m.set(t.id, el.getBoundingClientRect());
+    }
+    if (dropped) m.set(dropped.id, dropped.rect);
+    flipFrom.current = m;
+  };
+  useLayoutEffect(() => {
+    const m = flipFrom.current;
+    flipFrom.current = null;
+    if (!m || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for (const [id, r] of m) {
+      const el = tileEl(id);
+      if (!el) continue;
+      const n = el.getBoundingClientRect();
+      const dx = r.left - n.left;
+      const dy = r.top - n.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) continue;
+      el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }], {
+        duration: 340,
+        easing: "cubic-bezier(.2, .9, .3, 1.15)",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stored]);
+
   /** Puts a tile into slot `to` (default: the selected slot, else the first empty one). Moving between slots swaps. */
-  const put = (id: number, to: number | null = b.sel ?? b.slots.indexOf(null)) => {
+  const put = (id: number, to: number | null = b.sel ?? b.slots.indexOf(null), dropped?: Dropped) => {
     if (to === null || to < 0 || b.locked[to]) return;
     const slots = [...b.slots];
     const from = slots.indexOf(id);
@@ -705,14 +739,41 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
     }
     slots[to] = id; // a tile pushed out of `to` by a bank tile simply goes back to the bank
     sfx.tap();
+    remember(dropped);
     update({ slots, sel: null });
   };
-  const takeOut = (k: number) => {
+  /**
+   * Inserts a tile just before slot `before` (0..length). Locked slots stay put; the unlocked words from there on
+   * shift towards the nearest empty slot (often the one the tile came from). With no empty slot, the last word
+   * goes back to the bank.
+   */
+  const insertAt = (id: number, before: number, dropped?: Dropped) => {
+    const free = target.map((_, k) => k).filter((k) => !b.locked[k]);
+    const words = free.map((k) => b.slots[k]);
+    const from = words.indexOf(id);
+    if (from >= 0) words[from] = null; // leave a hole where it was
+    const at = free.filter((k) => k < before).length;
+    words.splice(at, 0, id);
+    const after = words.indexOf(null, at + 1);
+    const hole = after >= 0 ? after : words.lastIndexOf(null, at - 1);
+    words.splice(hole >= 0 ? hole : words.length - 1, 1);
+    const slots = [...b.slots];
+    free.forEach((k, j) => (slots[k] = words[j]));
+    if (slots.every((x, k) => x === b.slots[k])) return;
+    sfx.tap();
+    remember(dropped);
+    update({ slots, sel: null });
+  };
+  const takeOut = (k: number, dropped?: Dropped) => {
     if (b.locked[k] || b.slots[k] === null) return;
     sfx.tap();
+    remember(dropped);
     update({ slots: b.slots.map((x, j) => (j === k ? null : x)), sel: null });
   };
-  const clearAll = () => update({ slots: b.slots.map((x, k) => (b.locked[k] ? x : null)), sel: null });
+  const clearAll = () => {
+    remember();
+    update({ slots: b.slots.map((x, k) => (b.locked[k] ? x : null)), sel: null });
+  };
 
   /** Fills one random empty or wrong slot with the right word and locks it. */
   const hint = () => {
@@ -733,6 +794,7 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
     slots[k] = id;
     sfx.correct();
     void speak(target[k], { rate: 0.95 });
+    remember();
     update({ slots, locked: b.locked.map((l, j) => l || j === k), hints: b.hints + 1, sel: null });
   };
 
@@ -747,19 +809,38 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
   /** Try again: the words already in the right place stay (locked); only the red ones go back to the bank. */
   const retry = () => {
     const m = b.marks ?? [];
+    remember();
     update({ slots: b.slots.map((x, k) => (m[k] ? x : null)), locked: b.locked.map((l, k) => l || !!m[k]), marks: null, sel: null });
     run.retry();
   };
 
   // ---- Drag and drop (mouse and touch, via pointer events) ----
   const [drag, setDrag] = useState<{ id: number; x: number; y: number } | null>(null);
-  const [over, setOver] = useState<number | "bank" | null>(null);
+  const [over, setOver] = useState<Drop>(null);
   const dragged = useRef(false);
-  const dropTarget = (x: number, y: number): number | "bank" | null => {
+  const ghost = useRef<HTMLDivElement>(null);
+  /**
+   * Where a drop at (x, y) lands: an empty slot is filled; on a word, its left half inserts before it and its right
+   * half after it; in a gap between slots, the nearest slot decides.
+   */
+  const dropAt = (x: number, y: number, id: number): Drop => {
     const el = document.elementFromPoint(x, y);
-    const slot = el?.closest<HTMLElement>("[data-slot]");
-    if (slot) return Number(slot.dataset.slot);
-    return el?.closest(".wb-bank") ? "bank" : null;
+    if (el?.closest(".wb-bank")) return "bank";
+    let slot = el?.closest<HTMLElement>("[data-slot]") ?? null;
+    if (!slot && el?.closest(".wb-slots")) {
+      let best = Infinity;
+      for (const s of document.querySelectorAll<HTMLElement>("[data-slot]")) {
+        const r = s.getBoundingClientRect();
+        const d = Math.hypot(Math.max(r.left - x, 0, x - r.right), Math.max(r.top - y, 0, y - r.bottom) * 3);
+        if (d < best) [best, slot] = [d, s];
+      }
+    }
+    if (!slot) return null;
+    const k = Number(slot.dataset.slot);
+    if (b.slots[k] === null) return b.locked[k] ? null : { slot: k };
+    if (b.slots[k] === id) return null;
+    const r = slot.getBoundingClientRect();
+    return { before: x < r.left + r.width / 2 ? k : k + 1 };
   };
   const startDrag = (e: React.PointerEvent, id: number) => {
     if (!idle || e.button !== 0) return;
@@ -773,21 +854,26 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
       dragged.current = true;
       ev.preventDefault();
       setDrag({ id, x: ev.clientX, y: ev.clientY });
-      setOver(dropTarget(ev.clientX, ev.clientY));
+      setOver(dropAt(ev.clientX, ev.clientY, id));
     };
     const up = (ev: PointerEvent) => {
       removeEventListener("pointermove", move);
       removeEventListener("pointerup", up);
       removeEventListener("pointercancel", up);
+      // The floating copy is still on screen here: the dropped word glides on from where it was let go.
+      const box = ghost.current?.getBoundingClientRect();
+      const dropped = box ? { id, rect: box } : undefined;
       setDrag(null);
       setOver(null);
       if (!moving) return;
       // The click that may follow this pointerup is swallowed by `tapped`; after that, taps count again.
       setTimeout(() => (dragged.current = false), 0);
-      const to = dropTarget(ev.clientX, ev.clientY);
+      const to = dropAt(ev.clientX, ev.clientY, id);
       const from = b.slots.indexOf(id);
-      if (typeof to === "number") put(id, to);
-      else if (to === "bank" && from >= 0) takeOut(from);
+      if (to === "bank") {
+        if (from >= 0) takeOut(from, dropped);
+      } else if (to && "slot" in to) put(id, to.slot, dropped);
+      else if (to) insertAt(id, to.before, dropped);
     };
     addEventListener("pointermove", move, { passive: false });
     addEventListener("pointerup", up);
@@ -850,12 +936,16 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
       <div className="wb-slots" role="group" aria-label={`Câu có ${target.length} từ`}>
         {target.map((_, k) => {
           const id = b.slots[k];
+          // While inserting: a caret in the gap, and the two neighbours step aside.
+          const ins = over && over !== "bank" && "before" in over ? over.before : -1;
           const cls = [
             "wb-slot",
             id === null ? "empty" : "tile",
             b.locked[k] ? "locked" : "",
             b.sel === k ? "sel" : "",
-            over === k ? "over" : "",
+            over && over !== "bank" && "slot" in over && over.slot === k ? "over" : "",
+            ins === k ? "push-right ins-before" : "",
+            ins === k + 1 ? (k === target.length - 1 ? "push-left ins-after" : "push-left") : "",
             b.marks ? (b.marks[k] ? "right" : "wrong") : "",
             drag && drag.id === id ? "dragging" : "",
           ]
@@ -865,6 +955,7 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
             <button
               key={k}
               data-slot={k}
+              data-slot-tile={id ?? undefined}
               className={cls}
               disabled={!idle || b.locked[k]}
               aria-label={id === null ? `Ô ${k + 1}, trống` : `Ô ${k + 1}: ${textOf(id)}`}
@@ -898,6 +989,7 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
           return (
             <button
               key={t.id}
+              data-bank-tile={t.id}
               className={used ? "tile used" : drag?.id === t.id ? "tile dragging" : "tile"}
               disabled={used || !idle}
               onPointerDown={(e) => startDrag(e, t.id)}
@@ -914,13 +1006,18 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
 
 
       {drag && (
-        <div className="tile wb-ghost" style={{ left: drag.x, top: drag.y }} aria-hidden="true">
+        <div ref={ghost} className="tile wb-ghost" style={{ left: drag.x, top: drag.y }} aria-hidden="true">
           {bank[drag.id].text}
         </div>
       )}
     </ExShell>
   );
 }
+
+/** Where a dragged word would land: fill an empty slot, insert before slot `before` (0..length), or the bank. */
+type Drop = { slot: number } | { before: number } | "bank" | null;
+/** A word just dropped, and the box of its floating copy at that moment. */
+type Dropped = { id: number; rect: DOMRect };
 
 interface Board {
   key: number;
