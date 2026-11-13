@@ -1,0 +1,25 @@
+name: Đề xuất tính năng
+description: Bạn muốn Wancha có thêm gì, hoặc làm khác đi chỗ nào?
+title: "[Góp ý] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Mọi ý tưởng đều đáng giá! Issue trên GitHub **ai cũng xem được**: đừng ghi mật khẩu hay thông tin cá nhân.
+  - type: textarea
+    id: need
+    attributes:
+      label: Bạn muốn có gì?
+      placeholder: "Ví dụ: nhắc học mỗi tối lúc 9 giờ."
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Vì sao nó giúp bạn học tốt hơn?
+  - type: input
+    id: device
+    attributes:
+      label: Bạn hay học trên thiết bị nào?
+      placeholder: "Ví dụ: điện thoại Android"

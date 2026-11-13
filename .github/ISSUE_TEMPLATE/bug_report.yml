@@ -1,0 +1,44 @@
+name: Báo lỗi
+description: Ứng dụng chạy sai, hiện thông báo lỗi hoặc không dùng được.
+title: "[Lỗi] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Cảm ơn bạn đã báo lỗi! Issue trên GitHub **ai cũng xem được**: đừng ghi mật khẩu, email hay thông tin cá nhân.
+        Chuyện riêng tư (tài khoản, nâng cấp VIP…) thì gửi email tới byocao@gmail.com.
+  - type: textarea
+    id: what
+    attributes:
+      label: Chuyện gì đã xảy ra?
+      placeholder: "Ví dụ: bấm \"Luyện nói\" thì trang trắng, không ghi âm được."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Các bước để gặp lại lỗi
+      placeholder: |
+        1. Mở bài ...
+        2. Bấm ...
+        3. Thấy ...
+  - type: textarea
+    id: expected
+    attributes:
+      label: Bạn mong điều gì xảy ra?
+  - type: input
+    id: page
+    attributes:
+      label: Trang bị lỗi
+      placeholder: https://wancha.byocao.com/#/...
+  - type: input
+    id: device
+    attributes:
+      label: Thiết bị và trình duyệt
+      placeholder: "Ví dụ: iPhone 13, Safari"
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Ảnh chụp màn hình (nếu có)
+      description: Kéo thả ảnh vào đây. Che tên đăng nhập nếu không muốn người khác thấy.
