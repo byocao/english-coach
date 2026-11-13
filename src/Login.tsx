@@ -3,8 +3,8 @@ import { api } from "./api";
 import { MASCOT_CREDIT, Mascot } from "./Mascot";
 import { Fx, STEPS } from "./meta";
 
-export function Login() {
-  const [mode, setMode] = useState<"login" | "register">("login");
+export function Login({ mode: initial = "login" }: { mode?: "login" | "register" }) {
+  const [mode, setMode] = useState<"login" | "register">(initial);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -28,10 +28,14 @@ export function Login() {
   const switchTo = (m: "login" | "register") => {
     setMode(m);
     setError("");
+    history.replaceState(null, "", `#/${m}`);
   };
 
   return (
     <div className="login-page">
+      <a className="login-back" href="#/">
+        ← Trang chủ
+      </a>
       <div className="login-hero">
         <Mascot name="wanko" mood="cheer" className="login-mascot" />
         <p className="login-bubble">Gâu! Mình là Wanko. Cùng học tiếng Anh mỗi ngày nhé!</p>

@@ -24,6 +24,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, onApiError, type ApiError, type LessonDetail, type LessonRow, type Me } from "./api";
 import { englishVoices, isNaturalVoice, onVoicesChanged, preferredVoice, setPreferredVoice, speak } from "./audio";
 import { Exercise } from "./Exercise";
+import { Landing } from "./Landing";
 import { Login } from "./Login";
 import { COMPANIONS, CompanionContext, MASCOT_CREDIT, Mascot, availableCompanions, useCompanion, type MascotName } from "./Mascot";
 import { Placement } from "./Placement";
@@ -39,7 +40,9 @@ type Route =
   | { name: "rank" }
   | { name: "me" }
   | { name: "placement" }
-  | { name: "admin" };
+  | { name: "admin" }
+  | { name: "login" }
+  | { name: "register" };
 
 function parseRoute(): Route {
   const h = location.hash.replace(/^#\/?/, "");
@@ -52,6 +55,8 @@ function parseRoute(): Route {
   if (h === "me") return { name: "me" };
   if (h === "admin") return { name: "admin" };
   if (h === "placement") return { name: "placement" };
+  if (h === "login") return { name: "login" };
+  if (h === "register") return { name: "register" };
   return { name: "learn" };
 }
 
@@ -103,7 +108,15 @@ export function App() {
         <span>Đang mở sách…</span>
       </div>
     );
-  if (me === null) return <Login />;
+  // Signed out: a public landing page, with sign-in and sign-up on their own page.
+  if (me === null) {
+    if (route.name === "login" || route.name === "register") return <Login mode={route.name} />;
+    return <Landing />;
+  }
+  if (route.name === "login" || route.name === "register") {
+    location.replace("#/");
+    return null;
+  }
 
   const companion = (me.user.mascot as MascotName) || "wanko";
 
