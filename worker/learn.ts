@@ -1,6 +1,7 @@
 // Shared lesson library, per-step progress, XP, streaks and the leaderboard.
 import { Hono } from "hono";
 import type { AppEnv, Env, User } from "./env";
+import { budgetUsd, monthSpend } from "./claude";
 import { quota } from "./quota";
 
 export const STEPS = ["words", "listen", "dictation", "speak", "read", "quiz"] as const;
@@ -64,16 +65,21 @@ function gameView(g: Gamer) {
 
 learn.get("/me", async (c) => {
   const user = c.get("user");
-  let bridgeOnline: boolean | null = null;
-  if (user.role === "admin") {
-    bridgeOnline = (await c.env.BRIDGE.get(c.env.BRIDGE.idFromName("bridge")).status()).online;
-  }
-  const g = await gamer(c.env, user.id);
-  return c.json({ user, quota: quota(c.env, user), contact: c.env.CONTACT_URL, bridgeOnline, game: gameView(g) });
+  const [g, spent] = await Promise.all([gamer(c.env, user.id), monthSpend(c.env)]);
+  const budget = budgetUsd(c.env);
+  return c.json({
+    user,
+    quota: quota(c.env, user),
+    contact: c.env.CONTACT_URL,
+    // Lesson creation and grading pause for everyone once the month's Claude spend reaches the budget.
+    maintenance: spent >= budget,
+    spend: user.role === "admin" ? { usd: spent, budget } : null,
+    game: gameView(g),
+  });
 });
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1"];
-const MASCOTS = ["wanko", "tororo", "hijiki", "hiyori", "haru"];
+const MASCOTS = ["wanko", "tororo", "hijiki", "fox"];
 
 /** Daily goal, starting level (placement=true when it comes from the placement test), companion. */
 learn.patch("/me", async (c) => {

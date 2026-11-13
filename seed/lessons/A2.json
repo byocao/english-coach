@@ -1,138 +1,1084 @@
 [
-{
-"slug":"a2-restaurant","category":"food","topic":"Ordering food at a restaurant","level":"A2","title":"Table for Two",
-"summary_vi":"Bạn sẽ luyện cách gọi món, hỏi đồ uống và thanh toán ở nhà hàng.",
-"sentences":["Linh and her brother Minh went to a small restaurant in Hanoi.","The waiter showed them to a table by the window.","\"Are you ready to order?\" he asked with a smile.","Linh wanted something light, so she chose a vegetable soup.","Minh was very hungry, so he ordered grilled chicken with rice.","\"Would you like anything to drink?\" the waiter asked.","They both asked for iced tea, and the waiter wrote it down.","The food arrived quickly, and everything tasted delicious.","After the meal, Minh asked for the bill and left a small tip."],
-"vocabulary":[
-{"word":"waiter","ipa":"/ˈweɪtər/","pos":"noun","meaning_vi":"nam phục vụ bàn","example":"The waiter brought us two glasses of water."},
-{"word":"order","ipa":"/ˈɔːrdər/","pos":"verb","meaning_vi":"gọi món","example":"I would like to order the fish, please."},
-{"word":"vegetable","ipa":"/ˈvedʒtəbəl/","pos":"noun","meaning_vi":"rau củ","example":"My sister eats a vegetable at every meal."},
-{"word":"hungry","ipa":"/ˈhʌŋɡri/","pos":"adjective","meaning_vi":"đói","example":"I am hungry because I skipped breakfast."},
-{"word":"delicious","ipa":"/dɪˈlɪʃəs/","pos":"adjective","meaning_vi":"rất ngon","example":"Your homemade cake is delicious."},
-{"word":"bill","ipa":"/bɪl/","pos":"noun","meaning_vi":"hóa đơn","example":"Can we have the bill, please?"},
-{"word":"tip","ipa":"/tɪp/","pos":"noun","meaning_vi":"tiền boa","example":"In some countries, you must leave a tip."}],
-"questions":[
-{"question":"Where did Linh and Minh sit?","options":["Next to the door","By the window","In the garden","At the bar"],"answer_index":1,"explanation_vi":"Người phục vụ dẫn họ đến một bàn cạnh cửa sổ."},
-{"question":"Why did Minh order grilled chicken?","options":["He did not like soup","It was cheap","He was very hungry","The waiter suggested it"],"answer_index":2,"explanation_vi":"Minh rất đói nên gọi gà nướng với cơm."},
-{"question":"What did they drink?","options":["Orange juice","Coffee","Water","Iced tea"],"answer_index":3,"explanation_vi":"Cả hai đều gọi trà đá."},
-{"question":"What did Minh do at the end?","options":["He paid the bill and left a tip","He complained about the food","He ordered more soup","He took photos of the food"],"answer_index":0,"explanation_vi":"Minh xin hóa đơn và để lại một ít tiền boa."}]},
-{
-"slug":"a2-hotel","category":"travel","topic":"Checking in at a hotel","level":"A2","title":"Room Key Please",
-"summary_vi":"Bạn sẽ luyện cách làm thủ tục nhận phòng khách sạn qua một tin nhắn gửi bạn.",
-"sentences":["Hi Anna, I arrived in Da Lat this afternoon!","The hotel is lovely, and it is only five minutes from the market.","At the front desk, a friendly woman checked my reservation.","She asked for my passport and gave me a room key.","My room is on the third floor, and it has a big window.","Breakfast is included, and it starts at seven o'clock.","I asked about the Wi-Fi, and she wrote the password on a card.","Tomorrow I am going to visit the flower gardens.","The weather is cooler than in Saigon, so I need my jacket.","Write back soon and tell me about your trip!"],
-"vocabulary":[
-{"word":"front desk","ipa":"/frʌnt desk/","pos":"noun","meaning_vi":"quầy lễ tân","example":"Please leave your key at the front desk."},
-{"word":"reservation","ipa":"/ˌrezərˈveɪʃən/","pos":"noun","meaning_vi":"việc đặt phòng","example":"I have a reservation for two nights."},
-{"word":"passport","ipa":"/ˈpæspɔːrt/","pos":"noun","meaning_vi":"hộ chiếu","example":"Don't forget your passport at the airport."},
-{"word":"floor","ipa":"/flɔːr/","pos":"noun","meaning_vi":"tầng","example":"The lift stops on every floor."},
-{"word":"included","ipa":"/ɪnˈkluːdɪd/","pos":"adjective","meaning_vi":"đã bao gồm","example":"Dinner is included in the price."},
-{"word":"password","ipa":"/ˈpæswɜːrd/","pos":"noun","meaning_vi":"mật khẩu","example":"I forgot the password for my email."},
-{"word":"jacket","ipa":"/ˈdʒækɪt/","pos":"noun","meaning_vi":"áo khoác","example":"Take a jacket because it may rain."}],
-"questions":[
-{"question":"Where is the writer?","options":["Saigon","Hanoi","Da Lat","Anna's house"],"answer_index":2,"explanation_vi":"Người viết vừa đến Đà Lạt chiều nay."},
-{"question":"What did the woman at the front desk ask for?","options":["A credit card","A passport","A phone number","A photo"],"answer_index":1,"explanation_vi":"Cô ấy yêu cầu xem hộ chiếu."},
-{"question":"Is breakfast free?","options":["No, it costs extra","Only on Sundays","It is not served","Yes, it is included"],"answer_index":3,"explanation_vi":"Bữa sáng đã được bao gồm trong giá phòng."},
-{"question":"What is the writer going to do tomorrow?","options":["Visit the flower gardens","Go back to Saigon","Meet Anna","Buy a jacket"],"answer_index":0,"explanation_vi":"Ngày mai người viết sẽ đi thăm vườn hoa."}]},
-{
-"slug":"a2-doctor","category":"health","topic":"Visiting the doctor","level":"A2","title":"Feeling Under the Weather",
-"summary_vi":"Bạn sẽ luyện cách mô tả triệu chứng và hiểu lời dặn của bác sĩ qua một trang nhật ký.",
-"sentences":["Dear diary, today I felt terrible, so I visited the doctor.","I had a sore throat and a headache since Monday.","The doctor asked me some questions and checked my temperature.","\"You have a fever, but it is not serious,\" she said.","She told me to rest at home and drink lots of water.","I also got some medicine from the pharmacy next door.","I should take it twice a day after meals.","The doctor said I should not go to school for two days.","I feel a little better now, so I am going to sleep early."],
-"vocabulary":[
-{"word":"sore throat","ipa":"/sɔːr θroʊt/","pos":"noun","meaning_vi":"đau họng","example":"Hot tea helps when you have a sore throat."},
-{"word":"headache","ipa":"/ˈhedeɪk/","pos":"noun","meaning_vi":"đau đầu","example":"Loud music gives me a headache."},
-{"word":"temperature","ipa":"/ˈtemprətʃər/","pos":"noun","meaning_vi":"nhiệt độ cơ thể","example":"The nurse took my temperature this morning."},
-{"word":"fever","ipa":"/ˈfiːvər/","pos":"noun","meaning_vi":"sốt","example":"The little boy has a high fever."},
-{"word":"rest","ipa":"/rest/","pos":"verb","meaning_vi":"nghỉ ngơi","example":"You should rest after the long trip."},
-{"word":"medicine","ipa":"/ˈmedɪsɪn/","pos":"noun","meaning_vi":"thuốc","example":"Take this medicine after lunch."},
-{"word":"pharmacy","ipa":"/ˈfɑːrməsi/","pos":"noun","meaning_vi":"hiệu thuốc","example":"The pharmacy closes at nine o'clock."}],
-"questions":[
-{"question":"Which problem did the writer have?","options":["A broken arm","A sore throat and a headache","A stomach ache","A sore back"],"answer_index":1,"explanation_vi":"Người viết bị đau họng và đau đầu."},
-{"question":"What did the doctor say about the fever?","options":["It was very dangerous","It would last a month","It was gone","It was not serious"],"answer_index":3,"explanation_vi":"Bác sĩ nói sốt không nghiêm trọng."},
-{"question":"Where did the writer buy the medicine?","options":["At a pharmacy next door","At a supermarket","At the hospital shop","Online"],"answer_index":0,"explanation_vi":"Thuốc mua ở hiệu thuốc bên cạnh."},
-{"question":"How long should the writer stay away from school?","options":["One day","A week","Two days","Three days"],"answer_index":2,"explanation_vi":"Bác sĩ dặn nghỉ học hai ngày."}]},
-{
-"slug":"a2-best-friend","category":"people","topic":"My best friend","level":"A2","title":"Friends Forever",
-"summary_vi":"Bạn sẽ luyện cách giới thiệu và miêu tả người bạn thân nhất của mình.",
-"sentences":["My best friend is called Tuan, and we met ten years ago.","We lived on the same street in Saigon.","Tuan is taller than me, and he is much funnier.","He always makes me laugh, even on bad days.","We both love football, so we play every Saturday morning.","Last month, I lost my phone, and Tuan helped me look for it.","He is also a very good listener.","When I have a problem, he gives me honest advice.","I am lucky to have a friend like him."],
-"vocabulary":[
-{"word":"best friend","ipa":"/best frend/","pos":"noun","meaning_vi":"bạn thân nhất","example":"My best friend lives next door."},
-{"word":"funnier","ipa":"/ˈfʌniər/","pos":"adjective","meaning_vi":"hài hước hơn","example":"This film is funnier than the last one."},
-{"word":"laugh","ipa":"/læf/","pos":"verb","meaning_vi":"cười","example":"We laugh a lot when we are together."},
-{"word":"listener","ipa":"/ˈlɪsənər/","pos":"noun","meaning_vi":"người biết lắng nghe","example":"A good teacher is also a good listener."},
-{"word":"problem","ipa":"/ˈprɑːbləm/","pos":"noun","meaning_vi":"vấn đề","example":"I have a problem with my laptop."},
-{"word":"honest","ipa":"/ˈɑːnɪst/","pos":"adjective","meaning_vi":"thành thật","example":"Please be honest and tell me the truth."},
-{"word":"lucky","ipa":"/ˈlʌki/","pos":"adjective","meaning_vi":"may mắn","example":"She was lucky to find a seat on the train."}],
-"questions":[
-{"question":"How long have they known each other?","options":["Two years","Five years","Twenty years","Ten years"],"answer_index":3,"explanation_vi":"Họ gặp nhau cách đây mười năm."},
-{"question":"What do they do on Saturday mornings?","options":["Play football","Go shopping","Watch films","Study English"],"answer_index":0,"explanation_vi":"Họ chơi bóng đá mỗi sáng thứ Bảy."},
-{"question":"How did Tuan help last month?","options":["He lent some money","He cooked dinner","He helped look for a lost phone","He fixed a bike"],"answer_index":2,"explanation_vi":"Tuan giúp tìm chiếc điện thoại bị mất."},
-{"question":"What does Tuan give when his friend has a problem?","options":["Some money","Honest advice","A present","A phone call"],"answer_index":1,"explanation_vi":"Tuấn cho lời khuyên chân thành."}]},
-{
-"slug":"a2-bus-ride","category":"travel","topic":"Taking the bus across town","level":"A2","title":"Bus Number 18",
-"summary_vi":"Bạn sẽ luyện từ vựng và câu hỏi khi đi xe buýt trong thành phố.",
-"sentences":["Emma was visiting Saigon, and she wanted to see the zoo.","A local girl told her to take bus number 18.","Emma walked to the bus stop and waited for ten minutes.","The bus was crowded, but a young man gave her his seat.","She bought a ticket from the driver for seven thousand dong.","The ride was slower than a taxi, but it was much cheaper.","Emma watched the busy streets and the motorbikes through the window.","\"Which stop is the zoo?\" she asked the driver.","He smiled and said, \"The next one. I will tell you.\"","Emma got off the bus and thanked him."],
-"vocabulary":[
-{"word":"bus stop","ipa":"/bʌs stɑːp/","pos":"noun","meaning_vi":"trạm xe buýt","example":"The bus stop is near my school."},
-{"word":"crowded","ipa":"/ˈkraʊdɪd/","pos":"adjective","meaning_vi":"đông đúc","example":"The market is crowded on weekends."},
-{"word":"seat","ipa":"/siːt/","pos":"noun","meaning_vi":"chỗ ngồi","example":"Is this seat free?"},
-{"word":"ticket","ipa":"/ˈtɪkɪt/","pos":"noun","meaning_vi":"vé","example":"I lost my ticket on the way home."},
-{"word":"driver","ipa":"/ˈdraɪvər/","pos":"noun","meaning_vi":"tài xế","example":"The driver stopped for an old man."},
-{"word":"cheaper","ipa":"/ˈtʃiːpər/","pos":"adjective","meaning_vi":"rẻ hơn","example":"Rice is cheaper in the countryside."},
-{"word":"got off","ipa":"/ɡɑːt ɔːf/","pos":"phrase","meaning_vi":"xuống (xe)","example":"We got off the train at Hue."}],
-"questions":[
-{"question":"Where did Emma want to go?","options":["The market","The zoo","The airport","A museum"],"answer_index":1,"explanation_vi":"Emma muốn đi xem sở thú."},
-{"question":"Why did a man give Emma his seat?","options":["The bus was crowded","He was getting off","He knew her","She was tired"],"answer_index":0,"explanation_vi":"Xe đông nên chàng trai nhường ghế cho cô."},
-{"question":"Why did Emma choose the bus instead of a taxi?","options":["It was faster","It was cleaner","It was much cheaper","It was closer"],"answer_index":2,"explanation_vi":"Xe buýt chậm hơn taxi nhưng rẻ hơn nhiều."},
-{"question":"What did the driver promise?","options":["A free ticket","A map of the city","A taxi","To tell her the right stop"],"answer_index":3,"explanation_vi":"Tài xế hứa sẽ báo cho cô biết trạm cần xuống."}]},
-{
-"slug":"a2-birthday","category":"fun","topic":"A surprise birthday party","level":"A2","title":"Surprise!",
-"summary_vi":"Bạn sẽ luyện kể lại một bữa tiệc sinh nhật bất ngờ bằng thì quá khứ đơn.",
-"sentences":["Linh's birthday was on Saturday, but she thought everyone forgot.","Her friends planned a surprise party at Minh's house.","Minh told Linh that he needed help with his homework.","When she arrived, the lights were off, and the house was quiet.","Suddenly, everyone jumped out and shouted, \"Surprise!\"","Linh was so shocked that she almost dropped her bag.","Her friends decorated the room with balloons and colourful paper.","Tuan brought a big chocolate cake with twenty candles.","Linh made a wish and blew out all the candles.","It was the best birthday she ever had."],
-"vocabulary":[
-{"word":"surprise","ipa":"/sərˈpraɪz/","pos":"noun","meaning_vi":"sự bất ngờ","example":"The gift was a big surprise."},
-{"word":"party","ipa":"/ˈpɑːrti/","pos":"noun","meaning_vi":"bữa tiệc","example":"We are having a party on Friday night."},
-{"word":"shocked","ipa":"/ʃɑːkt/","pos":"adjective","meaning_vi":"sốc, rất ngạc nhiên","example":"He looked shocked when he heard the news."},
-{"word":"decorated","ipa":"/ˈdekəreɪtɪd/","pos":"verb","meaning_vi":"trang trí","example":"She decorated the cake with strawberries."},
-{"word":"balloons","ipa":"/bəˈluːnz/","pos":"noun","meaning_vi":"bóng bay","example":"The children love the red balloons."},
-{"word":"candles","ipa":"/ˈkændəlz/","pos":"noun","meaning_vi":"nến","example":"Please light the candles on the cake."},
-{"word":"wish","ipa":"/wɪʃ/","pos":"noun","meaning_vi":"điều ước","example":"Close your eyes and make a wish."}],
-"questions":[
-{"question":"What did Linh think on her birthday?","options":["Her friends were busy","Her friends forgot it","Her family was away","It was a normal day"],"answer_index":1,"explanation_vi":"Linh nghĩ mọi người đã quên sinh nhật mình."},
-{"question":"Why did Minh ask Linh to come to his house?","options":["To watch a film","To eat dinner","To get a gift","He said he needed homework help"],"answer_index":3,"explanation_vi":"Minh nói dối là cần giúp làm bài tập."},
-{"question":"How did Linh feel when everyone shouted?","options":["Angry","Bored","Shocked","Sleepy"],"answer_index":2,"explanation_vi":"Linh sốc đến mức suýt làm rơi túi."},
-{"question":"Who brought the cake?","options":["Tuan","Minh","Linh's mother","A waiter"],"answer_index":0,"explanation_vi":"Tuấn mang chiếc bánh sô-cô-la đến."}]},
-{
-"slug":"a2-first-job","category":"work","topic":"My first part-time job","level":"A2","title":"My First Coffee Shift",
-"summary_vi":"Bạn sẽ luyện cách kể về công việc làm thêm đầu tiên và cảm xúc của mình.",
-"sentences":["Last summer, I got my first part-time job at a café in Hanoi.","I worked there three afternoons a week.","At first, I was nervous, and I made many mistakes.","I forgot orders, and once I spilled coffee on a customer.","My manager, Mr. Hung, was patient and kind.","He showed me how to use the coffee machine.","After a month, I felt more confident.","I earned a small salary, and I saved half of it.","I learned to manage my time and talk to people.","Now I want to work there again next summer."],
-"vocabulary":[
-{"word":"part-time","ipa":"/ˌpɑːrt ˈtaɪm/","pos":"adjective","meaning_vi":"bán thời gian","example":"She has a part-time job at a bookshop."},
-{"word":"nervous","ipa":"/ˈnɜːrvəs/","pos":"adjective","meaning_vi":"lo lắng","example":"I feel nervous before every exam."},
-{"word":"customer","ipa":"/ˈkʌstəmər/","pos":"noun","meaning_vi":"khách hàng","example":"The customer wants a bigger size."},
-{"word":"manager","ipa":"/ˈmænɪdʒər/","pos":"noun","meaning_vi":"quản lý","example":"Our manager starts work at eight."},
-{"word":"patient","ipa":"/ˈpeɪʃənt/","pos":"adjective","meaning_vi":"kiên nhẫn","example":"Be patient with young children."},
-{"word":"confident","ipa":"/ˈkɑːnfɪdənt/","pos":"adjective","meaning_vi":"tự tin","example":"He is confident about his English now."},
-{"word":"salary","ipa":"/ˈsæləri/","pos":"noun","meaning_vi":"lương","example":"My brother gets his salary on the first day of the month."}],
-"questions":[
-{"question":"Where did the writer work?","options":["In a shop","In a school","At a café","In a hotel"],"answer_index":2,"explanation_vi":"Người viết làm việc ở một quán cà phê tại Hà Nội."},
-{"question":"What mistake did the writer make?","options":["Lost the keys","Spilled coffee on a customer","Broke the machine","Came late every day"],"answer_index":1,"explanation_vi":"Người viết làm đổ cà phê lên một khách hàng."},
-{"question":"What was Mr. Hung like?","options":["Patient and kind","Strict and angry","Quiet and shy","Busy and rude"],"answer_index":0,"explanation_vi":"Ông Hùng kiên nhẫn và tốt bụng."},
-{"question":"What did the writer do with the salary?","options":["Bought a phone","Gave it to a friend","Spent all of it","Saved half of it"],"answer_index":3,"explanation_vi":"Người viết tiết kiệm một nửa số lương."}]},
-{
-"slug":"a2-cooking-pho","category":"food","topic":"Cooking pho at home","level":"A2","title":"Pho From Scratch",
-"summary_vi":"Bạn sẽ luyện nghe và làm theo các bước nấu phở tại nhà bằng tiếng Anh.",
-"sentences":["Today I am going to show you how to cook pho at home.","First, boil beef bones in a big pot for ten minutes.","Then wash the bones and add fresh water.","Put in an onion, some ginger and a few spices.","Let the soup cook slowly for at least four hours.","While you wait, slice the beef very thin.","Cook the rice noodles in hot water for one minute.","Put the noodles in a bowl and add the raw beef.","Pour the hot broth over everything, and the beef will cook.","Finally, add fresh herbs and a little lime juice."],
-"vocabulary":[
-{"word":"boil","ipa":"/bɔɪl/","pos":"verb","meaning_vi":"đun sôi, luộc","example":"Please boil the eggs for eight minutes."},
-{"word":"bones","ipa":"/boʊnz/","pos":"noun","meaning_vi":"xương","example":"The dog is chewing on some bones."},
-{"word":"ginger","ipa":"/ˈdʒɪndʒər/","pos":"noun","meaning_vi":"gừng","example":"Ginger tea is good for a cold."},
-{"word":"slice","ipa":"/slaɪs/","pos":"verb","meaning_vi":"thái lát","example":"Can you slice the tomatoes for the salad?"},
-{"word":"noodles","ipa":"/ˈnuːdəlz/","pos":"noun","meaning_vi":"mì, bún, bánh phở","example":"I eat noodles for lunch every Monday."},
-{"word":"broth","ipa":"/brɔːθ/","pos":"noun","meaning_vi":"nước dùng","example":"The chicken broth smells wonderful."},
-{"word":"herbs","ipa":"/ɜːrbz/","pos":"noun","meaning_vi":"rau thơm","example":"My grandmother grows herbs in small pots."}],
-"questions":[
-{"question":"Why do you boil the bones first?","options":["To make them soft","To cook the noodles","To start cleaning them","To add salt"],"answer_index":2,"explanation_vi":"Luộc xương trước rồi rửa sạch để nước dùng trong hơn."},
-{"question":"How long should the soup cook?","options":["Ten minutes","At least four hours","One hour","All night"],"answer_index":1,"explanation_vi":"Nước dùng phải nấu ít nhất bốn giờ."},
-{"question":"How is the beef cooked in this recipe?","options":["Fried in a pan","Grilled on a fire","Boiled with the bones","By the hot broth"],"answer_index":3,"explanation_vi":"Thịt bò sống được chín nhờ nước dùng nóng chan lên."},
-{"question":"What do you add at the end?","options":["Fresh herbs and lime juice","Sugar and milk","More bones","Fried onions"],"answer_index":0,"explanation_vi":"Cuối cùng thêm rau thơm tươi và chút nước chanh."}]}
+  {
+    "slug": "a2-restaurant",
+    "category": "food",
+    "topic": "Ordering food at a restaurant",
+    "level": "A2",
+    "title": "Table for Two",
+    "summary_vi": "Bạn sẽ luyện cách gọi món, hỏi đồ uống và thanh toán ở nhà hàng.",
+    "sentences": [
+      "Linh and her brother Minh went to a small restaurant in Hanoi.",
+      "The waiter showed them to a table by the window.",
+      "\"Are you ready to order?\" he asked with a smile.",
+      "Linh wanted something light, so she chose a vegetable soup.",
+      "Minh was very hungry, so he ordered grilled chicken with rice.",
+      "\"Would you like anything to drink?\" the waiter asked.",
+      "They both asked for iced tea, and the waiter wrote it down.",
+      "The food arrived quickly, and everything tasted delicious.",
+      "After the meal, Minh asked for the bill and left a small tip."
+    ],
+    "sentences_vi": [
+      "Linh và anh trai Minh đến một nhà hàng nhỏ ở Hà Nội.",
+      "Người phục vụ dẫn họ đến một bàn cạnh cửa sổ.",
+      "\"Hai bạn đã sẵn sàng gọi món chưa ạ?\", anh ấy hỏi với nụ cười.",
+      "Linh muốn ăn món gì đó nhẹ nhàng nên chọn một bát súp rau.",
+      "Minh rất đói nên gọi gà nướng với cơm.",
+      "\"Hai bạn muốn uống gì không ạ?\", người phục vụ hỏi.",
+      "Cả hai đều gọi trà đá, và người phục vụ ghi lại.",
+      "Đồ ăn được mang ra rất nhanh, và món nào cũng ngon.",
+      "Ăn xong, Minh xin hóa đơn và để lại một ít tiền boa."
+    ],
+    "vocabulary": [
+      {
+        "word": "waiter",
+        "ipa": "/ˈweɪtər/",
+        "pos": "noun",
+        "meaning_vi": "nam phục vụ bàn",
+        "example": "The waiter brought us two glasses of water.",
+        "example_vi": "Người phục vụ mang cho chúng tôi hai ly nước."
+      },
+      {
+        "word": "order",
+        "ipa": "/ˈɔːrdər/",
+        "pos": "verb",
+        "meaning_vi": "gọi món",
+        "example": "I would like to order the fish, please.",
+        "example_vi": "Tôi muốn gọi món cá, làm ơn."
+      },
+      {
+        "word": "vegetable",
+        "ipa": "/ˈvedʒtəbəl/",
+        "pos": "noun",
+        "meaning_vi": "rau củ",
+        "example": "My sister eats a vegetable at every meal.",
+        "example_vi": "Chị gái tôi bữa nào cũng ăn rau."
+      },
+      {
+        "word": "hungry",
+        "ipa": "/ˈhʌŋɡri/",
+        "pos": "adjective",
+        "meaning_vi": "đói",
+        "example": "I am hungry because I skipped breakfast.",
+        "example_vi": "Tôi đói vì đã bỏ bữa sáng."
+      },
+      {
+        "word": "delicious",
+        "ipa": "/dɪˈlɪʃəs/",
+        "pos": "adjective",
+        "meaning_vi": "rất ngon",
+        "example": "Your homemade cake is delicious.",
+        "example_vi": "Chiếc bánh nhà làm của bạn rất ngon."
+      },
+      {
+        "word": "bill",
+        "ipa": "/bɪl/",
+        "pos": "noun",
+        "meaning_vi": "hóa đơn",
+        "example": "Can we have the bill, please?",
+        "example_vi": "Cho chúng tôi xin hóa đơn nhé?"
+      },
+      {
+        "word": "tip",
+        "ipa": "/tɪp/",
+        "pos": "noun",
+        "meaning_vi": "tiền boa",
+        "example": "In some countries, you must leave a tip.",
+        "example_vi": "Ở một số nước, bạn phải để lại tiền boa."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Where did Linh and Minh sit?",
+        "options": [
+          "Next to the door",
+          "By the window",
+          "In the garden",
+          "At the bar"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Người phục vụ dẫn họ đến một bàn cạnh cửa sổ."
+      },
+      {
+        "question": "Why did Minh order grilled chicken?",
+        "options": [
+          "He did not like soup",
+          "It was cheap",
+          "He was very hungry",
+          "The waiter suggested it"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Minh rất đói nên gọi gà nướng với cơm."
+      },
+      {
+        "question": "What did they drink?",
+        "options": [
+          "Orange juice",
+          "Coffee",
+          "Water",
+          "Iced tea"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Cả hai đều gọi trà đá."
+      },
+      {
+        "question": "What did Minh do at the end?",
+        "options": [
+          "He paid the bill and left a tip",
+          "He complained about the food",
+          "He ordered more soup",
+          "He took photos of the food"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Minh xin hóa đơn và để lại một ít tiền boa."
+      }
+    ]
+  },
+  {
+    "slug": "a2-hotel",
+    "category": "travel",
+    "topic": "Checking in at a hotel",
+    "level": "A2",
+    "title": "Room Key Please",
+    "summary_vi": "Bạn sẽ luyện cách làm thủ tục nhận phòng khách sạn qua một tin nhắn gửi bạn.",
+    "sentences": [
+      "Hi Anna, I arrived in Da Lat this afternoon!",
+      "The hotel is lovely, and it is only five minutes from the market.",
+      "At the front desk, a friendly woman checked my reservation.",
+      "She asked for my passport and gave me a room key.",
+      "My room is on the third floor, and it has a big window.",
+      "Breakfast is included, and it starts at seven o'clock.",
+      "I asked about the Wi-Fi, and she wrote the password on a card.",
+      "Tomorrow I am going to visit the flower gardens.",
+      "The weather is cooler than in Saigon, so I need my jacket.",
+      "Write back soon and tell me about your trip!"
+    ],
+    "sentences_vi": [
+      "Chào Anna, chiều nay mình đã đến Đà Lạt rồi!",
+      "Khách sạn rất đẹp, và chỉ cách chợ năm phút đi bộ.",
+      "Ở quầy lễ tân, một chị rất thân thiện đã kiểm tra đặt phòng của mình.",
+      "Chị ấy xin hộ chiếu của mình và đưa cho mình chìa khóa phòng.",
+      "Phòng mình ở tầng ba và có một cửa sổ lớn.",
+      "Bữa sáng đã bao gồm trong giá phòng và bắt đầu lúc bảy giờ.",
+      "Mình hỏi về Wi-Fi, và chị ấy viết mật khẩu vào một tấm thẻ.",
+      "Ngày mai mình sẽ đi thăm những vườn hoa.",
+      "Thời tiết ở đây mát hơn Sài Gòn nên mình cần mang áo khoác.",
+      "Nhớ nhắn lại sớm và kể cho mình nghe về chuyến đi của bạn nhé!"
+    ],
+    "vocabulary": [
+      {
+        "word": "front desk",
+        "ipa": "/frʌnt desk/",
+        "pos": "noun",
+        "meaning_vi": "quầy lễ tân",
+        "example": "Please leave your key at the front desk.",
+        "example_vi": "Vui lòng để chìa khóa của bạn ở quầy lễ tân."
+      },
+      {
+        "word": "reservation",
+        "ipa": "/ˌrezərˈveɪʃən/",
+        "pos": "noun",
+        "meaning_vi": "việc đặt phòng",
+        "example": "I have a reservation for two nights.",
+        "example_vi": "Tôi có đặt phòng cho hai đêm."
+      },
+      {
+        "word": "passport",
+        "ipa": "/ˈpæspɔːrt/",
+        "pos": "noun",
+        "meaning_vi": "hộ chiếu",
+        "example": "Don't forget your passport at the airport.",
+        "example_vi": "Đừng quên hộ chiếu ở sân bay nhé."
+      },
+      {
+        "word": "floor",
+        "ipa": "/flɔːr/",
+        "pos": "noun",
+        "meaning_vi": "tầng",
+        "example": "The lift stops on every floor.",
+        "example_vi": "Thang máy dừng ở mọi tầng."
+      },
+      {
+        "word": "included",
+        "ipa": "/ɪnˈkluːdɪd/",
+        "pos": "adjective",
+        "meaning_vi": "đã bao gồm",
+        "example": "Dinner is included in the price.",
+        "example_vi": "Bữa tối đã bao gồm trong giá."
+      },
+      {
+        "word": "password",
+        "ipa": "/ˈpæswɜːrd/",
+        "pos": "noun",
+        "meaning_vi": "mật khẩu",
+        "example": "I forgot the password for my email.",
+        "example_vi": "Tôi quên mật khẩu email của mình rồi."
+      },
+      {
+        "word": "jacket",
+        "ipa": "/ˈdʒækɪt/",
+        "pos": "noun",
+        "meaning_vi": "áo khoác",
+        "example": "Take a jacket because it may rain.",
+        "example_vi": "Hãy mang theo áo khoác vì trời có thể mưa."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Where is the writer?",
+        "options": [
+          "Saigon",
+          "Hanoi",
+          "Da Lat",
+          "Anna's house"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Người viết vừa đến Đà Lạt chiều nay."
+      },
+      {
+        "question": "What did the woman at the front desk ask for?",
+        "options": [
+          "A credit card",
+          "A passport",
+          "A phone number",
+          "A photo"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Cô ấy yêu cầu xem hộ chiếu."
+      },
+      {
+        "question": "Is breakfast free?",
+        "options": [
+          "No, it costs extra",
+          "Only on Sundays",
+          "It is not served",
+          "Yes, it is included"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Bữa sáng đã được bao gồm trong giá phòng."
+      },
+      {
+        "question": "What is the writer going to do tomorrow?",
+        "options": [
+          "Visit the flower gardens",
+          "Go back to Saigon",
+          "Meet Anna",
+          "Buy a jacket"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Ngày mai người viết sẽ đi thăm vườn hoa."
+      }
+    ]
+  },
+  {
+    "slug": "a2-doctor",
+    "category": "health",
+    "topic": "Visiting the doctor",
+    "level": "A2",
+    "title": "Feeling Under the Weather",
+    "summary_vi": "Bạn sẽ luyện cách mô tả triệu chứng và hiểu lời dặn của bác sĩ qua một trang nhật ký.",
+    "sentences": [
+      "Dear diary, today I felt terrible, so I visited the doctor.",
+      "I had a sore throat and a headache since Monday.",
+      "The doctor asked me some questions and checked my temperature.",
+      "\"You have a fever, but it is not serious,\" she said.",
+      "She told me to rest at home and drink lots of water.",
+      "I also got some medicine from the pharmacy next door.",
+      "I should take it twice a day after meals.",
+      "The doctor said I should not go to school for two days.",
+      "I feel a little better now, so I am going to sleep early."
+    ],
+    "sentences_vi": [
+      "Nhật ký thân mến, hôm nay mình thấy rất mệt nên đã đi khám bác sĩ.",
+      "Mình bị đau họng và nhức đầu từ hôm thứ Hai.",
+      "Bác sĩ hỏi mình vài câu và đo nhiệt độ cho mình.",
+      "\"Em bị sốt, nhưng không nghiêm trọng đâu\", cô ấy nói.",
+      "Cô dặn mình nghỉ ngơi ở nhà và uống thật nhiều nước.",
+      "Mình cũng lấy một ít thuốc ở hiệu thuốc bên cạnh.",
+      "Mình nên uống thuốc hai lần một ngày, sau bữa ăn.",
+      "Bác sĩ bảo mình không nên đi học trong hai ngày.",
+      "Bây giờ mình thấy khá hơn một chút, nên mình sẽ đi ngủ sớm."
+    ],
+    "vocabulary": [
+      {
+        "word": "sore throat",
+        "ipa": "/sɔːr θroʊt/",
+        "pos": "noun",
+        "meaning_vi": "đau họng",
+        "example": "Hot tea helps when you have a sore throat.",
+        "example_vi": "Trà nóng giúp ích khi bạn bị đau họng."
+      },
+      {
+        "word": "headache",
+        "ipa": "/ˈhedeɪk/",
+        "pos": "noun",
+        "meaning_vi": "đau đầu",
+        "example": "Loud music gives me a headache.",
+        "example_vi": "Âm nhạc ồn ào làm tôi nhức đầu."
+      },
+      {
+        "word": "temperature",
+        "ipa": "/ˈtemprətʃər/",
+        "pos": "noun",
+        "meaning_vi": "nhiệt độ cơ thể",
+        "example": "The nurse took my temperature this morning.",
+        "example_vi": "Y tá đã đo nhiệt độ cho tôi sáng nay."
+      },
+      {
+        "word": "fever",
+        "ipa": "/ˈfiːvər/",
+        "pos": "noun",
+        "meaning_vi": "sốt",
+        "example": "The little boy has a high fever.",
+        "example_vi": "Cậu bé đang sốt cao."
+      },
+      {
+        "word": "rest",
+        "ipa": "/rest/",
+        "pos": "verb",
+        "meaning_vi": "nghỉ ngơi",
+        "example": "You should rest after the long trip.",
+        "example_vi": "Bạn nên nghỉ ngơi sau chuyến đi dài."
+      },
+      {
+        "word": "medicine",
+        "ipa": "/ˈmedɪsɪn/",
+        "pos": "noun",
+        "meaning_vi": "thuốc",
+        "example": "Take this medicine after lunch.",
+        "example_vi": "Hãy uống thuốc này sau bữa trưa."
+      },
+      {
+        "word": "pharmacy",
+        "ipa": "/ˈfɑːrməsi/",
+        "pos": "noun",
+        "meaning_vi": "hiệu thuốc",
+        "example": "The pharmacy closes at nine o'clock.",
+        "example_vi": "Hiệu thuốc đóng cửa lúc chín giờ."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Which problem did the writer have?",
+        "options": [
+          "A broken arm",
+          "A sore throat and a headache",
+          "A stomach ache",
+          "A sore back"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Người viết bị đau họng và đau đầu."
+      },
+      {
+        "question": "What did the doctor say about the fever?",
+        "options": [
+          "It was very dangerous",
+          "It would last a month",
+          "It was gone",
+          "It was not serious"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Bác sĩ nói sốt không nghiêm trọng."
+      },
+      {
+        "question": "Where did the writer buy the medicine?",
+        "options": [
+          "At a pharmacy next door",
+          "At a supermarket",
+          "At the hospital shop",
+          "Online"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Thuốc mua ở hiệu thuốc bên cạnh."
+      },
+      {
+        "question": "How long should the writer stay away from school?",
+        "options": [
+          "One day",
+          "A week",
+          "Two days",
+          "Three days"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Bác sĩ dặn nghỉ học hai ngày."
+      }
+    ]
+  },
+  {
+    "slug": "a2-best-friend",
+    "category": "people",
+    "topic": "My best friend",
+    "level": "A2",
+    "title": "Friends Forever",
+    "summary_vi": "Bạn sẽ luyện cách giới thiệu và miêu tả người bạn thân nhất của mình.",
+    "sentences": [
+      "My best friend is called Tuan, and we met ten years ago.",
+      "We lived on the same street in Saigon.",
+      "Tuan is taller than me, and he is much funnier.",
+      "He always makes me laugh, even on bad days.",
+      "We both love football, so we play every Saturday morning.",
+      "Last month, I lost my phone, and Tuan helped me look for it.",
+      "He is also a very good listener.",
+      "When I have a problem, he gives me honest advice.",
+      "I am lucky to have a friend like him."
+    ],
+    "sentences_vi": [
+      "Bạn thân nhất của mình tên là Tuấn, và tụi mình quen nhau mười năm rồi.",
+      "Tụi mình từng sống cùng một con phố ở Sài Gòn.",
+      "Tuấn cao hơn mình, và cậu ấy hài hước hơn nhiều.",
+      "Cậu ấy lúc nào cũng làm mình cười, kể cả những ngày tồi tệ.",
+      "Cả hai đều mê bóng đá nên tụi mình chơi mỗi sáng thứ Bảy.",
+      "Tháng trước, mình làm mất điện thoại, và Tuấn đã giúp mình đi tìm.",
+      "Cậu ấy cũng là một người biết lắng nghe rất tốt.",
+      "Khi mình gặp rắc rối, cậu ấy cho mình những lời khuyên chân thành.",
+      "Mình thật may mắn khi có một người bạn như cậu ấy."
+    ],
+    "vocabulary": [
+      {
+        "word": "best friend",
+        "ipa": "/best frend/",
+        "pos": "noun",
+        "meaning_vi": "bạn thân nhất",
+        "example": "My best friend lives next door.",
+        "example_vi": "Bạn thân nhất của tôi sống ngay nhà bên cạnh."
+      },
+      {
+        "word": "funnier",
+        "ipa": "/ˈfʌniər/",
+        "pos": "adjective",
+        "meaning_vi": "hài hước hơn",
+        "example": "This film is funnier than the last one.",
+        "example_vi": "Bộ phim này hài hơn bộ phim trước."
+      },
+      {
+        "word": "laugh",
+        "ipa": "/læf/",
+        "pos": "verb",
+        "meaning_vi": "cười",
+        "example": "We laugh a lot when we are together.",
+        "example_vi": "Chúng tôi cười rất nhiều khi ở bên nhau."
+      },
+      {
+        "word": "listener",
+        "ipa": "/ˈlɪsənər/",
+        "pos": "noun",
+        "meaning_vi": "người biết lắng nghe",
+        "example": "A good teacher is also a good listener.",
+        "example_vi": "Một giáo viên giỏi cũng là người biết lắng nghe."
+      },
+      {
+        "word": "problem",
+        "ipa": "/ˈprɑːbləm/",
+        "pos": "noun",
+        "meaning_vi": "vấn đề",
+        "example": "I have a problem with my laptop.",
+        "example_vi": "Máy tính xách tay của tôi gặp trục trặc."
+      },
+      {
+        "word": "honest",
+        "ipa": "/ˈɑːnɪst/",
+        "pos": "adjective",
+        "meaning_vi": "thành thật",
+        "example": "Please be honest and tell me the truth.",
+        "example_vi": "Hãy thành thật và nói cho tôi biết sự thật nhé."
+      },
+      {
+        "word": "lucky",
+        "ipa": "/ˈlʌki/",
+        "pos": "adjective",
+        "meaning_vi": "may mắn",
+        "example": "She was lucky to find a seat on the train.",
+        "example_vi": "Cô ấy thật may khi tìm được chỗ ngồi trên tàu."
+      }
+    ],
+    "questions": [
+      {
+        "question": "How long have they known each other?",
+        "options": [
+          "Two years",
+          "Five years",
+          "Twenty years",
+          "Ten years"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Họ gặp nhau cách đây mười năm."
+      },
+      {
+        "question": "What do they do on Saturday mornings?",
+        "options": [
+          "Play football",
+          "Go shopping",
+          "Watch films",
+          "Study English"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Họ chơi bóng đá mỗi sáng thứ Bảy."
+      },
+      {
+        "question": "How did Tuan help last month?",
+        "options": [
+          "He lent some money",
+          "He cooked dinner",
+          "He helped look for a lost phone",
+          "He fixed a bike"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Tuan giúp tìm chiếc điện thoại bị mất."
+      },
+      {
+        "question": "What does Tuan give when his friend has a problem?",
+        "options": [
+          "Some money",
+          "Honest advice",
+          "A present",
+          "A phone call"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Tuấn cho lời khuyên chân thành."
+      }
+    ]
+  },
+  {
+    "slug": "a2-bus-ride",
+    "category": "travel",
+    "topic": "Taking the bus across town",
+    "level": "A2",
+    "title": "Bus Number 18",
+    "summary_vi": "Bạn sẽ luyện từ vựng và câu hỏi khi đi xe buýt trong thành phố.",
+    "sentences": [
+      "Emma was visiting Saigon, and she wanted to see the zoo.",
+      "A local girl told her to take bus number 18.",
+      "Emma walked to the bus stop and waited for ten minutes.",
+      "The bus was crowded, but a young man gave her his seat.",
+      "She bought a ticket from the driver for seven thousand dong.",
+      "The ride was slower than a taxi, but it was much cheaper.",
+      "Emma watched the busy streets and the motorbikes through the window.",
+      "\"Which stop is the zoo?\" she asked the driver.",
+      "He smiled and said, \"The next one. I will tell you.\"",
+      "Emma got off the bus and thanked him."
+    ],
+    "sentences_vi": [
+      "Emma đang đi thăm Sài Gòn và cô ấy muốn đến sở thú.",
+      "Một cô gái địa phương bảo cô đi xe buýt số 18.",
+      "Emma đi bộ đến trạm xe buýt và đợi mười phút.",
+      "Xe buýt rất đông, nhưng một chàng trai trẻ đã nhường ghế cho cô.",
+      "Cô mua vé từ tài xế với giá bảy nghìn đồng.",
+      "Chuyến đi chậm hơn taxi, nhưng rẻ hơn nhiều.",
+      "Emma ngắm những con phố nhộn nhịp và xe máy qua cửa sổ.",
+      "\"Trạm nào là sở thú vậy ạ?\", cô hỏi tài xế.",
+      "Bác ấy mỉm cười và nói: \"Trạm kế tiếp. Bác sẽ báo cho cháu.\"",
+      "Emma xuống xe và cảm ơn bác ấy."
+    ],
+    "vocabulary": [
+      {
+        "word": "bus stop",
+        "ipa": "/bʌs stɑːp/",
+        "pos": "noun",
+        "meaning_vi": "trạm xe buýt",
+        "example": "The bus stop is near my school.",
+        "example_vi": "Trạm xe buýt ở gần trường tôi."
+      },
+      {
+        "word": "crowded",
+        "ipa": "/ˈkraʊdɪd/",
+        "pos": "adjective",
+        "meaning_vi": "đông đúc",
+        "example": "The market is crowded on weekends.",
+        "example_vi": "Cuối tuần chợ rất đông người."
+      },
+      {
+        "word": "seat",
+        "ipa": "/siːt/",
+        "pos": "noun",
+        "meaning_vi": "chỗ ngồi",
+        "example": "Is this seat free?",
+        "example_vi": "Chỗ này còn trống không?"
+      },
+      {
+        "word": "ticket",
+        "ipa": "/ˈtɪkɪt/",
+        "pos": "noun",
+        "meaning_vi": "vé",
+        "example": "I lost my ticket on the way home.",
+        "example_vi": "Tôi làm mất vé trên đường về nhà."
+      },
+      {
+        "word": "driver",
+        "ipa": "/ˈdraɪvər/",
+        "pos": "noun",
+        "meaning_vi": "tài xế",
+        "example": "The driver stopped for an old man.",
+        "example_vi": "Tài xế dừng xe cho một cụ già."
+      },
+      {
+        "word": "cheaper",
+        "ipa": "/ˈtʃiːpər/",
+        "pos": "adjective",
+        "meaning_vi": "rẻ hơn",
+        "example": "Rice is cheaper in the countryside.",
+        "example_vi": "Gạo ở nông thôn rẻ hơn."
+      },
+      {
+        "word": "got off",
+        "ipa": "/ɡɑːt ɔːf/",
+        "pos": "phrase",
+        "meaning_vi": "xuống (xe)",
+        "example": "We got off the train at Hue.",
+        "example_vi": "Chúng tôi xuống tàu ở Huế."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Where did Emma want to go?",
+        "options": [
+          "The market",
+          "The zoo",
+          "The airport",
+          "A museum"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Emma muốn đi xem sở thú."
+      },
+      {
+        "question": "Why did a man give Emma his seat?",
+        "options": [
+          "The bus was crowded",
+          "He was getting off",
+          "He knew her",
+          "She was tired"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Xe đông nên chàng trai nhường ghế cho cô."
+      },
+      {
+        "question": "Why did Emma choose the bus instead of a taxi?",
+        "options": [
+          "It was faster",
+          "It was cleaner",
+          "It was much cheaper",
+          "It was closer"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Xe buýt chậm hơn taxi nhưng rẻ hơn nhiều."
+      },
+      {
+        "question": "What did the driver promise?",
+        "options": [
+          "A free ticket",
+          "A map of the city",
+          "A taxi",
+          "To tell her the right stop"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Tài xế hứa sẽ báo cho cô biết trạm cần xuống."
+      }
+    ]
+  },
+  {
+    "slug": "a2-birthday",
+    "category": "fun",
+    "topic": "A surprise birthday party",
+    "level": "A2",
+    "title": "Surprise!",
+    "summary_vi": "Bạn sẽ luyện kể lại một bữa tiệc sinh nhật bất ngờ bằng thì quá khứ đơn.",
+    "sentences": [
+      "Linh's birthday was on Saturday, but she thought everyone forgot.",
+      "Her friends planned a surprise party at Minh's house.",
+      "Minh told Linh that he needed help with his homework.",
+      "When she arrived, the lights were off, and the house was quiet.",
+      "Suddenly, everyone jumped out and shouted, \"Surprise!\"",
+      "Linh was so shocked that she almost dropped her bag.",
+      "Her friends decorated the room with balloons and colourful paper.",
+      "Tuan brought a big chocolate cake with twenty candles.",
+      "Linh made a wish and blew out all the candles.",
+      "It was the best birthday she ever had."
+    ],
+    "sentences_vi": [
+      "Sinh nhật Linh vào thứ Bảy, nhưng cô ấy nghĩ mọi người đã quên.",
+      "Bạn bè cô ấy lên kế hoạch tổ chức một bữa tiệc bất ngờ ở nhà Minh.",
+      "Minh nói với Linh rằng anh ấy cần được giúp làm bài tập về nhà.",
+      "Khi cô ấy đến, đèn tắt hết và ngôi nhà yên ắng.",
+      "Bỗng nhiên, mọi người nhảy ra và hét lớn: \"Bất ngờ chưa!\"",
+      "Linh sốc đến nỗi suýt làm rơi cả túi xách.",
+      "Bạn bè trang trí căn phòng bằng bóng bay và giấy màu.",
+      "Tuấn mang đến một chiếc bánh sô-cô-la lớn với hai mươi ngọn nến.",
+      "Linh ước một điều ước rồi thổi tắt hết nến.",
+      "Đó là sinh nhật tuyệt nhất mà cô ấy từng có."
+    ],
+    "vocabulary": [
+      {
+        "word": "surprise",
+        "ipa": "/sərˈpraɪz/",
+        "pos": "noun",
+        "meaning_vi": "sự bất ngờ",
+        "example": "The gift was a big surprise.",
+        "example_vi": "Món quà là một bất ngờ lớn."
+      },
+      {
+        "word": "party",
+        "ipa": "/ˈpɑːrti/",
+        "pos": "noun",
+        "meaning_vi": "bữa tiệc",
+        "example": "We are having a party on Friday night.",
+        "example_vi": "Tối thứ Sáu chúng tôi sẽ có một bữa tiệc."
+      },
+      {
+        "word": "shocked",
+        "ipa": "/ʃɑːkt/",
+        "pos": "adjective",
+        "meaning_vi": "sốc, rất ngạc nhiên",
+        "example": "He looked shocked when he heard the news.",
+        "example_vi": "Anh ấy trông rất sốc khi nghe tin đó."
+      },
+      {
+        "word": "decorated",
+        "ipa": "/ˈdekəreɪtɪd/",
+        "pos": "verb",
+        "meaning_vi": "trang trí",
+        "example": "She decorated the cake with strawberries.",
+        "example_vi": "Cô ấy trang trí chiếc bánh bằng dâu tây."
+      },
+      {
+        "word": "balloons",
+        "ipa": "/bəˈluːnz/",
+        "pos": "noun",
+        "meaning_vi": "bóng bay",
+        "example": "The children love the red balloons.",
+        "example_vi": "Bọn trẻ rất thích những quả bóng bay màu đỏ."
+      },
+      {
+        "word": "candles",
+        "ipa": "/ˈkændəlz/",
+        "pos": "noun",
+        "meaning_vi": "nến",
+        "example": "Please light the candles on the cake.",
+        "example_vi": "Hãy thắp nến trên bánh lên nhé."
+      },
+      {
+        "word": "wish",
+        "ipa": "/wɪʃ/",
+        "pos": "noun",
+        "meaning_vi": "điều ước",
+        "example": "Close your eyes and make a wish.",
+        "example_vi": "Hãy nhắm mắt lại và ước một điều ước."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What did Linh think on her birthday?",
+        "options": [
+          "Her friends were busy",
+          "Her friends forgot it",
+          "Her family was away",
+          "It was a normal day"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Linh nghĩ mọi người đã quên sinh nhật mình."
+      },
+      {
+        "question": "Why did Minh ask Linh to come to his house?",
+        "options": [
+          "To watch a film",
+          "To eat dinner",
+          "To get a gift",
+          "He said he needed homework help"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Minh nói dối là cần giúp làm bài tập."
+      },
+      {
+        "question": "How did Linh feel when everyone shouted?",
+        "options": [
+          "Angry",
+          "Bored",
+          "Shocked",
+          "Sleepy"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Linh sốc đến mức suýt làm rơi túi."
+      },
+      {
+        "question": "Who brought the cake?",
+        "options": [
+          "Tuan",
+          "Minh",
+          "Linh's mother",
+          "A waiter"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Tuấn mang chiếc bánh sô-cô-la đến."
+      }
+    ]
+  },
+  {
+    "slug": "a2-first-job",
+    "category": "work",
+    "topic": "My first part-time job",
+    "level": "A2",
+    "title": "My First Coffee Shift",
+    "summary_vi": "Bạn sẽ luyện cách kể về công việc làm thêm đầu tiên và cảm xúc của mình.",
+    "sentences": [
+      "Last summer, I got my first part-time job at a café in Hanoi.",
+      "I worked there three afternoons a week.",
+      "At first, I was nervous, and I made many mistakes.",
+      "I forgot orders, and once I spilled coffee on a customer.",
+      "My manager, Mr. Hung, was patient and kind.",
+      "He showed me how to use the coffee machine.",
+      "After a month, I felt more confident.",
+      "I earned a small salary, and I saved half of it.",
+      "I learned to manage my time and talk to people.",
+      "Now I want to work there again next summer."
+    ],
+    "sentences_vi": [
+      "Mùa hè năm ngoái, mình có công việc bán thời gian đầu tiên ở một quán cà phê tại Hà Nội.",
+      "Mình làm ở đó ba buổi chiều mỗi tuần.",
+      "Lúc đầu mình rất lo và mắc nhiều lỗi.",
+      "Mình quên order, và có lần còn làm đổ cà phê lên người một khách hàng.",
+      "Quản lý của mình, anh Hưng, rất kiên nhẫn và tốt bụng.",
+      "Anh ấy chỉ mình cách dùng máy pha cà phê.",
+      "Sau một tháng, mình cảm thấy tự tin hơn.",
+      "Mình nhận được một mức lương nhỏ và để dành được một nửa.",
+      "Mình học được cách quản lý thời gian và trò chuyện với mọi người.",
+      "Giờ mình muốn quay lại làm ở đó vào mùa hè năm sau."
+    ],
+    "vocabulary": [
+      {
+        "word": "part-time",
+        "ipa": "/ˌpɑːrt ˈtaɪm/",
+        "pos": "adjective",
+        "meaning_vi": "bán thời gian",
+        "example": "She has a part-time job at a bookshop.",
+        "example_vi": "Cô ấy có công việc bán thời gian ở một hiệu sách."
+      },
+      {
+        "word": "nervous",
+        "ipa": "/ˈnɜːrvəs/",
+        "pos": "adjective",
+        "meaning_vi": "lo lắng",
+        "example": "I feel nervous before every exam.",
+        "example_vi": "Tôi thấy lo lắng trước mỗi kỳ thi."
+      },
+      {
+        "word": "customer",
+        "ipa": "/ˈkʌstəmər/",
+        "pos": "noun",
+        "meaning_vi": "khách hàng",
+        "example": "The customer wants a bigger size.",
+        "example_vi": "Khách hàng muốn cỡ lớn hơn."
+      },
+      {
+        "word": "manager",
+        "ipa": "/ˈmænɪdʒər/",
+        "pos": "noun",
+        "meaning_vi": "quản lý",
+        "example": "Our manager starts work at eight.",
+        "example_vi": "Quản lý của chúng tôi bắt đầu làm việc lúc tám giờ."
+      },
+      {
+        "word": "patient",
+        "ipa": "/ˈpeɪʃənt/",
+        "pos": "adjective",
+        "meaning_vi": "kiên nhẫn",
+        "example": "Be patient with young children.",
+        "example_vi": "Hãy kiên nhẫn với trẻ nhỏ nhé."
+      },
+      {
+        "word": "confident",
+        "ipa": "/ˈkɑːnfɪdənt/",
+        "pos": "adjective",
+        "meaning_vi": "tự tin",
+        "example": "He is confident about his English now.",
+        "example_vi": "Bây giờ anh ấy tự tin về tiếng Anh của mình."
+      },
+      {
+        "word": "salary",
+        "ipa": "/ˈsæləri/",
+        "pos": "noun",
+        "meaning_vi": "lương",
+        "example": "My brother gets his salary on the first day of the month.",
+        "example_vi": "Anh trai tôi nhận lương vào ngày đầu tiên của tháng."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Where did the writer work?",
+        "options": [
+          "In a shop",
+          "In a school",
+          "At a café",
+          "In a hotel"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Người viết làm việc ở một quán cà phê tại Hà Nội."
+      },
+      {
+        "question": "What mistake did the writer make?",
+        "options": [
+          "Lost the keys",
+          "Spilled coffee on a customer",
+          "Broke the machine",
+          "Came late every day"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Người viết làm đổ cà phê lên một khách hàng."
+      },
+      {
+        "question": "What was Mr. Hung like?",
+        "options": [
+          "Patient and kind",
+          "Strict and angry",
+          "Quiet and shy",
+          "Busy and rude"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Ông Hùng kiên nhẫn và tốt bụng."
+      },
+      {
+        "question": "What did the writer do with the salary?",
+        "options": [
+          "Bought a phone",
+          "Gave it to a friend",
+          "Spent all of it",
+          "Saved half of it"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Người viết tiết kiệm một nửa số lương."
+      }
+    ]
+  },
+  {
+    "slug": "a2-cooking-pho",
+    "category": "food",
+    "topic": "Cooking pho at home",
+    "level": "A2",
+    "title": "Pho From Scratch",
+    "summary_vi": "Bạn sẽ luyện nghe và làm theo các bước nấu phở tại nhà bằng tiếng Anh.",
+    "sentences": [
+      "Today I am going to show you how to cook pho at home.",
+      "First, boil beef bones in a big pot for ten minutes.",
+      "Then wash the bones and add fresh water.",
+      "Put in an onion, some ginger and a few spices.",
+      "Let the soup cook slowly for at least four hours.",
+      "While you wait, slice the beef very thin.",
+      "Cook the rice noodles in hot water for one minute.",
+      "Put the noodles in a bowl and add the raw beef.",
+      "Pour the hot broth over everything, and the beef will cook.",
+      "Finally, add fresh herbs and a little lime juice."
+    ],
+    "sentences_vi": [
+      "Hôm nay mình sẽ hướng dẫn các bạn cách nấu phở tại nhà.",
+      "Đầu tiên, hãy luộc xương bò trong một cái nồi lớn trong mười phút.",
+      "Sau đó rửa sạch xương và thêm nước mới.",
+      "Cho vào một củ hành, một ít gừng và vài loại gia vị.",
+      "Để nước dùng sôi liu riu ít nhất bốn tiếng.",
+      "Trong lúc chờ, hãy thái thịt bò thật mỏng.",
+      "Trụng bánh phở trong nước nóng một phút.",
+      "Cho bánh phở vào tô rồi thêm thịt bò sống.",
+      "Chan nước dùng nóng lên trên, và thịt bò sẽ chín.",
+      "Cuối cùng, thêm rau thơm tươi và một ít nước cốt chanh."
+    ],
+    "vocabulary": [
+      {
+        "word": "boil",
+        "ipa": "/bɔɪl/",
+        "pos": "verb",
+        "meaning_vi": "đun sôi, luộc",
+        "example": "Please boil the eggs for eight minutes.",
+        "example_vi": "Làm ơn luộc trứng trong tám phút."
+      },
+      {
+        "word": "bones",
+        "ipa": "/boʊnz/",
+        "pos": "noun",
+        "meaning_vi": "xương",
+        "example": "The dog is chewing on some bones.",
+        "example_vi": "Con chó đang gặm mấy khúc xương."
+      },
+      {
+        "word": "ginger",
+        "ipa": "/ˈdʒɪndʒər/",
+        "pos": "noun",
+        "meaning_vi": "gừng",
+        "example": "Ginger tea is good for a cold.",
+        "example_vi": "Trà gừng tốt cho khi bị cảm lạnh."
+      },
+      {
+        "word": "slice",
+        "ipa": "/slaɪs/",
+        "pos": "verb",
+        "meaning_vi": "thái lát",
+        "example": "Can you slice the tomatoes for the salad?",
+        "example_vi": "Bạn thái giúp mình mấy quả cà chua làm salad được không?"
+      },
+      {
+        "word": "noodles",
+        "ipa": "/ˈnuːdəlz/",
+        "pos": "noun",
+        "meaning_vi": "mì, bún, bánh phở",
+        "example": "I eat noodles for lunch every Monday.",
+        "example_vi": "Thứ Hai nào tôi cũng ăn bún vào bữa trưa."
+      },
+      {
+        "word": "broth",
+        "ipa": "/brɔːθ/",
+        "pos": "noun",
+        "meaning_vi": "nước dùng",
+        "example": "The chicken broth smells wonderful.",
+        "example_vi": "Nước dùng gà thơm quá."
+      },
+      {
+        "word": "herbs",
+        "ipa": "/ɜːrbz/",
+        "pos": "noun",
+        "meaning_vi": "rau thơm",
+        "example": "My grandmother grows herbs in small pots.",
+        "example_vi": "Bà tôi trồng rau thơm trong những chậu nhỏ."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Why do you boil the bones first?",
+        "options": [
+          "To make them soft",
+          "To cook the noodles",
+          "To start cleaning them",
+          "To add salt"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Luộc xương trước rồi rửa sạch để nước dùng trong hơn."
+      },
+      {
+        "question": "How long should the soup cook?",
+        "options": [
+          "Ten minutes",
+          "At least four hours",
+          "One hour",
+          "All night"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Nước dùng phải nấu ít nhất bốn giờ."
+      },
+      {
+        "question": "How is the beef cooked in this recipe?",
+        "options": [
+          "Fried in a pan",
+          "Grilled on a fire",
+          "Boiled with the bones",
+          "By the hot broth"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Thịt bò sống được chín nhờ nước dùng nóng chan lên."
+      },
+      {
+        "question": "What do you add at the end?",
+        "options": [
+          "Fresh herbs and lime juice",
+          "Sugar and milk",
+          "More bones",
+          "Fried onions"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Cuối cùng thêm rau thơm tươi và chút nước chanh."
+      }
+    ]
+  }
 ]

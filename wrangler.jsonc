@@ -4,6 +4,8 @@
   "account_id": "f330997b66e28a6012d7e1f5a2d5485e",
   "main": "worker/index.ts",
   "workers_dev": true,
+  // Production address. byocao.com is a zone in this Cloudflare account; Cloudflare creates the DNS record and certificate.
+  "routes": [{ "pattern": "wancha.byocao.com", "custom_domain": true }],
   "preview_urls": false,
   "compatibility_date": "2026-10-15",
   "assets": {
@@ -20,16 +22,23 @@
       "migrations_dir": "migrations"
     }
   ],
-  // One Durable Object holds the WebSocket to the local Claude CLI bridge.
-  "durable_objects": {
-    "bindings": [{ "name": "BRIDGE", "class_name": "BridgeHub" }]
-  },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BridgeHub"] }],
+  // The BridgeHub Durable Object (local Claude CLI bridge) is gone; v2 deletes it.
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["BridgeHub"] },
+    { "tag": "v2", "deleted_classes": ["BridgeHub"] }
+  ],
   "vars": {
     "ADMIN_LOGIN": "byocao",
     "CONTACT_URL": "https://github.com/byocao",
-    "TRIAL_AI_LIMIT": "15",
-    "WORKERS_AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+    "WORKERS_AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    // Claude API (secret ANTHROPIC_API_KEY): custom lessons on Opus, speaking grades on Haiku.
+    "LESSON_MODEL": "claude-opus-5-5",
+    "GRADE_MODEL": "claude-haiku-5-5",
+    // Per account, except the admin (unlimited).
+    "LESSON_LIMIT": "1",
+    "GRADE_LIMIT": "10",
+    // Once a month's Claude spend reaches this, lesson creation and grading show "đang bảo trì".
+    "MONTHLY_BUDGET_USD": "70"
   },
   "observability": { "enabled": true }
 }

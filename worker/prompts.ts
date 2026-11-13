@@ -1,4 +1,4 @@
-// Prompts and JSON schemas shared by both providers (Claude via bridge, Workers AI).
+// Prompts and JSON schemas: lessons and grades go to the Claude API, explanations to Workers AI.
 
 export const LEVELS = ["A1", "A2", "B1", "B2", "C1"] as const;
 export type Level = (typeof LEVELS)[number];
@@ -10,30 +10,33 @@ export interface Lesson {
   title: string;
   summary_vi: string;
   sentences: string[];
-  vocabulary: { word: string; ipa: string; pos: string; meaning_vi: string; example: string }[];
+  sentences_vi: string[];
+  vocabulary: { word: string; ipa: string; pos: string; meaning_vi: string; example: string; example_vi: string }[];
   questions: { question: string; options: string[]; answer_index: number; explanation_vi: string }[];
 }
 
 export const lessonSchema = {
   type: "object",
   additionalProperties: false,
-  required: ["title", "summary_vi", "sentences", "vocabulary", "questions"],
+  required: ["title", "summary_vi", "sentences", "sentences_vi", "vocabulary", "questions"],
   properties: {
     title: { type: "string" },
     summary_vi: { type: "string" },
     sentences: { type: "array", items: { type: "string" } },
+    sentences_vi: { type: "array", items: { type: "string" } },
     vocabulary: {
       type: "array",
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["word", "ipa", "pos", "meaning_vi", "example"],
+        required: ["word", "ipa", "pos", "meaning_vi", "example", "example_vi"],
         properties: {
           word: { type: "string" },
           ipa: { type: "string" },
           pos: { type: "string" },
           meaning_vi: { type: "string" },
           example: { type: "string" },
+          example_vi: { type: "string" },
         },
       },
     },
@@ -67,8 +70,9 @@ Number of sentences: about ${n}
 
 Requirements:
 - "sentences": the passage as a list of complete sentences, in order, each at most 22 words, vocabulary and grammar matching ${level}. They will be read aloud for listening and shadowing practice, so they must sound natural when spoken.
+- "sentences_vi": a natural Vietnamese translation of each sentence, same count and order as "sentences".
 - "title": a short English title. "summary_vi": one-sentence summary in Vietnamese.
-- "vocabulary": 6-10 useful words or phrases from the passage, with IPA (American), part of speech, Vietnamese meaning, and a new example sentence.
+- "vocabulary": 6-10 useful words or phrases from the passage, with IPA (American), part of speech, Vietnamese meaning, a new example sentence that contains the word, and "example_vi", its Vietnamese translation.
 - "questions": 4 multiple-choice comprehension questions in English, each with exactly 4 options, the index (0-3) of the correct one, and a short explanation in Vietnamese.`;
 }
 

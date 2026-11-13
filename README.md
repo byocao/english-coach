@@ -1,4 +1,4 @@
-# English Coach
+# Wancha – Học tiếng Anh cùng Wanko
 
 Ứng dụng luyện **đọc, nghe, nói** tiếng Anh cho người Việt. AI soạn bài theo chủ đề và trình độ (A1–C1), giọng nói được nhận dạng bằng Whisper rồi chấm điểm và góp ý bằng tiếng Việt. Chạy hoàn toàn trên gói **Cloudflare Free**.
 
@@ -13,11 +13,11 @@
 
 ## Nhân vật
 
-Nhân vật Live2D chuyển động: **Wanko**, **Hiyori Momose** (minh hoạ: Kani Biimu) và **Haru**, mẫu chính thức của Live2D Inc., dùng theo [Live2D Free Material License](https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html) (cá nhân và doanh nghiệp nhỏ doanh thu dưới 10 triệu yên được dùng, kể cả thương mại, có ghi credit). License cấm phát tán lại file gốc, nên file model **không nằm trong git**: `scripts/fetch-live2d.mjs` tải chúng (và Cubism Core) vào `public/live2d/` trước mỗi lần `dev`/`build`.
+Nhân vật Live2D chuyển động: **Wanko** (ngồi trong bát matcha: script build đổi màu bát), mẫu chính thức của Live2D Inc., dùng theo [Live2D Free Material License](https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html) (cá nhân và doanh nghiệp nhỏ doanh thu dưới 10 triệu yên được dùng, kể cả thương mại, có ghi credit). License cấm phát tán lại file gốc, nên file model **không nằm trong git**: `scripts/fetch-live2d.mjs` tải chúng (và Cubism Core) vào `public/live2d/` trước mỗi lần `dev`/`build`.
 
 Icon: [Phosphor Icons](https://phosphoricons.com) (MIT), dạng đặc, mỗi khái niệm một màu.
 
-**Bạn đồng hành** (chọn trong Hồ sơ): Wanko (cún trong tách trà, mặc định), Hiyori, Haru. Hai bé mèo **Tororo & Hijiki** cũng là mẫu miễn phí của Live2D nhưng trang tải yêu cầu bấm đồng ý điều khoản, nên không tự tải được: vào https://www.live2d.com/en/learn/sample/tororo-hijiki/, tải bản runtime, giải nén vào thư mục `live2d-extra/` (đã gitignore) rồi `npm run deploy`. Script build tự nhận mọi `*.model3.json` trong đó.
+**Bạn đồng hành** (chọn trong Hồ sơ): Wanko (cún trong bát matcha, mặc định) và **Kitsu**, chú cáo nhỏ do Wancha tự vẽ bằng SVG (`src/Fox.tsx`), không phụ thuộc license bên ngoài. Hai bé mèo **Tororo & Hijiki** cũng là mẫu miễn phí của Live2D nhưng trang tải yêu cầu bấm đồng ý điều khoản, nên không tự tải được: vào https://www.live2d.com/en/learn/sample/tororo-hijiki/, tải bản runtime, giải nén vào thư mục `live2d-extra/` (đã gitignore) rồi `npm run deploy`. Script build tự nhận mọi `*.model3.json` trong đó.
 
 ## Khoá học có sẵn
 
@@ -30,13 +30,13 @@ npm run db:seed:remote      # ghi đè/thêm vào D1 (chạy lại bao nhiêu l�
 
 ## Ai dùng AI nào
 
-| Tài khoản | AI | Giới hạn |
+| Chức năng | AI | Giới hạn mỗi tài khoản (trừ `byocao`) |
 |---|---|---|
-| `byocao` (admin, mật khẩu = secret `ADMIN_PASSWORD`) | **Claude** chạy bằng Claude Code CLI trên máy của byocao, qua bridge | Không giới hạn (theo gói Claude của bạn) |
-| Thành viên được mở khoá | Workers AI (Llama 3.3 70B) | Không giới hạn (trong hạn mức free của Cloudflare) |
-| Tài khoản mới | Workers AI | `TRIAL_AI_LIMIT` lượt (mặc định 15), hết thì phải liên hệ github.com/byocao |
+| Tạo bài học riêng | **Claude Opus 5.5** (Claude API) | `LESSON_LIMIT` bài (mặc định 1) |
+| Chấm điểm phát âm | Whisper (Workers AI) nghe, **Claude Haiku 5.5** chấm | `GRADE_LIMIT` lần (mặc định 10) |
+| Giải thích câu | Workers AI (Llama 3.3 70B), miễn phí | Không giới hạn (trong hạn mức free của Cloudflare) |
 
-Người dùng khác **không bao giờ** dùng gói Claude cá nhân của bạn: điều khoản của Anthropic không cho phép dùng gói Pro/Max để phục vụ người khác. Nếu muốn cho họ dùng Claude, hãy dùng API key của Claude Console.
+`byocao` (admin, mật khẩu = secret `ADMIN_PASSWORD`) không bị giới hạn lượt. Mỗi lần gọi Claude API được ghi vào bảng `ai_spend` kèm số token và chi phí. Khi tổng chi phí trong tháng (theo giờ UTC) chạm `MONTHLY_BUDGET_USD` (mặc định $70), tạo bài và chấm điểm chuyển sang "đang bảo trì" cho mọi người, kể cả admin, đến đầu tháng sau. Trang Quản trị hiện chi phí tháng này theo từng model, và nút "Cấp lại lượt" trả lại lượt cho một tài khoản.
 
 Điểm nói phản ánh **độ rõ ràng** (Whisper nghe ra đúng chữ hay không). Nó không phân tích từng âm vị như ELSA.
 
@@ -49,16 +49,16 @@ Tài khoản lưu trong D1: tên đăng nhập + mật khẩu băm PBKDF2-SHA256
 ```
 Trình duyệt (React) ──► Cloudflare Worker (Hono)
                           ├─ D1: users, sessions, lessons, lesson_progress, xp_events, attempts
+                          ├─ D1: ai_spend (token và chi phí từng lần gọi Claude)
                           ├─ Workers AI: Whisper large-v3-turbo, Llama 3.3 70B
-                          └─ Durable Object BridgeHub ◄──WebSocket── bridge/bridge.mjs (máy byocao)
-                                                                     └─ claude -p --json-schema
+                          └─ Claude API: Opus 5.5 (tạo bài), Haiku 5.5 (chấm điểm)
 ```
 
 ## Chạy ở máy local
 
 ```bash
 npm install
-cp .dev.vars.example .dev.vars        # điền ADMIN_PASSWORD và BRIDGE_TOKEN
+cp .dev.vars.example .dev.vars        # điền ADMIN_PASSWORD và ANTHROPIC_API_KEY
 npm run db:migrate:local
 npm run db:seed:local                 # nạp 40 bài có sẵn
 npm run dev                           # http://localhost:5173
@@ -66,13 +66,6 @@ npm run dev                           # http://localhost:5173
 
 Đăng nhập local: tài khoản `byocao` dùng `ADMIN_PASSWORD` trong `.dev.vars`; tài khoản khác tự đăng ký ở trang đăng nhập.
 Muốn dùng Whisper/Workers AI ở local thì Wrangler phải đăng nhập đúng tài khoản Cloudflare. Không có thì chạy `EC_OFFLINE=1 npm run dev` (mọi thứ khác vẫn chạy).
-
-Bridge Claude, chạy trong cửa sổ terminal thứ hai:
-
-```bash
-cp bridge/.env.example bridge/.env    # APP_URL + BRIDGE_TOKEN giống .dev.vars
-npm run bridge
-```
 
 ## Deploy lên Cloudflare (Free)
 
@@ -82,21 +75,27 @@ npm run bridge
 4. Đặt secrets:
    ```bash
    npx wrangler secret put ADMIN_PASSWORD
-   npx wrangler secret put BRIDGE_TOKEN
+   npx wrangler secret put ANTHROPIC_API_KEY
    ```
 5. `npm run deploy`
-6. Trên máy bạn: đặt `APP_URL` trong `bridge/.env` thành URL workers.dev, rồi `npm run bridge`.
 
 ## Hạn mức miễn phí
 
-- Workers AI: 10.000 neurons/ngày, đủ cho khoảng 100–150 lượt chấm hoặc tạo bài mỗi ngày. Whisper tốn khoảng 47 neurons cho mỗi phút âm thanh. Khi hết, app báo người dùng thử lại sau 00:00 UTC.
-- Workers: 100.000 request/ngày. D1: 5 GB. Durable Objects (SQLite): có trong gói Free.
+- Workers AI: 10.000 neurons/ngày. Whisper tốn khoảng 47 neurons cho mỗi phút âm thanh. Khi hết, app báo người dùng thử lại sau 00:00 UTC.
+- Workers: 100.000 request/ngày. D1: 5 GB.
+- Claude API tính tiền theo token, giới hạn bởi `MONTHLY_BUDGET_USD` ở trên.
 
 ## Cấu hình (`wrangler.jsonc` → `vars`)
 
 | Biến | Mặc định | Ý nghĩa |
 |---|---|---|
-| `ADMIN_LOGIN` | `byocao` | Tên đăng nhập được quyền admin và dùng Claude |
-| `TRIAL_AI_LIMIT` | `15` | Số lượt AI cho tài khoản dùng thử |
+| `ADMIN_LOGIN` | `byocao` | Tên đăng nhập được quyền admin (không giới hạn lượt) |
 | `CONTACT_URL` | `https://github.com/byocao` | Link liên hệ khi hết lượt |
-| `WORKERS_AI_MODEL` | `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Model cho người không phải admin |
+| `LESSON_MODEL` | `claude-opus-5-5` | Model tạo bài học riêng |
+| `GRADE_MODEL` | `claude-haiku-5-5` | Model chấm điểm phát âm |
+| `LESSON_LIMIT` | `1` | Số bài riêng mỗi tài khoản được tạo |
+| `GRADE_LIMIT` | `10` | Số lần chấm điểm mỗi tài khoản |
+| `MONTHLY_BUDGET_USD` | `70` | Chi phí Claude API tối đa mỗi tháng trước khi chuyển sang "bảo trì" |
+| `WORKERS_AI_MODEL` | `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Model giải thích câu |
+
+Secret `ANTHROPIC_API_KEY`: khoá Claude API (`npx wrangler secret put ANTHROPIC_API_KEY`).

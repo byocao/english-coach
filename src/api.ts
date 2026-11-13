@@ -21,17 +21,35 @@ export interface Me {
     placed_at: string | null;
     placement_score: number | null;
   };
-  quota: { limited: boolean; used: number; limit: number | null; left: number | null };
+  quota: Quota;
   contact: string;
-  bridgeOnline: boolean | null;
+  /** Lesson creation and grading are paused: the month's Claude API budget is used up. */
+  maintenance: boolean;
+  /** Admin only: Claude API spend this month. */
+  spend: { usd: number; budget: number } | null;
   game: Game;
+}
+
+export interface Allowance {
+  used: number;
+  limit: number;
+  left: number;
+}
+
+/** Per-account allowances for the Claude features; limited is false for the admin. */
+export interface Quota {
+  limited: boolean;
+  lessons: Allowance;
+  grades: Allowance;
 }
 
 export interface LessonContent {
   title: string;
   summary_vi: string;
   sentences: string[];
-  vocabulary: { word: string; ipa: string; pos: string; meaning_vi: string; example: string }[];
+  /** Vietnamese translation of each sentence (built-in course; newer AI lessons). */
+  sentences_vi?: string[];
+  vocabulary: { word: string; ipa: string; pos: string; meaning_vi: string; example: string; example_vi?: string }[];
   questions: { question: string; options: string[]; answer_index: number; explanation_vi: string }[];
 }
 

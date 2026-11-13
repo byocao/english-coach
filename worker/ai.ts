@@ -1,11 +1,11 @@
-import type { Env, User } from "./env";
+import type { Env } from "./env";
 
 export type Provider = "claude" | "workers-ai";
 
 export interface AiResult<T> {
   data: T;
   provider: Provider;
-  note?: string; // shown to the user, e.g. "bridge offline, used Workers AI"
+  note?: string;
 }
 
 export class AiError extends Error {
@@ -21,25 +21,8 @@ interface JsonTask {
   maxTokens: number;
 }
 
-/**
- * Routes a structured-output task:
- *  - admin  -> Claude through the local CLI bridge (byocao's own subscription),
- *              falling back to Workers AI when the PC is offline;
- *  - others -> Workers AI (free tier). Other people's requests never go through
- *              the personal Claude plan.
- */
-export async function runJson<T>(env: Env, user: User, task: JsonTask): Promise<AiResult<T>> {
-  if (user.role === "admin") {
-    try {
-      const stub = env.BRIDGE.get(env.BRIDGE.idFromName("bridge"));
-      const data = (await stub.run({ system: task.system, prompt: task.prompt, schema: task.schema })) as T;
-      return { data, provider: "claude" };
-    } catch (err) {
-      const reason = err instanceof Error ? err.message : String(err);
-      const data = await workersAiJson<T>(env, task);
-      return { data, provider: "workers-ai", note: `Claude bridge: ${reason}. Đã dùng Workers AI thay thế.` };
-    }
-  }
+/** Structured output from Workers AI (free tier); used for sentence explanations. */
+export async function runJson<T>(env: Env, task: JsonTask): Promise<AiResult<T>> {
   return { data: await workersAiJson<T>(env, task), provider: "workers-ai" };
 }
 

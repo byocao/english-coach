@@ -22,10 +22,11 @@ import {
 } from "@phosphor-icons/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, onApiError, type ApiError, type LessonDetail, type LessonRow, type Me } from "./api";
-import { speak } from "./audio";
+import { englishVoices, isNaturalVoice, onVoicesChanged, preferredVoice, setPreferredVoice, speak } from "./audio";
 import { Exercise } from "./Exercise";
+import { Landing } from "./Landing";
 import { Login } from "./Login";
-import { COMPANIONS, CompanionContext, MASCOT_CREDIT, Mascot, availableCompanions, useCompanion, type MascotName } from "./Mascot";
+import { COMPANIONS, CompanionContext, MASCOT_CREDIT, Mascot, availableCompanions, isCompanion, useCompanion, type MascotName } from "./Mascot";
 import { Placement } from "./Placement";
 import { CATEGORIES, Fx, LEVELS, LEVEL_LABEL, STEPS, category, parseProgress, quests } from "./meta";
 import { setSoundOn, soundOn } from "./sound";
@@ -39,7 +40,9 @@ type Route =
   | { name: "rank" }
   | { name: "me" }
   | { name: "placement" }
-  | { name: "admin" };
+  | { name: "admin" }
+  | { name: "login" }
+  | { name: "register" };
 
 function parseRoute(): Route {
   const h = location.hash.replace(/^#\/?/, "");
@@ -52,6 +55,8 @@ function parseRoute(): Route {
   if (h === "me") return { name: "me" };
   if (h === "admin") return { name: "admin" };
   if (h === "placement") return { name: "placement" };
+  if (h === "login") return { name: "login" };
+  if (h === "register") return { name: "register" };
   return { name: "learn" };
 }
 
@@ -64,6 +69,24 @@ function useNarrow(q = "(max-width: 1180px)"): boolean {
     return () => m.removeEventListener("change", fn);
   }, [q]);
   return narrow;
+}
+
+/** Set while this browser has a session, so returning users see the loading screen, not the landing page. */
+const SIGNED_IN_HINT = "wancha_signed_in";
+function signedInHint(): boolean {
+  try {
+    return localStorage.getItem(SIGNED_IN_HINT) === "1";
+  } catch {
+    return false;
+  }
+}
+function setSignedInHint(on: boolean) {
+  try {
+    if (on) localStorage.setItem(SIGNED_IN_HINT, "1");
+    else localStorage.removeItem(SIGNED_IN_HINT);
+  } catch {
+    /* private mode */
+  }
 }
 
 export function App() {
@@ -89,12 +112,19 @@ export function App() {
   useEffect(
     () =>
       onApiError((err) => {
-        if (err.code === "trial_exhausted" || err.code === "blocked") setLocked(err);
+        if (["blocked", "lesson_limit", "grade_limit", "maintenance"].includes(err.code ?? "")) setLocked(err);
+        if (err.code === "maintenance") refreshMe();
         if (err.code === "unauthenticated") setMe(null);
       }),
     [],
   );
 
+  useEffect(() => {
+    if (me !== undefined) setSignedInHint(me !== null);
+  }, [me]);
+
+  // While /api/me loads, first-time visitors already get the landing page (also prerendered into index.html).
+  if (me === undefined && !signedInHint() && route.name === "learn") return <Landing />;
   if (me === undefined)
     return (
       <div className="boot">
@@ -102,9 +132,17 @@ export function App() {
         <span>Đang mở sách…</span>
       </div>
     );
-  if (me === null) return <Login />;
+  // Signed out: a public landing page, with sign-in and sign-up on their own page.
+  if (me === null) {
+    if (route.name === "login" || route.name === "register") return <Login mode={route.name} />;
+    return <Landing />;
+  }
+  if (route.name === "login" || route.name === "register") {
+    location.replace("#/");
+    return null;
+  }
 
-  const companion = (me.user.mascot as MascotName) || "wanko";
+  const companion: MascotName = isCompanion(me.user.mascot) ? me.user.mascot : "wanko";
 
   if (route.name === "placement") {
     return (
@@ -138,7 +176,7 @@ export function App() {
         <a className="logo" href="#/">
           <Logo />
           <span>
-            english<b>coach</b>
+            Wan<b>cha</b>
           </span>
         </a>
         <nav>
@@ -171,8 +209,9 @@ export function App() {
       <aside className="rightcol">
         <StatPills me={me} />
         <QuestCard me={me} />
-        {me.user.role === "admin" && <BridgeCard online={!!me.bridgeOnline} />}
-        {me.quota.limited && <QuotaCard me={me} />}
+        {me.spend && <SpendCard usd={me.spend.usd} budget={me.spend.budget} />}
+        {me.maintenance && me.user.role !== "admin" && <MaintenanceCard />}
+        {me.quota.limited && !me.maintenance && <QuotaCard me={me} />}
         {route.name !== "learn" && route.name !== "me" && (
           <div className="card mascot-card">
             <Mascot name={companion} className="side-mascot" say={greeting(me)} />
@@ -197,11 +236,7 @@ export function App() {
 }
 
 function Logo() {
-  return (
-    <span className="logo-mark" aria-hidden="true">
-      <Fx name="paw" size={28} />
-    </span>
-  );
+  return <img className="logo-mark" src="/icons/wancha-192.png" alt="" width={44} height={44} />;
 }
 
 function greeting(me: Me): string {
@@ -272,29 +307,52 @@ function QuestCard({ me }: { me: Me }) {
   );
 }
 
-function BridgeCard({ online }: { online: boolean }) {
+const usd = (n: number) => "$" + n.toFixed(n < 10 ? 2 : 1);
+
+/** Admin: Claude API spend this month against the budget. */
+function SpendCard({ usd: spent, budget }: { usd: number; budget: number }) {
+  const over = spent >= budget;
   return (
-    <section className={`card bridge ${online ? "ok" : "off"}`}>
+    <section className={`card bridge ${over ? "off" : "ok"}`}>
       <Fx name="robot" size={38} tile />
       <div>
-        <b>Claude bridge</b>
-        <span className="small">{online ? "Đang online" : "Offline, đang dùng Workers AI"}</span>
+        <b>Claude API tháng này</b>
+        <span className="small">
+          {usd(spent)} / {usd(budget)}
+          {over && " · đã tạm dừng tạo bài và chấm điểm"}
+        </span>
+      </div>
+    </section>
+  );
+}
+
+function MaintenanceCard() {
+  return (
+    <section className="card bridge off">
+      <Fx name="robot" size={38} tile />
+      <div>
+        <b>Đang bảo trì</b>
+        <span className="small">Tạo bài và chấm điểm phát âm tạm dừng. Các bài có sẵn vẫn học bình thường.</span>
       </div>
     </section>
   );
 }
 
 function QuotaCard({ me }: { me: Me }) {
+  const { lessons, grades } = me.quota;
   return (
     <section className="card quota">
       <header>
-        <h3>Dùng thử AI</h3>
-        <span className="muted small">
-          {me.quota.left}/{me.quota.limit}
-        </span>
+        <h3>Lượt AI của bạn</h3>
       </header>
-      <Meter value={me.quota.left ?? 0} max={me.quota.limit ?? 1} tone="violet" />
-      <span className="muted small">Lượt AI dùng cho: tạo bài, chấm nói, giải thích câu.</span>
+      <span className="small">
+        Tạo bài riêng: còn <b>{lessons.left}</b>/{lessons.limit}
+      </span>
+      <Meter value={lessons.left} max={lessons.limit} tone="violet" />
+      <span className="small">
+        Chấm điểm phát âm: còn <b>{grades.left}</b>/{grades.limit}
+      </span>
+      <Meter value={grades.left} max={grades.limit} tone="violet" />
     </section>
   );
 }
@@ -305,19 +363,33 @@ function LockedDialog({ err, onClose }: { err: ApiError; onClose: () => void }) 
     <div className="overlay" onClick={onClose}>
       <div className="dialog" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
         <Fx name="locked" size={72} tile className="dialog-fx" />
-        <h2>{err.code === "blocked" ? "Tài khoản đã bị khoá" : "Hết lượt dùng thử"}</h2>
+        <h2>
+          {err.code === "blocked"
+            ? "Tài khoản đã bị khoá"
+            : err.code === "maintenance"
+              ? "Đang bảo trì"
+              : err.code === "lesson_limit"
+                ? "Hết lượt tạo bài"
+                : "Hết lượt chấm điểm"}
+        </h2>
         <p>
           {err.code === "blocked"
             ? "Tài khoản của bạn không còn dùng được các tính năng AI."
-            : "Bạn đã dùng hết lượt AI miễn phí. Bạn vẫn học được toàn bộ khoá học có sẵn: từ vựng, nghe, chép chính tả, đọc và thử thách."}
+            : err.code === "maintenance"
+              ? "Chức năng tạo bài và chấm điểm phát âm đang bảo trì. Bạn vẫn học được toàn bộ khoá học có sẵn."
+              : err.code === "lesson_limit"
+                ? "Bạn đã dùng hết lượt tạo bài học riêng bằng AI. Bạn vẫn học được toàn bộ khoá học và các bài trong thư viện."
+                : "Bạn đã dùng hết lượt chấm điểm phát âm. Bạn vẫn luyện từ vựng, nghe, chép chính tả, đọc và thử thách."}
         </p>
-        <p>
-          Muốn dùng tiếp, hãy liên hệ{" "}
-          <a href={contact} target="_blank" rel="noreferrer">
-            {contact.replace(/^https?:\/\//, "")}
-          </a>
-          .
-        </p>
+        {err.code !== "maintenance" && (
+          <p>
+            Muốn dùng tiếp, hãy liên hệ{" "}
+            <a href={contact} target="_blank" rel="noreferrer">
+              {contact.replace(/^https?:\/\//, "")}
+            </a>
+            .
+          </p>
+        )}
         <button className="btn primary full" onClick={onClose}>
           Đã hiểu
         </button>
@@ -638,7 +710,7 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
           <p>{l.content.summary_vi}</p>
           <span className="small hero-meta">
             {l.content.sentences.length} câu · {l.content.vocabulary.length} từ vựng ·{" "}
-            {l.course_order ? "Khoá học English Coach" : `soạn bởi ${l.provider === "claude" ? "Claude" : "Workers AI"} cho ${l.author}`}
+            {l.course_order ? "Khoá học Wancha" : `soạn bởi ${l.provider === "claude" ? "Claude" : "Workers AI"} cho ${l.author}`}
           </span>
         </div>
       </header>
@@ -843,7 +915,9 @@ function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
           <h2>AI soạn bài theo ý bạn</h2>
           <p className="small">
             Gõ một chủ đề bất kỳ, AI viết đoạn văn kèm từ vựng và câu hỏi rồi lưu vào thư viện cho mọi người.
-            {me.quota.limited && ` Tốn 1 lượt (còn ${me.quota.left}).`}
+            {me.maintenance
+              ? " Chức năng này đang bảo trì."
+              : me.quota.limited && ` Tốn 1 lượt (còn ${me.quota.lessons.left}/${me.quota.lessons.limit}).`}
           </p>
         </div>
       </div>
@@ -1066,6 +1140,7 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
             ))}
           </div>
         </div>
+        <VoiceSetting />
         <label className="setting switch-row">
           <span>Âm thanh hiệu ứng</span>
           <input
@@ -1153,7 +1228,7 @@ function CompanionPicker({ me, onChange }: { me: Me; onChange: () => void }) {
   const current = useCompanion();
   const [have, setHave] = useState<MascotName[]>(["wanko"]);
   useEffect(() => {
-    availableCompanions().then((m) => setHave((Object.keys(COMPANIONS) as MascotName[]).filter((k) => m[k])));
+    availableCompanions().then((m) => setHave((Object.keys(COMPANIONS) as MascotName[]).filter((k) => k === "fox" || m[k])));
   }, []);
   const choose = async (mascot: MascotName) => {
     await api("/api/me", { method: "PATCH", body: { mascot } });
@@ -1209,6 +1284,48 @@ function Stat({ fx, value, label }: { fx: Parameters<typeof Fx>[0]["name"]; valu
   );
 }
 
+/** Picks the English voice used for listening; "automatic" takes the most natural one this browser has. */
+function VoiceSetting() {
+  const [voices, setVoices] = useState(englishVoices);
+  const [uri, setUri] = useState(preferredVoice);
+  useEffect(() => {
+    // The list may have loaded between the first render and this effect, so read it again.
+    setVoices(englishVoices());
+    return onVoicesChanged(() => setVoices(englishVoices()));
+  }, []);
+  const auto = voices[0];
+  const pick = (v: string) => {
+    setUri(v);
+    setPreferredVoice(v);
+    void speak("Hi! This is the voice you will hear in your lessons.", { voiceURI: v || undefined });
+  };
+  if (!("speechSynthesis" in window)) return null;
+  return (
+    <div className="setting voice-setting">
+      <span>Giọng đọc tiếng Anh</span>
+      <div className="voice-pick">
+        <select className="select" value={uri} onChange={(e) => pick(e.target.value)} aria-label="Giọng đọc tiếng Anh">
+          <option value="">Tự động{auto ? ` (${auto.name.replace(/^Microsoft |^Google /, "").replace(/ - .*$/, "")})` : ""}</option>
+          {voices.map((v) => (
+            <option key={v.voiceURI} value={v.voiceURI}>
+              {isNaturalVoice(v) ? "★ " : ""}
+              {v.name} ({v.lang})
+            </option>
+          ))}
+        </select>
+        <button className="btn small ghost" onClick={() => pick(uri)}>
+          <SpeakerHigh size={16} weight="bold" /> Nghe thử
+        </button>
+      </div>
+      {voices.length > 0 && !voices.some(isNaturalVoice) && (
+        <span className="muted small voice-hint">
+          Trình duyệt này chỉ có giọng máy. Mở app bằng Microsoft Edge để có giọng tự nhiên (Natural), hoặc Chrome để có giọng Google.
+        </span>
+      )}
+    </div>
+  );
+}
+
 export function ScoreBadge({ score }: { score: number }) {
   const tone = score >= 85 ? "good" : score >= 60 ? "mid" : "low";
   return <span className={`score ${tone}`}>{score}</span>;
@@ -1221,16 +1338,28 @@ interface AdminUser {
   login: string;
   role: string;
   ai_used: number;
+  lessons_used: number;
+  grades_used: number;
   xp: number;
   streak: number;
   attempts: number;
   last_seen_at: string | null;
 }
 
+interface AdminData {
+  users: AdminUser[];
+  limits: { lessons: number; grades: number };
+  spend: {
+    usd: number;
+    budget: number;
+    byModel: { kind: string; model: string; calls: number; input_tokens: number; output_tokens: number; usd: number }[];
+  };
+}
+
 function Admin() {
-  const [data, setData] = useState<{ users: AdminUser[]; trialLimit: number; bridgeOnline: boolean } | null>(null);
+  const [data, setData] = useState<AdminData | null>(null);
   const load = useCallback(() => {
-    api<{ users: AdminUser[]; trialLimit: number; bridgeOnline: boolean }>("/api/admin/users").then(setData);
+    api<AdminData>("/api/admin/users").then(setData);
   }, []);
   useEffect(load, [load]);
   const update = async (id: number, body: object) => {
@@ -1241,20 +1370,50 @@ function Admin() {
   return (
     <div className="stack-lg">
       <h1 className="page-title">Quản trị</h1>
-      <BridgeCard online={data.bridgeOnline} />
-      <p className="muted small">
-        Chạy <code>npm run bridge</code> trên máy bạn để tài khoản byocao dùng Claude. Người khác luôn dùng Workers AI.
-      </p>
+      <SpendCard usd={data.spend.usd} budget={data.spend.budget} />
+      {data.spend.byModel.length > 0 && (
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Việc</th>
+                <th>Model</th>
+                <th>Lần gọi</th>
+                <th>Token vào / ra</th>
+                <th>Chi phí</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.spend.byModel.map((r) => (
+                <tr key={r.kind + r.model}>
+                  <td>{r.kind === "lesson" ? "Tạo bài" : "Chấm điểm"}</td>
+                  <td className="small">{r.model}</td>
+                  <td>{r.calls}</td>
+                  <td className="small">
+                    {r.input_tokens.toLocaleString("vi-VN")} / {r.output_tokens.toLocaleString("vi-VN")}
+                  </td>
+                  <td>{usd(r.usd)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       <section className="card">
         <h2 className="card-title">Người dùng</h2>
-        <p className="muted small">Tài khoản dùng thử có {data.trialLimit} lượt AI. Bài học: mở bài để ẩn hoặc xoá.</p>
+        <p className="muted small">
+          Mỗi tài khoản (trừ byocao) được tạo {data.limits.lessons} bài riêng bằng Claude Opus và chấm điểm phát âm{" "}
+          {data.limits.grades} lần bằng Claude Haiku. Khi chi phí tháng chạm {usd(data.spend.budget)}, hai chức năng này
+          chuyển sang "bảo trì". Bài học: mở bài để ẩn hoặc xoá.
+        </p>
         <div className="table-wrap">
           <table className="table">
             <thead>
               <tr>
                 <th>Tài khoản</th>
                 <th>Quyền</th>
-                <th>Lượt AI</th>
+                <th>Tạo bài</th>
+                <th>Chấm điểm</th>
                 <th>XP</th>
                 <th>Lần nói</th>
                 <th>Lần cuối</th>
@@ -1270,24 +1429,20 @@ function Admin() {
                   <td>
                     <span className={`role ${u.role}`}>{u.role}</span>
                   </td>
-                  <td>{u.ai_used}</td>
+                  <td>{u.role === "admin" ? u.lessons_used : `${u.lessons_used}/${data.limits.lessons}`}</td>
+                  <td>{u.role === "admin" ? u.grades_used : `${u.grades_used}/${data.limits.grades}`}</td>
                   <td>{u.xp}</td>
                   <td>{u.attempts}</td>
                   <td className="small muted">{u.last_seen_at ? new Date(u.last_seen_at + "Z").toLocaleString("vi-VN") : "–"}</td>
                   <td className="actions">
                     {u.role !== "admin" && (
                       <>
-                        {u.role !== "member" && (
-                          <button className="btn small" onClick={() => update(u.id, { role: "member" })}>
+                        {u.role === "blocked" && (
+                          <button className="btn small" onClick={() => update(u.id, { role: "trial" })}>
                             Mở khoá
                           </button>
                         )}
-                        {u.role !== "trial" && (
-                          <button className="btn small ghost" onClick={() => update(u.id, { role: "trial" })}>
-                            Về dùng thử
-                          </button>
-                        )}
-                        {u.role === "trial" && u.ai_used > 0 && (
+                        {(u.lessons_used > 0 || u.grades_used > 0) && (
                           <button className="btn small ghost" onClick={() => update(u.id, { resetUsage: true })}>
                             Cấp lại lượt
                           </button>

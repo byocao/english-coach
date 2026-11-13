@@ -92,15 +92,43 @@ function blobToBase64(blob: Blob): Promise<string> {
 }
 
 // ---- Text-to-speech -------------------------------------------------------------
+// Uses the browser's own voices (free). Quality differs a lot between voices, so they are ranked:
+// neural/"Natural" voices (Edge), Apple Premium/Enhanced, Google voices (Chrome, Android), then the rest.
+
+const NOVELTY =
+  /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|junior|organ|pipe organ|ralph|superstar|trinoids|whisper|wobble|zarvox|fred|kathy|grandma|grandpa|eddy|flo|reed|rocko|sandy|shelley)\b/i;
+const FEMALE =
+  /\b(ava|emma|jenny|aria|michelle|samantha|allison|susan|zoe|karen|serena|moira|libby|sonia|natasha|clara|female|tessa|victoria|fiona|catherine|zira|hazel)\b/i;
+
+function voiceScore(v: SpeechSynthesisVoice): number {
+  const n = v.name;
+  let s = 0;
+  if (/natural|neural/i.test(n)) s += 100; // Edge "Microsoft Ava Online (Natural)", Windows Natural voices
+  else if (/premium/i.test(n)) s += 90; // Apple
+  else if (/enhanced/i.test(n)) s += 80; // Apple
+  else if (/online/i.test(n)) s += 60;
+  else if (/^google/i.test(n)) s += 50; // Chrome desktop
+  else if (/-x-|network/i.test(v.voiceURI) && !v.localService) s += 45; // Android Google network voices
+  else if (/^(samantha|ava|allison|zoe|evan|nathan|tom|susan|karen|daniel|serena|moira)\b/i.test(n)) s += 30; // decent Apple voices
+  if (/multilingual/i.test(n)) s -= 5; // English-only voices pronounce English slightly better
+  if (NOVELTY.test(n)) s -= 200;
+  const lang = v.lang.toLowerCase().replace("_", "-");
+  s += lang === "en-us" ? 6 : lang === "en-gb" ? 4 : /^en-(au|ca|ie|nz)/.test(lang) ? 2 : 0;
+  if (FEMALE.test(n)) s += 2;
+  return s;
+}
 
 export function englishVoices(): SpeechSynthesisVoice[] {
   if (!("speechSynthesis" in window)) return [];
-  const score = (v: SpeechSynthesisVoice) =>
-    (/natural|neural|online/i.test(v.name) ? 4 : 0) + (/google/i.test(v.name) ? 2 : 0) + (v.lang === "en-US" ? 1 : 0);
   return speechSynthesis
     .getVoices()
     .filter((v) => v.lang.toLowerCase().startsWith("en"))
-    .sort((a, b) => score(b) - score(a));
+    .sort((a, b) => voiceScore(b) - voiceScore(a));
+}
+
+/** True for the voices worth labelling as natural-sounding in the picker. */
+export function isNaturalVoice(v: SpeechSynthesisVoice): boolean {
+  return voiceScore(v) >= 45;
 }
 
 export function onVoicesChanged(fn: () => void): () => void {
@@ -109,22 +137,81 @@ export function onVoicesChanged(fn: () => void): () => void {
   return () => speechSynthesis.removeEventListener("voiceschanged", fn);
 }
 
-export function speak(text: string, opts: { rate?: number; voiceURI?: string } = {}): Promise<void> {
+/** Chrome fills the voice list asynchronously; wait briefly so the first sentence does not use the system default. */
+function voicesReady(): Promise<void> {
+  if (!("speechSynthesis" in window) || speechSynthesis.getVoices().length) return Promise.resolve();
   return new Promise((resolve) => {
-    if (!("speechSynthesis" in window)) return resolve();
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    const voices = englishVoices();
-    u.voice = voices.find((v) => v.voiceURI === opts.voiceURI) ?? voices[0] ?? null;
-    u.lang = u.voice?.lang ?? "en-US";
-    u.rate = opts.rate ?? 1;
-    u.onend = () => resolve();
-    u.onerror = () => resolve();
-    speechSynthesis.speak(u);
+    const done = () => {
+      speechSynthesis.removeEventListener("voiceschanged", done);
+      resolve();
+    };
+    speechSynthesis.addEventListener("voiceschanged", done);
+    setTimeout(done, 1000);
+  });
+}
+
+const VOICE_KEY = "ec_voice_uri";
+
+/** The voice the user picked in Profile, or "" for automatic. */
+export function preferredVoice(): string {
+  try {
+    return localStorage.getItem(VOICE_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+export function setPreferredVoice(uri: string) {
+  try {
+    if (uri) localStorage.setItem(VOICE_KEY, uri);
+    else localStorage.removeItem(VOICE_KEY);
+  } catch {
+    /* private mode */
+  }
+}
+
+/** Splits long text into sentence-sized pieces: Chrome's Google voices stop after ~15 s of one utterance. */
+function chunks(text: string): string[] {
+  const parts = text.match(/[^.!?]+[.!?]+["')\]]*\s*|[^.!?]+$/g) ?? [text];
+  const out: string[] = [];
+  for (const p of parts) {
+    const t = p.trim();
+    if (!t) continue;
+    if (out.length && (out[out.length - 1] + " " + t).length <= 160) out[out.length - 1] += " " + t;
+    else out.push(t);
+  }
+  return out.length ? out : [text];
+}
+
+let speakToken = 0;
+
+export async function speak(text: string, opts: { rate?: number; voiceURI?: string } = {}): Promise<void> {
+  if (!("speechSynthesis" in window)) return;
+  const token = ++speakToken;
+  speechSynthesis.cancel();
+  await voicesReady();
+  if (token !== speakToken) return; // a newer speak() or stopSpeaking() came in while waiting
+  const voices = englishVoices();
+  const wanted = opts.voiceURI || preferredVoice();
+  const voice = voices.find((v) => v.voiceURI === wanted) ?? voices[0] ?? null;
+  const pieces = chunks(text);
+  await new Promise<void>((resolve) => {
+    pieces.forEach((piece, i) => {
+      const u = new SpeechSynthesisUtterance(piece);
+      u.voice = voice;
+      u.lang = voice?.lang ?? "en-US";
+      u.rate = opts.rate ?? 1;
+      if (i === pieces.length - 1) {
+        u.onend = () => resolve();
+        u.onerror = () => resolve();
+      }
+      speechSynthesis.speak(u);
+    });
   });
 }
 
 export function stopSpeaking() {
+  speakToken++;
   if ("speechSynthesis" in window) speechSynthesis.cancel();
 }
 

@@ -1,10 +1,11 @@
-// Live2D companions. Official Live2D sample characters used under the Live2D Free Material License:
-// Wanko (the puppy in a teacup), Hiyori Momose and Haru, plus Tororo & Hijiki (cats) when the owner
-// has added them (see scripts/fetch-live2d.mjs). Rendered with pixi-live2d-display on Cubism Core,
-// both loaded lazily so pages without a companion stay light.
+// Companions. Wanko (the puppy in a matcha bowl) and Tororo & Hijiki (cats, when the owner has added them,
+// see scripts/fetch-live2d.mjs) are official Live2D sample characters used under the Live2D Free Material
+// License, rendered with pixi-live2d-display on Cubism Core, both loaded lazily so pages without a companion
+// stay light. Kitsu the fox is Wancha's own SVG drawing (src/Fox.tsx).
+import { Fox } from "./Fox";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-export type MascotName = "wanko" | "tororo" | "hijiki" | "hiyori" | "haru";
+export type MascotName = "wanko" | "tororo" | "hijiki" | "fox";
 export type Mood = "idle" | "happy" | "cheer" | "sad" | "oops" | "think" | "surprised";
 export type Shot = "full" | "bust";
 
@@ -31,16 +32,13 @@ export const COMPANIONS: Record<MascotName, ModelInfo> = {
   wanko: { label: "Wanko", kind: "Cún trong tách trà", emoji: "🐶", frame: { full: 1, bust: 1 }, zoom: 1.75 },
   tororo: { label: "Tororo", kind: "Mèo trắng", emoji: "🐱", frame: { full: 1, bust: 0.5 }, top: 0.2, motions: CAT_MOTIONS },
   hijiki: { label: "Hijiki", kind: "Mèo đen", emoji: "🐈‍⬛", frame: { full: 1, bust: 0.5 }, top: 0.2, motions: CAT_MOTIONS },
-  hiyori: { label: "Hiyori", kind: "Nữ sinh", emoji: "🌸", frame: { full: 0.85, bust: 0.6 } },
-  haru: {
-    label: "Haru",
-    kind: "Cô giáo",
-    emoji: "🎀",
-    frame: { full: 0.85, bust: 0.45 },
-    // Haru's expression files: F05 closed-eye smile, F02 excited, F04 worried, F08 disappointed, F06 surprised, F01 calm.
-    faces: { idle: "F01", happy: "F05", cheer: "F02", sad: "F04", oops: "F08", think: "F01", surprised: "F06" },
-  },
+  fox: { label: "Kitsu", kind: "Cáo nhỏ", emoji: "🦊", frame: { full: 1, bust: 0.6 } },
 };
+
+/** True for a name this app still has (old accounts may have stored a companion that was removed). */
+export function isCompanion(name: string | null | undefined): name is MascotName {
+  return !!name && Object.prototype.hasOwnProperty.call(COMPANIONS, name);
+}
 
 type Live2DModelT = {
   scale: { set(v: number): void };
@@ -100,11 +98,22 @@ function webglOk(): boolean {
   }
 }
 
+/** A companion filling its box: Kitsu is an SVG, the others are Live2D models. */
+export function Mascot(props: { name: MascotName; mood?: Mood; say?: React.ReactNode; className?: string; shot?: Shot }) {
+  if (props.name !== "fox") return <Live2DMascot {...props} />;
+  return (
+    <div className={`mascot fox-mascot ${props.className ?? ""}`}>
+      <Fox mood={props.mood} shot={props.shot} />
+      {props.say && <div className="bubble">{props.say}</div>}
+    </div>
+  );
+}
+
 /**
  * A Live2D companion filling its box. `mood` plays a motion (and a face, for models that have
  * expressions); `say` shows a speech bubble. Missing models fall back to Wanko, then to an emoji.
  */
-export function Mascot({
+function Live2DMascot({
   name,
   mood = "idle",
   say,
@@ -231,4 +240,4 @@ export const CompanionContext = createContext<MascotName>("wanko");
 export const useCompanion = () => useContext(CompanionContext);
 
 export const MASCOT_CREDIT =
-  "Nhân vật Wanko, Hiyori Momose (minh hoạ: Kani Biimu), Haru, Tororo và Hijiki là mẫu chính thức của Live2D Inc., dùng theo Live2D Free Material License. © Live2D Inc. Live2D Cubism Core © Live2D Inc.";
+  "Nhân vật Wanko, Tororo và Hijiki là mẫu chính thức của Live2D Inc., dùng theo Live2D Free Material License. © Live2D Inc. Live2D Cubism Core © Live2D Inc. Cáo Kitsu là nhân vật riêng của Wancha.";

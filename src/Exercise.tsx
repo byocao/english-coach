@@ -14,13 +14,16 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { api, type Grade, type LessonContent, type LessonDetail, type Me, type ProgressResult, type Step } from "./api";
+import { api, type Grade, type LessonContent, type LessonDetail, type Me, type ProgressResult, type Quota, type Step } from "./api";
 import { alignWords, norm, speak, startRecording, stopSpeaking, words, type Recorder } from "./audio";
 import { Mascot, useCompanion, type Mood } from "./Mascot";
 import { Fx, STEPS } from "./meta";
 import { sfx } from "./sound";
 
 type Check = "idle" | "correct" | "wrong";
+
+/** Vietnamese translation of sentence `i`, when the lesson has one. */
+const viOf = (c: LessonContent, i: number) => c.sentences_vi?.[i]?.trim() || "";
 
 const PRAISE = ["Tuyệt vời!", "Chính xác!", "Giỏi quá!", "Hay lắm!", "Đúng rồi!", "Xuất sắc!"];
 const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
@@ -365,6 +368,7 @@ function CardsItem({ vocab, back, run, total }: { vocab: Vocab[]; back: string; 
               <span className="flash-back">
                 <b>{v.meaning_vi}</b>
                 <i>{v.example}</i>
+                {v.example_vi && <em>{v.example_vi}</em>}
               </span>
             </span>
           </button>
@@ -495,6 +499,12 @@ function ChoiceItem({ item, back, run }: { item: Extract<WordItem, { kind: "gap"
               <span>
                 <b>{item.v.word}</b> {item.v.ipa}: {item.v.meaning_vi}
               </span>
+              {item.kind === "gap" && (
+                <span className="vi">
+                  {item.v.example}
+                  {item.v.example_vi ? ` — ${item.v.example_vi}` : ""}
+                </span>
+              )}
             </>
           }
         />
@@ -560,8 +570,10 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
     const extras = [...new Set(pool.map((w) => w.toLowerCase()))].slice(0, Math.min(3, Math.max(2, Math.floor(target.length / 4))));
     return shuffle([...target, ...extras]).map((text, id) => ({ id, text }));
   }, [target, c.sentences]);
-  const [answer, setAnswer] = useState<number[]>([]);
-  useEffect(() => setAnswer([]), [i]);
+  // Picks belong to one sentence; a new sentence starts empty (stale ids would point past a shorter bank).
+  const [picked, setPicked] = useState<{ i: number; ids: number[] }>({ i: 0, ids: [] });
+  const answer = picked.i === i ? picked.ids.filter((id) => bank[id]) : [];
+  const setAnswer = (ids: number[]) => setPicked({ i, ids });
 
   const check = () => {
     const got = answer.map((id) => norm(bank[id].text)).join(" ");
@@ -581,7 +593,12 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
           canCheck={answer.length > 0}
           onCheck={check}
           onNext={next}
-          detail={state === "wrong" ? <>Đáp án: {sentence}</> : undefined}
+          detail={
+            <>
+              {state === "wrong" && <div>Đáp án: {sentence}</div>}
+              {viOf(c, i) && <span className="vi">{viOf(c, i)}</span>}
+            </>
+          }
           extra={
             <button className="btn ghost" onClick={() => mark(0, false)}>
               BỎ QUA
@@ -663,13 +680,16 @@ function DictationRun({ c, back, onFinish }: RunProps) {
           onNext={next}
           detail={
             diff && (
-              <span className="diff">
-                {diff.map((w, k) => (
-                  <span key={k} className={w.ok ? "w-ok" : "w-miss"}>
-                    {w.word}{" "}
-                  </span>
-                ))}
-              </span>
+              <>
+                <span className="diff">
+                  {diff.map((w, k) => (
+                    <span key={k} className={w.ok ? "w-ok" : "w-miss"}>
+                      {w.word}{" "}
+                    </span>
+                  ))}
+                </span>
+                {viOf(c, i) && <span className="vi">{viOf(c, i)}</span>}
+              </>
             )
           }
           extra={
@@ -769,7 +789,7 @@ interface SpeakResult {
   transcript: string;
   grade: Grade;
   provider: string;
-  note?: string;
+  quota: Quota;
   url: string;
 }
 
@@ -779,6 +799,7 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
   const [phase, setPhase] = useState<"idle" | "rec" | "grading">("idle");
   const [result, setResult] = useState<SpeakResult | null>(null);
   const [error, setError] = useState("");
+  const [gradesLeft, setGradesLeft] = useState(me.quota.grades.left);
   const best = useRef<Record<number, number>>(Object.fromEntries(prior.map((p) => [p.sentence_index, p.best])));
   const rec = useRef<Recorder | null>(null);
   const sentence = c.sentences[i];
@@ -812,6 +833,7 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
         body: { target: sentence, audio: recording.wavBase64, lessonId, sentenceIndex: i },
       });
       setResult({ ...res, url: recording.url });
+      setGradesLeft(res.quota.grades.left);
       best.current[i] = Math.max(best.current[i] ?? 0, res.grade.score);
       if (res.grade.score >= 85) sfx.correct();
       else if (res.grade.score < 60) sfx.wrong();
@@ -865,7 +887,11 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
               </button>
             ) : (
               <span className="muted small">
-                {me.quota.limited ? `Mỗi lần chấm tốn 1 lượt AI (còn ${me.quota.left})` : `Câu ${i + 1}/${total}`}
+                {me.maintenance
+                  ? "Chấm điểm đang bảo trì"
+                  : me.quota.limited
+                    ? `Mỗi lần chấm tốn 1 lượt (còn ${gradesLeft}/${me.quota.grades.limit})`
+                    : `Câu ${i + 1}/${total}`}
               </span>
             )}
           </div>
@@ -884,6 +910,7 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
                   </span>
                 ))
             : sentence}
+          {viOf(c, i) && <p className="speak-vi">{viOf(c, i)}</p>}
         </div>
         <PlayButtons text={sentence} auto={false} size="small" />
       </div>
@@ -934,7 +961,6 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
               <Lightbulb size={20} weight="fill" /> {result.grade.next_step_vi}
             </p>
           )}
-          {result.note && <p className="note">{result.note}</p>}
         </div>
       )}
     </ExShell>
@@ -969,10 +995,13 @@ function ReadRun({ c, back, onFinish }: RunProps) {
   const [open, setOpen] = useState<number | null>(null);
   const [explains, setExplains] = useState<Record<number, Explain | string>>({});
   const [loading, setLoading] = useState<number | null>(null);
+  const [showVi, setShowVi] = useState(false);
+  const hasVi = !!c.sentences_vi?.length;
 
-  const explain = async (k: number) => {
+  /** Opens a sentence; with a built-in translation the AI is only asked when the learner wants grammar. */
+  const explain = async (k: number, ask = !hasVi) => {
     setOpen(k);
-    if (typeof explains[k] === "object") return;
+    if (!ask || typeof explains[k] === "object") return;
     setLoading(k);
     try {
       const r = await api<{ explain: Explain }>("/api/explain", { body: { sentence: c.sentences[k], context: c.sentences.join(" ") } });
@@ -991,7 +1020,7 @@ function ReadRun({ c, back, onFinish }: RunProps) {
       progress={0.5}
       footer={<Footer state="idle" canCheck onCheck={() => onFinish(100)} onNext={() => {}} checkLabel="ĐÃ ĐỌC XONG" />}
     >
-      <Prompt title={c.title} mood="idle" say="Bấm vào từ để tra nghĩa, bấm ? cuối câu để mình giải thích." />
+      <Prompt title={c.title} mood="idle" say="Bấm vào từ để tra nghĩa, bấm ? cuối câu để xem nghĩa cả câu." />
       <div className="read-tools">
         <button className="btn small ghost" onClick={() => speak(c.sentences.join(" "), { rate: 0.95 })}>
           <SpeakerHigh size={18} weight="fill" /> Nghe cả bài
@@ -999,8 +1028,13 @@ function ReadRun({ c, back, onFinish }: RunProps) {
         <button className="btn small ghost" onClick={stopSpeaking}>
           <Stop size={18} weight="fill" /> Dừng
         </button>
+        {hasVi && (
+          <button className={`btn small ${showVi ? "primary" : "ghost"}`} onClick={() => setShowVi(!showVi)}>
+            {showVi ? "Ẩn bản dịch" : "Hiện bản dịch"}
+          </button>
+        )}
       </div>
-      <article className="reading">
+      <article className={showVi ? "reading with-vi" : "reading"}>
         {c.sentences.map((s, k) => (
           <span key={k} className={open === k ? "rs on" : "rs"}>
             {s.split(/(\s+)/).map((tok, j) =>
@@ -1015,6 +1049,7 @@ function ReadRun({ c, back, onFinish }: RunProps) {
             <button className="q" onClick={() => explain(k)} title="Giải thích câu này" aria-label="Giải thích câu này">
               <Question size={14} weight="bold" />
             </button>{" "}
+            {showVi && viOf(c, k) && <span className="rs-vi">{viOf(c, k)}</span>}
           </span>
         ))}
       </article>
@@ -1029,13 +1064,25 @@ function ReadRun({ c, back, onFinish }: RunProps) {
               <X size={20} weight="bold" />
             </button>
           </div>
+          {viOf(c, open) && (
+            <p>
+              <b>Nghĩa:</b> {viOf(c, open)}
+            </p>
+          )}
+          {hasVi && explains[open] === undefined && loading !== open && (
+            <button className="btn small ghost" onClick={() => explain(open, true)}>
+              <Lightbulb size={18} weight="fill" /> Hỏi AI giải thích ngữ pháp
+            </button>
+          )}
           {loading === open && <p className="muted">Đang giải thích…</p>}
           {typeof ex === "string" && <p className="error">{ex}</p>}
           {ex && typeof ex === "object" && (
             <>
-              <p>
-                <b>Nghĩa:</b> {ex.translation_vi}
-              </p>
+              {!viOf(c, open) && (
+                <p>
+                  <b>Nghĩa:</b> {ex.translation_vi}
+                </p>
+              )}
               <p>
                 <b>Ngữ pháp:</b> {ex.grammar_vi}
               </p>
@@ -1162,7 +1209,7 @@ function Confetti() {
         left: Math.random() * 100,
         delay: Math.random() * 0.8,
         dur: 2.2 + Math.random() * 1.6,
-        color: ["#7c5cff", "#ff6ad5", "#ffb020", "#16c172", "#2fb4ff", "#ff7a59"][k % 6],
+        color: ["#6fae3e", "#ff6ad5", "#ffb020", "#16c172", "#2fb4ff", "#ff7a59"][k % 6],
         rot: Math.random() * 360,
         round: k % 3 === 0,
       })),

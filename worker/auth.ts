@@ -161,7 +161,7 @@ export async function requireUser(c: Context<AppEnv>, next: Next) {
   const token = getCookie(c, SESSION_COOKIE);
   if (!token) return c.json({ error: "Chưa đăng nhập", code: "unauthenticated" }, 401);
   const user = await c.env.DB.prepare(
-    `SELECT u.id, u.login, u.name, NULL AS avatar_url, u.role, u.ai_used, u.level, u.mascot, u.placed_at, u.placement_score
+    `SELECT u.id, u.login, u.name, NULL AS avatar_url, u.role, u.ai_used, u.lessons_used, u.grades_used, u.level, u.mascot, u.placed_at, u.placement_score
        FROM sessions s JOIN users u ON u.id = s.user_id
       WHERE s.token = ?1 AND s.expires_at > datetime('now')`,
   )

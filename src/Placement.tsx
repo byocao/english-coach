@@ -4,7 +4,7 @@ import { ArrowRight, SpeakerHigh, X } from "@phosphor-icons/react";
 import { useMemo, useRef, useState } from "react";
 import { api, type Me } from "./api";
 import { speak } from "./audio";
-import { Mascot, type MascotName, type Mood } from "./Mascot";
+import { Mascot, isCompanion, type MascotName, type Mood } from "./Mascot";
 import { Fx, LEVELS } from "./meta";
 import { sfx } from "./sound";
 
@@ -177,7 +177,7 @@ function resultLevel(asked: Asked[]): number {
 }
 
 export function Placement({ me, onDone }: { me: Me; onDone: () => void }) {
-  const mascot = (me.user.mascot as MascotName) || "wanko";
+  const mascot: MascotName = isCompanion(me.user.mascot) ? me.user.mascot : "wanko";
   const pools = useMemo(() => BANK.map((items) => shuffle(items)), []);
   const used = useRef<number[]>([0, 0, 0, 0, 0]);
   const [phase, setPhase] = useState<"intro" | "test" | "result">("intro");

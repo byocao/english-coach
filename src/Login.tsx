@@ -3,8 +3,8 @@ import { api } from "./api";
 import { MASCOT_CREDIT, Mascot } from "./Mascot";
 import { Fx, STEPS } from "./meta";
 
-export function Login() {
-  const [mode, setMode] = useState<"login" | "register">("login");
+export function Login({ mode: initial = "login" }: { mode?: "login" | "register" }) {
+  const [mode, setMode] = useState<"login" | "register">(initial);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -28,27 +28,35 @@ export function Login() {
   const switchTo = (m: "login" | "register") => {
     setMode(m);
     setError("");
+    history.replaceState(null, "", `#/${m}`);
   };
 
   return (
     <div className="login-page">
-      <Mascot name="wanko" mood="cheer" className="login-hero" say="Gâu! Mình là Wanko. Cùng học tiếng Anh mỗi ngày nhé!" />
+      <a className="login-back" href="#/">
+        ← Trang chủ
+      </a>
+      <div className="login-hero">
+        <Mascot name="wanko" mood="cheer" className="login-mascot" />
+        <p className="login-bubble">Gâu! Mình là Wanko. Cùng học tiếng Anh mỗi ngày nhé!</p>
+      </div>
       <div className="login-card">
-        <span className="logo-mark">
-          <Fx name="paw" size={40} />
-        </span>
-        <h1>English Coach</h1>
+        <h1 className="login-title">
+          <img src="/icons/wancha-192.png" alt="" width={56} height={56} />
+          Wancha
+        </h1>
+        <p className="login-tagline">Học tiếng Anh cùng Wanko</p>
         <p className="lead">
           40 bài học có sẵn từ A1 đến C1. Học từ, nghe, chép chính tả, <b>nói và được AI chấm phát âm</b>, góp ý bằng tiếng Việt.
         </p>
-        <div className="login-feats">
+        <ul className="login-feats">
           {STEPS.map((s) => (
-            <span key={s.key}>
+            <li key={s.key}>
               <Fx name={s.fx} size={40} tile />
-              {s.label}
-            </span>
+              <span>{s.label}</span>
+            </li>
           ))}
-        </div>
+        </ul>
         <div className="seg login-tabs" role="tablist">
           <button role="tab" aria-selected={mode === "login"} className={mode === "login" ? "tab on" : "tab"} onClick={() => switchTo("login")}>
             Đăng nhập
