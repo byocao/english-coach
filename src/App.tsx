@@ -7,9 +7,11 @@ import {
   Eye,
   EyeSlash,
   House,
+  LockSimple,
   MagnifyingGlass,
   Moon,
   Play,
+  Plus,
   SignOut,
   Sparkle,
   SpeakerHigh,
@@ -409,6 +411,27 @@ function LockedDialog({ err, onClose }: { err: ApiError; onClose: () => void }) 
 
 // ---- Learn: the course path ------------------------------------------------------------
 
+/** Lessons shown per level at first, and how many more each "Học thêm" reveals. */
+const PATH_PAGE = 8;
+const PATH_MORE = 3;
+
+/** How many "Học thêm" clicks each level has had, remembered per account on this device. */
+function readExtra(userId: number): Record<string, number> {
+  try {
+    return JSON.parse(localStorage.getItem(`wancha_path_more_${userId}`) ?? "{}") ?? {};
+  } catch {
+    return {};
+  }
+}
+
+function writeExtra(userId: number, extra: Record<string, number>) {
+  try {
+    localStorage.setItem(`wancha_path_more_${userId}`, JSON.stringify(extra));
+  } catch {
+    /* private mode: the choice just isn't remembered */
+  }
+}
+
 function stepsDone(l: LessonRow): number {
   return Object.keys(parseProgress(l.my_progress)).length;
 }
@@ -438,14 +461,38 @@ function Learn({ me }: { me: Me }) {
 
   const myLevel = Math.max(0, LEVELS.findIndex((l) => l.key === me.user.level));
   const levelOf = (l: LessonRow) => LEVELS.findIndex((x) => x.key === l.level);
-  // The current lesson: the first unfinished one at or above the learner's level.
+
+  // Each level shows PATH_PAGE lessons; "Học thêm" reveals PATH_MORE more once every shown lesson is finished.
+  // Lessons the learner has already started always stay visible.
+  const [extra, setExtra] = useState<Record<string, number>>(() => readExtra(me.user.id));
+  const shownCount = (lessons: LessonRow[], level: string) => {
+    const touched = lessons.reduce((n, l, i) => (stepsDone(l) > 0 ? i + 1 : n), 0);
+    return Math.min(lessons.length, Math.max(PATH_PAGE + (extra[level] ?? 0) * PATH_MORE, touched));
+  };
+  const showMore = (level: string, count: number) => {
+    const next = { ...extra, [level]: Math.ceil((count + PATH_MORE - PATH_PAGE) / PATH_MORE) };
+    setExtra(next);
+    writeExtra(me.user.id, next);
+  };
+  const shown = useMemo(
+    () =>
+      course &&
+      LEVELS.flatMap((lv) => {
+        const lessons = course.filter((l) => l.level === lv.key);
+        return lessons.slice(0, shownCount(lessons, lv.key));
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [course, extra],
+  );
+
+  // The current lesson: the first unfinished shown one at or above the learner's level.
   const current = useMemo(
     () =>
-      course?.find((l) => levelOf(l) >= myLevel && stepsDone(l) < STEPS.length) ??
-      course?.find((l) => stepsDone(l) < STEPS.length) ??
-      course?.[0],
+      shown?.find((l) => levelOf(l) >= myLevel && stepsDone(l) < STEPS.length) ??
+      shown?.find((l) => stepsDone(l) < STEPS.length) ??
+      shown?.[0],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [course, myLevel],
+    [shown, myLevel],
   );
   const scrolled = useRef(false);
   useEffect(() => {
@@ -468,6 +515,10 @@ function Learn({ me }: { me: Me }) {
         const lessons = course.filter((l) => l.level === lv.key);
         if (lessons.length === 0) return null;
         const doneCount = lessons.filter((l) => stepsDone(l) === STEPS.length).length;
+        const count = shownCount(lessons, lv.key);
+        const visible = lessons.slice(0, count);
+        const unfinished = visible.filter((l) => stepsDone(l) < STEPS.length).length;
+        const hidden = lessons.length - count;
         return (
           <section key={lv.key} className={`unit lvl-${lv.key}`}>
             <header className="unit-head">
@@ -487,7 +538,7 @@ function Learn({ me }: { me: Me }) {
               </div>
             </header>
             <div className="trail">
-              {lessons.map((l, i) => (
+              {visible.map((l, i) => (
                 <PathNode
                   key={l.id}
                   lesson={l}
@@ -498,6 +549,17 @@ function Learn({ me }: { me: Me }) {
                 />
               ))}
             </div>
+            {hidden > 0 &&
+              (unfinished === 0 ? (
+                <button className="btn primary path-more" onClick={() => showMore(lv.key, count)}>
+                  <Plus size={18} weight="bold" /> Học thêm {Math.min(PATH_MORE, hidden)} bài
+                </button>
+              ) : (
+                <p className="path-more-hint">
+                  <LockSimple size={16} weight="bold" /> Hoàn thành {unfinished} bài ở trên để mở thêm bài mới
+                  <span> · còn {hidden} bài</span>
+                </p>
+              ))}
           </section>
         );
       })}
@@ -619,7 +681,7 @@ function PathNode({
     <div className={open ? "node-wrap open" : "node-wrap"} style={{ "--x": `${offset}px` } as React.CSSProperties} id={`node-${lesson.id}`}>
       {isCurrent && !open && <span className="start-tip">{done ? "TIẾP TỤC" : "BẮT ĐẦU"}</span>}
       <button
-        className={`node cat-${cat.key} ${complete ? "complete" : ""} ${isCurrent ? "current" : ""} ${done ? "" : "fresh"}`}
+        className={`node cat-${cat.key} ${complete ? "is-complete" : ""} ${isCurrent ? "current" : ""} ${done ? "" : "fresh"}`}
         onClick={onToggle}
         aria-expanded={open}
         aria-label={`${lesson.title}, ${done}/${STEPS.length} bước`}

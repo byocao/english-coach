@@ -993,6 +993,30 @@ code {
   --u: linear-gradient(135deg, #9aa892, #66765f);
 }
 
+.path-more {
+  justify-self: center;
+  margin-top: -0.4rem;
+}
+.path-more-hint {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: -0.4rem 0 0;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: 1px dashed var(--line);
+  color: var(--ink-2);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: center;
+}
+.path-more-hint span {
+  color: var(--muted, var(--ink-2));
+  font-weight: 500;
+}
 .trail {
   display: grid;
   justify-items: center;
@@ -1071,7 +1095,7 @@ code {
       0 0 0 10px color-mix(in srgb, var(--brand) 18%, transparent);
   }
 }
-.node.complete .ring-fill {
+.node.is-complete .ring-fill {
   stroke: var(--good);
 }
 .node-crown {
