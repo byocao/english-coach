@@ -42,7 +42,7 @@ const FAQ: [string, string][] = [
   ],
 ];
 
-const COMPANION_LIST: MascotName[] = ["wanko", "tororo", "hijiki", "hiyori", "haru"];
+const COMPANION_LIST: MascotName[] = ["wanko", "tororo", "hijiki", "fox"];
 
 /** In-page links: the app's router owns location.hash, so scroll instead of navigating. */
 function jump(id: string) {
@@ -221,7 +221,7 @@ export function Landing() {
 
         <section className="lp-section">
           <h2>Chọn bạn đồng hành</h2>
-          <p className="lp-lead">Wanko, hai chú mèo Tororo và Hijiki, Hiyori hay cô giáo Haru sẽ cổ vũ bạn trong từng bài.</p>
+          <p className="lp-lead">Chú cún Wanko, hai chú mèo Tororo và Hijiki, hay cáo nhỏ Kitsu sẽ cổ vũ bạn trong từng bài.</p>
           <div className="lp-companions">
             {COMPANION_LIST.map((k) => (
               <div key={k} className="lp-companion">

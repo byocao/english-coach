@@ -26,7 +26,7 @@ import { englishVoices, isNaturalVoice, onVoicesChanged, preferredVoice, setPref
 import { Exercise } from "./Exercise";
 import { Landing } from "./Landing";
 import { Login } from "./Login";
-import { COMPANIONS, CompanionContext, MASCOT_CREDIT, Mascot, availableCompanions, useCompanion, type MascotName } from "./Mascot";
+import { COMPANIONS, CompanionContext, MASCOT_CREDIT, Mascot, availableCompanions, isCompanion, useCompanion, type MascotName } from "./Mascot";
 import { Placement } from "./Placement";
 import { CATEGORIES, Fx, LEVELS, LEVEL_LABEL, STEPS, category, parseProgress, quests } from "./meta";
 import { setSoundOn, soundOn } from "./sound";
@@ -118,7 +118,7 @@ export function App() {
     return null;
   }
 
-  const companion = (me.user.mascot as MascotName) || "wanko";
+  const companion: MascotName = isCompanion(me.user.mascot) ? me.user.mascot : "wanko";
 
   if (route.name === "placement") {
     return (
@@ -1204,7 +1204,7 @@ function CompanionPicker({ me, onChange }: { me: Me; onChange: () => void }) {
   const current = useCompanion();
   const [have, setHave] = useState<MascotName[]>(["wanko"]);
   useEffect(() => {
-    availableCompanions().then((m) => setHave((Object.keys(COMPANIONS) as MascotName[]).filter((k) => m[k])));
+    availableCompanions().then((m) => setHave((Object.keys(COMPANIONS) as MascotName[]).filter((k) => k === "fox" || m[k])));
   }, []);
   const choose = async (mascot: MascotName) => {
     await api("/api/me", { method: "PATCH", body: { mascot } });

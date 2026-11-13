@@ -3709,7 +3709,9 @@ code {
 }
 .lp-companions {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 820px;
+  margin-inline: auto;
   gap: 0.8rem;
   margin-top: 2rem;
 }
@@ -3819,7 +3821,7 @@ code {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .lp-companions {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -3905,5 +3907,83 @@ code {
 @media (max-width: 400px) {
   .lp-hide-xs {
     display: none;
+  }
+}
+
+/* ---- Kitsu the fox (SVG companion) ------------------------------------------------------- */
+
+/* The drawing always fits the box it is given (like the Live2D canvas). */
+.fox-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: pointer;
+  overflow: visible;
+}
+.fox-shadow {
+  fill: rgb(0 0 0 / 0.12);
+}
+.fox-body {
+  transform-box: view-box;
+  transform-origin: 100px 205px;
+  animation: fox-breathe 3.2s ease-in-out infinite;
+}
+.fox-tail {
+  transform-box: view-box;
+  transform-origin: 124px 186px;
+  animation: fox-wag 2.4s ease-in-out infinite;
+}
+.fox-eyes {
+  transform-box: view-box;
+  transform-origin: 100px 96px;
+  animation: fox-blink 4.6s infinite;
+}
+.fox-ear-l,
+.fox-ear-r {
+  transition: transform 0.3s;
+}
+.fox-svg.mood-happy .fox-tail,
+.fox-svg.mood-cheer .fox-tail {
+  animation-duration: 0.9s;
+}
+.fox-svg.mood-happy,
+.fox-svg.mood-cheer,
+.fox-svg.hop {
+  animation: fox-hop 0.55s ease-out 2;
+}
+.fox-svg.mood-sad .fox-tail,
+.fox-svg.mood-oops .fox-tail {
+  animation: none;
+  transform: rotate(10deg);
+}
+@keyframes fox-breathe {
+  50% {
+    transform: scale(1.012, 0.985);
+  }
+}
+@keyframes fox-wag {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+@keyframes fox-blink {
+  0%,
+  94%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.12);
+  }
+}
+@keyframes fox-hop {
+  40% {
+    transform: translateY(-7%);
   }
 }

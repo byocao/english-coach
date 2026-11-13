@@ -79,7 +79,7 @@ learn.get("/me", async (c) => {
 });
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1"];
-const MASCOTS = ["wanko", "tororo", "hijiki", "hiyori", "haru"];
+const MASCOTS = ["wanko", "tororo", "hijiki", "fox"];
 
 /** Daily goal, starting level (placement=true when it comes from the placement test), companion. */
 learn.patch("/me", async (c) => {

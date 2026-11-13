@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Downloads the Live2D characters (Wanko, Hiyori, Haru, plus any extras) and the Cubism Core runtime into public/live2d/.
+// Downloads the Live2D characters (Wanko, plus any extras such as Tororo & Hijiki) and the Cubism Core runtime into public/live2d/.
 //
-// Hiyori Momose and Haru are official Live2D sample models ("Live2D Original Characters"),
+// Wanko is an official Live2D sample model (a "Live2D Original Character"),
 // usable by individuals and small businesses under the Live2D Free Material License, with
 // credit. That license forbids redistributing the raw model files, so they are NOT committed
 // to git (public/live2d/ is gitignored): this script fetches them before every build, and the
@@ -157,13 +157,11 @@ async function extras(manifest) {
 
 try {
   await get(CORE_URL, join(root, "live2dcubismcore.min.js"));
-  for (const name of ["Hiyori", "Haru", "Wanko"]) console.log(`live2d: ${name} ready (${await model(name)} files)`);
+  for (const name of ["Wanko"]) console.log(`live2d: ${name} ready (${await model(name)} files)`);
   await extendWanko();
   await matchaWanko();
   const manifest = {
     wanko: "/live2d/Wanko/Wanko.model3.json",
-    hiyori: "/live2d/Hiyori/Hiyori.model3.json",
-    haru: "/live2d/Haru/Haru.model3.json",
   };
   await extras(manifest);
   await writeFile(join(root, "models.json"), JSON.stringify(manifest, null, 2));
