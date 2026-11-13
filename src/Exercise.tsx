@@ -5,12 +5,14 @@ import {
   ArrowCounterClockwise,
   ArrowRight,
   Check,
+  Eraser,
   Lightbulb,
   Microphone,
   Play,
   Question,
   SpeakerHigh,
   Stop,
+  Translate,
   X,
 } from "@phosphor-icons/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -662,6 +664,7 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
   const run = useRunner(c.sentences.length, onFinish);
   const { i, state, mark, next, progress, combo } = run;
   const sentence = c.sentences[i];
+  const vi = viOf(c, i);
   const target = useMemo(() => tileWords(sentence), [sentence]);
   const bank = useMemo<Tile[]>(() => {
     const have = new Set(target.map(norm));
@@ -669,18 +672,137 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
     const extras = [...new Set(pool.map((w) => w.toLowerCase()))].slice(0, Math.min(3, Math.max(2, Math.floor(target.length / 4))));
     return shuffle([...target, ...extras]).map((text, id) => ({ id, text }));
   }, [target, c.sentences]);
-  // Picks belong to one appearance of a sentence; the next one (or its review) starts empty.
-  const [picked, setPicked] = useState<{ key: number; ids: number[] }>({ key: 0, ids: [] });
-  const answer = picked.key === run.key ? picked.ids.filter((id) => bank[id]) : [];
-  const setAnswer = (ids: number[]) => setPicked({ key: run.key, ids });
+  const maxHints = Math.max(1, Math.floor(target.length / 3));
 
-  const check = () => {
-    const got = answer.map((id) => norm(bank[id].text)).join(" ");
-    const ok = got === target.map(norm).join(" ");
-    const right = alignWords(sentence, answer.map((id) => bank[id].text).join(" ")).filter((w) => w.ok).length;
-    mark(ok ? 100 : Math.round((right / target.length) * 60), ok);
+  // One slot per word of the sentence. A slot holds a bank tile id; hinted and confirmed slots are locked.
+  // The state belongs to one appearance of a sentence: the next one (or its review) starts empty.
+  const fresh = (): Board => ({
+    key: run.key,
+    slots: target.map(() => null),
+    locked: target.map(() => false),
+    hints: 0,
+    sel: null,
+    marks: null,
+    showVi: false,
+  });
+  const [stored, setBoard] = useState<Board>(fresh);
+  const b = stored.key === run.key && stored.slots.length === target.length ? stored : fresh();
+  const update = (patch: Partial<Board>) => setBoard({ ...b, ...patch });
+  const idle = state === "idle";
+  const textOf = (id: number | null) => (id === null ? "" : bank[id].text);
+  const placed = new Set(b.slots.filter((x): x is number => x !== null));
+  const filled = placed.size;
+
+  /** Puts a tile into slot `to` (default: the selected slot, else the first empty one). Moving between slots swaps. */
+  const put = (id: number, to: number | null = b.sel ?? b.slots.indexOf(null)) => {
+    if (to === null || to < 0 || b.locked[to]) return;
+    const slots = [...b.slots];
+    const from = slots.indexOf(id);
+    if (from === to) return;
+    if (from >= 0) {
+      if (b.locked[from]) return;
+      slots[from] = slots[to]; // swap (or leave the old slot empty)
+    }
+    slots[to] = id; // a tile pushed out of `to` by a bank tile simply goes back to the bank
+    sfx.tap();
+    update({ slots, sel: null });
+  };
+  const takeOut = (k: number) => {
+    if (b.locked[k] || b.slots[k] === null) return;
+    sfx.tap();
+    update({ slots: b.slots.map((x, j) => (j === k ? null : x)), sel: null });
+  };
+  const clearAll = () => update({ slots: b.slots.map((x, k) => (b.locked[k] ? x : null)), sel: null });
+
+  /** Fills one random empty or wrong slot with the right word and locks it. */
+  const hint = () => {
+    const open = target.map((_, k) => k).filter((k) => !b.locked[k] && norm(textOf(b.slots[k])) !== norm(target[k]));
+    if (open.length === 0 || b.hints >= maxHints) return;
+    const k = open[Math.floor(Math.random() * open.length)];
+    const want = norm(target[k]);
+    const candidates = bank.filter((t) => norm(t.text) === want).map((t) => t.id);
+    // Prefer a tile still in the bank, then one sitting in a slot where it is wrong.
+    const id =
+      candidates.find((t) => !placed.has(t)) ??
+      candidates.find((t) => {
+        const j = b.slots.indexOf(t);
+        return j >= 0 && !b.locked[j] && norm(target[j]) !== want;
+      });
+    if (id === undefined) return;
+    const slots = b.slots.map((x) => (x === id ? null : x));
+    slots[k] = id;
+    sfx.correct();
+    void speak(target[k], { rate: 0.95 });
+    update({ slots, locked: b.locked.map((l, j) => l || j === k), hints: b.hints + 1, sel: null });
   };
 
+  const check = () => {
+    const marks = target.map((w, k) => norm(textOf(b.slots[k])) === norm(w));
+    const right = marks.filter(Boolean).length;
+    const ok = right === target.length;
+    update({ marks, sel: null });
+    // Each hint costs 15 points; a wrong first try earns credit for the words in the right place.
+    mark(ok ? Math.max(40, 100 - 15 * b.hints) : Math.round((right / target.length) * 60), ok);
+  };
+  /** Try again: the words already in the right place stay (locked); only the red ones go back to the bank. */
+  const retry = () => {
+    const m = b.marks ?? [];
+    update({ slots: b.slots.map((x, k) => (m[k] ? x : null)), locked: b.locked.map((l, k) => l || !!m[k]), marks: null, sel: null });
+    run.retry();
+  };
+
+  // ---- Drag and drop (mouse and touch, via pointer events) ----
+  const [drag, setDrag] = useState<{ id: number; x: number; y: number } | null>(null);
+  const [over, setOver] = useState<number | "bank" | null>(null);
+  const dragged = useRef(false);
+  const dropTarget = (x: number, y: number): number | "bank" | null => {
+    const el = document.elementFromPoint(x, y);
+    const slot = el?.closest<HTMLElement>("[data-slot]");
+    if (slot) return Number(slot.dataset.slot);
+    return el?.closest(".wb-bank") ? "bank" : null;
+  };
+  const startDrag = (e: React.PointerEvent, id: number) => {
+    if (!idle || e.button !== 0) return;
+    const sx = e.clientX;
+    const sy = e.clientY;
+    let moving = false;
+    dragged.current = false;
+    const move = (ev: PointerEvent) => {
+      if (!moving && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) return;
+      moving = true;
+      dragged.current = true;
+      ev.preventDefault();
+      setDrag({ id, x: ev.clientX, y: ev.clientY });
+      setOver(dropTarget(ev.clientX, ev.clientY));
+    };
+    const up = (ev: PointerEvent) => {
+      removeEventListener("pointermove", move);
+      removeEventListener("pointerup", up);
+      removeEventListener("pointercancel", up);
+      setDrag(null);
+      setOver(null);
+      if (!moving) return;
+      // The click that may follow this pointerup is swallowed by `tapped`; after that, taps count again.
+      setTimeout(() => (dragged.current = false), 0);
+      const to = dropTarget(ev.clientX, ev.clientY);
+      const from = b.slots.indexOf(id);
+      if (typeof to === "number") put(id, to);
+      else if (to === "bank" && from >= 0) takeOut(from);
+    };
+    addEventListener("pointermove", move, { passive: false });
+    addEventListener("pointerup", up);
+    addEventListener("pointercancel", up);
+  };
+  /** A click that ends a drag is not a tap. */
+  const tapped = (fn: () => void) => () => {
+    if (dragged.current) {
+      dragged.current = false;
+      return;
+    }
+    fn();
+  };
+
+  const hintsLeft = maxHints - b.hints;
   return (
     <ExShell
       back={back}
@@ -690,17 +812,18 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
       footer={
         <Footer
           state={state}
-          canCheck={answer.length > 0}
+          canCheck={filled === target.length}
+          checkLabel={filled === target.length ? "Kiểm tra" : `Còn ${target.length - filled} ô trống`}
           onCheck={check}
           onNext={next}
-          onRetry={run.retry}
+          onRetry={retry}
           onReveal={run.reveal}
           retried={run.retried}
-          hint="Thứ tự chưa đúng. Bấm vào từ ở trên để bỏ ra rồi xếp lại."
+          hint="Ô màu đỏ chưa đúng chỗ. Bấm “Thử lại”: từ đúng được giữ lại, bạn chỉ cần xếp lại các ô đỏ."
           detail={
             <>
               {state === "reveal" && <div>Đáp án: {sentence}</div>}
-              {viOf(c, i) && <span className="vi">{viOf(c, i)}</span>}
+              {vi && <span className="vi">{vi}</span>}
             </>
           }
           extra={
@@ -720,42 +843,95 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
       <Prompt title="Nghe và xếp lại câu" mood={moodFor(state)}>
         <PlayButtons text={sentence} />
       </Prompt>
-      <div className="answer-line">
-        {answer.map((id) => (
-          <button
-            key={id}
-            className="tile"
-            disabled={state !== "idle"}
-            onClick={() => {
-              sfx.tap();
-              setAnswer(answer.filter((x) => x !== id));
-            }}
-          >
-            {bank[id].text}
-          </button>
-        ))}
+
+      <p className="wb-help small muted">
+        Câu có <b>{target.length} từ</b>. Bấm hoặc kéo từ vào ô; bấm vào ô để bỏ từ ra.
+      </p>
+      <div className="wb-slots" role="group" aria-label={`Câu có ${target.length} từ`}>
+        {target.map((_, k) => {
+          const id = b.slots[k];
+          const cls = [
+            "wb-slot",
+            id === null ? "empty" : "tile",
+            b.locked[k] ? "locked" : "",
+            b.sel === k ? "sel" : "",
+            over === k ? "over" : "",
+            b.marks ? (b.marks[k] ? "right" : "wrong") : "",
+            drag && drag.id === id ? "dragging" : "",
+          ]
+            .filter(Boolean)
+            .join(" ");
+          return (
+            <button
+              key={k}
+              data-slot={k}
+              className={cls}
+              disabled={!idle || b.locked[k]}
+              aria-label={id === null ? `Ô ${k + 1}, trống` : `Ô ${k + 1}: ${textOf(id)}`}
+              onPointerDown={id !== null && !b.locked[k] ? (e) => startDrag(e, id) : undefined}
+              onClick={tapped(() => (id === null ? update({ sel: b.sel === k ? null : k }) : takeOut(k)))}
+            >
+              {id === null ? "…" : textOf(id)}
+            </button>
+          );
+        })}
       </div>
-      <div className="bank">
+
+      <div className="wb-tools">
+        <button className="btn small ghost" disabled={!idle || hintsLeft <= 0} onClick={hint}>
+          <Lightbulb size={16} weight="fill" /> Gợi ý {hintsLeft > 0 ? `(còn ${hintsLeft})` : "(hết lượt)"}
+        </button>
+        {vi && (
+          <button className={b.showVi ? "btn small ghost on" : "btn small ghost"} onClick={() => update({ showVi: !b.showVi })} aria-pressed={b.showVi}>
+            <Translate size={16} weight="bold" /> Nghĩa tiếng Việt
+          </button>
+        )}
+        <button className="btn small ghost" disabled={!idle || b.slots.every((x, k) => x === null || b.locked[k])} onClick={clearAll}>
+          <Eraser size={16} weight="bold" /> Xoá hết
+        </button>
+      </div>
+      {b.showVi && vi && <p className="wb-vi">{vi}</p>}
+
+      <div className={over === "bank" ? "bank wb-bank over" : "bank wb-bank"}>
         {bank.map((t) => {
-          const used = answer.includes(t.id);
+          const used = placed.has(t.id);
           return (
             <button
               key={t.id}
-              className={used ? "tile used" : "tile"}
-              disabled={used || state !== "idle"}
-              onClick={() => {
-                sfx.tap();
+              className={used ? "tile used" : drag?.id === t.id ? "tile dragging" : "tile"}
+              disabled={used || !idle}
+              onPointerDown={(e) => startDrag(e, t.id)}
+              onClick={tapped(() => {
                 void speak(t.text, { rate: 0.95 });
-                setAnswer([...answer, t.id]);
-              }}
+                put(t.id);
+              })}
             >
               {t.text}
             </button>
           );
         })}
       </div>
+
+
+      {drag && (
+        <div className="tile wb-ghost" style={{ left: drag.x, top: drag.y }} aria-hidden="true">
+          {bank[drag.id].text}
+        </div>
+      )}
     </ExShell>
   );
+}
+
+interface Board {
+  key: number;
+  slots: (number | null)[];
+  locked: boolean[];
+  hints: number;
+  /** The empty slot the next tapped word goes into. */
+  sel: number | null;
+  /** After "Kiểm tra": which slots are right. */
+  marks: boolean[] | null;
+  showVi: boolean;
 }
 
 // ---- Dictation ---------------------------------------------------------------------------------
