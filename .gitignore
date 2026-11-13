@@ -7,3 +7,7 @@ bridge/.env
 *.log
 public/live2d/
 live2d-extra/
+# Lesson content of the live site and the SQL built from it (kept off GitHub; see seed/README.md)
+seed/live/
+seed/live-backup/
+seed/course.sql

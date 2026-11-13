@@ -1,0 +1,132 @@
+[
+  {
+    "slug": "b1-job-interview",
+    "category": "work",
+    "topic": "Job interview tips",
+    "level": "B1",
+    "title": "Nailing the Interview",
+    "summary_vi": "Luyện nghe và nói về những mẹo chuẩn bị cho một buổi phỏng vấn xin việc.",
+    "sentences": [
+      "Last month I had my first job interview in two years, and I was terrified.",
+      "My friend Minh, who works in HR in Saigon, gave me some useful advice.",
+      "First, he told me to do some research on the company before the day.",
+      "If you know what the company does, you can ask smarter questions.",
+      "Second, practise answering common questions out loud instead of just thinking about them.",
+      "On the day, I arrived ten minutes early and tried to stay calm.",
+      "When the manager asked about my weaknesses, I was honest and explained how I am working on them.",
+      "I also gave specific examples, because they make your answers more convincing.",
+      "At the end, I asked about the team and the chances to grow.",
+      "Two days later, they called to offer me the job.",
+      "I have learned that being prepared matters more than being perfect."
+    ],
+    "sentences_vi": [
+      "Tháng trước, tôi có buổi phỏng vấn xin việc đầu tiên sau hai năm, và tôi đã vô cùng lo sợ.",
+      "Anh bạn Minh của tôi, người làm nhân sự ở Saigon, đã cho tôi vài lời khuyên hữu ích.",
+      "Trước hết, anh ấy bảo tôi nên tìm hiểu về công ty trước ngày phỏng vấn.",
+      "Nếu bạn biết công ty làm gì, bạn sẽ đặt được những câu hỏi thông minh hơn.",
+      "Thứ hai, hãy luyện trả lời những câu hỏi thường gặp thành tiếng thay vì chỉ nghĩ trong đầu.",
+      "Vào ngày phỏng vấn, tôi đến sớm mười phút và cố giữ bình tĩnh.",
+      "Khi quản lý hỏi về điểm yếu của tôi, tôi đã trả lời thành thật và giải thích cách tôi đang cải thiện chúng.",
+      "Tôi cũng đưa ra những ví dụ cụ thể, vì chúng khiến câu trả lời của bạn thuyết phục hơn.",
+      "Cuối buổi, tôi hỏi về đội nhóm và những cơ hội phát triển.",
+      "Hai ngày sau, họ gọi điện mời tôi nhận việc.",
+      "Tôi nhận ra rằng chuẩn bị kỹ quan trọng hơn là phải hoàn hảo."
+    ],
+    "vocabulary": [
+      {
+        "word": "do some research",
+        "ipa": "/duː sʌm ˈriːsɜːrtʃ/",
+        "pos": "phrase",
+        "meaning_vi": "tìm hiểu, nghiên cứu",
+        "example": "Before you buy a laptop, you should do some research online.",
+        "example_vi": "Trước khi mua laptop, bạn nên tìm hiểu kỹ trên mạng."
+      },
+      {
+        "word": "stay calm",
+        "ipa": "/steɪ kɑːm/",
+        "pos": "phrase",
+        "meaning_vi": "giữ bình tĩnh",
+        "example": "It is hard to stay calm when you are late for an exam.",
+        "example_vi": "Thật khó để giữ bình tĩnh khi bạn đến muộn giờ thi."
+      },
+      {
+        "word": "weaknesses",
+        "ipa": "/ˈwiːknəsɪz/",
+        "pos": "noun",
+        "meaning_vi": "điểm yếu",
+        "example": "Everyone has strengths and weaknesses, and that is normal.",
+        "example_vi": "Ai cũng có điểm mạnh và điểm yếu, và điều đó là bình thường."
+      },
+      {
+        "word": "specific examples",
+        "ipa": "/spəˈsɪfɪk ɪɡˈzæmpəlz/",
+        "pos": "noun phrase",
+        "meaning_vi": "ví dụ cụ thể",
+        "example": "The teacher asked us to give specific examples in our essays.",
+        "example_vi": "Cô giáo yêu cầu chúng tôi đưa ra các ví dụ cụ thể trong bài luận."
+      },
+      {
+        "word": "convincing",
+        "ipa": "/kənˈvɪnsɪŋ/",
+        "pos": "adjective",
+        "meaning_vi": "thuyết phục",
+        "example": "Her explanation was so convincing that I changed my mind.",
+        "example_vi": "Lời giải thích của cô ấy thuyết phục đến mức tôi đã đổi ý."
+      },
+      {
+        "word": "being prepared",
+        "ipa": "/ˈbiːɪŋ prɪˈperd/",
+        "pos": "phrase",
+        "meaning_vi": "việc chuẩn bị sẵn sàng",
+        "example": "Being prepared will help you feel more confident on stage.",
+        "example_vi": "Chuẩn bị kỹ sẽ giúp bạn tự tin hơn khi đứng trên sân khấu."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Who gave the writer advice about interviews?",
+        "options": [
+          "A manager at the company",
+          "Minh, a friend who works in HR",
+          "The writer's teacher",
+          "A family member in Hanoi"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Bài viết nói bạn Minh làm nhân sự ở Sài Gòn đã cho lời khuyên."
+      },
+      {
+        "question": "What did the writer do on the day of the interview?",
+        "options": [
+          "Arrived late but calm",
+          "Brought a long written speech",
+          "Arrived ten minutes early and stayed calm",
+          "Asked for a higher salary"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Người viết đến sớm mười phút và cố giữ bình tĩnh."
+      },
+      {
+        "question": "Why did the writer give specific examples?",
+        "options": [
+          "They make answers more convincing",
+          "The manager demanded them",
+          "They shorten the interview",
+          "They hide weaknesses"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Ví dụ cụ thể khiến câu trả lời thuyết phục hơn."
+      },
+      {
+        "question": "What is the main message of the passage?",
+        "options": [
+          "Perfect answers are essential",
+          "Research is a waste of time",
+          "Interviews are always stressful",
+          "Being prepared matters more than being perfect"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Câu cuối nhấn mạnh sự chuẩn bị quan trọng hơn sự hoàn hảo."
+      }
+    ]
+  }
+]

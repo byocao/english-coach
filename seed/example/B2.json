@@ -1,0 +1,150 @@
+[
+  {
+    "slug": "b2-ai-at-work",
+    "category": "tech",
+    "topic": "AI at work",
+    "level": "B2",
+    "title": "My New Coworker Is a Bot",
+    "summary_vi": "Luyện nghe và đọc một bài bình luận về việc trí tuệ nhân tạo thay đổi công việc văn phòng, cùng các cụm từ hay dùng khi nói về công nghệ.",
+    "sentences": [
+      "When my company introduced an AI assistant last spring, I was convinced it would take my job.",
+      "Instead, it took the most tedious parts of it, and I have been wrestling with mixed feelings ever since.",
+      "My name is Linh, and I manage a small marketing team in Da Nang.",
+      "Reports that once took a whole afternoon are now drafted in minutes, which has freed us up for more creative work.",
+      "Had I known how useful it would be, I would have asked for it years ago.",
+      "However, the tool is far from flawless, and its confident mistakes can slip under the radar.",
+      "Last month a client was almost sent a proposal containing statistics that the software had simply made up.",
+      "That is why every output must be double-checked by a human before it goes out.",
+      "Some colleagues worry that juniors will never learn the craft if machines do all the groundwork.",
+      "I see their point, but I think the real danger is complacency rather than the technology itself.",
+      "If we treat AI as a shortcut, we will lose our edge; as a sparring partner, we will sharpen it.",
+      "In the long run, the people who thrive will know when to trust the machine and when to overrule it."
+    ],
+    "sentences_vi": [
+      "Khi công ty đưa trợ lý AI vào sử dụng hồi mùa xuân năm ngoái, tôi đã tin chắc rằng nó sẽ cướp mất việc của mình.",
+      "Thay vào đó, nó gánh đi những phần nhàm chán nhất của công việc, và từ đó đến nay tôi luôn có cảm xúc lẫn lộn.",
+      "Tôi tên là Linh, quản lý một nhóm marketing nhỏ ở Da Nang.",
+      "Những bản báo cáo từng tốn cả buổi chiều giờ được soạn xong trong vài phút, nhờ vậy cả nhóm có thêm thời gian cho những việc sáng tạo hơn.",
+      "Giá mà biết trước nó hữu ích đến thế, tôi đã xin trang bị từ nhiều năm trước rồi.",
+      "Tuy nhiên, công cụ này còn lâu mới hoàn hảo, và những lỗi sai được nó đưa ra một cách đầy tự tin rất dễ bị bỏ sót.",
+      "Tháng trước, một khách hàng suýt nữa đã nhận được bản đề xuất chứa những số liệu mà phần mềm tự bịa ra.",
+      "Đó là lý do mọi kết quả đầu ra đều phải được một người kiểm tra lại cẩn thận trước khi gửi đi.",
+      "Một số đồng nghiệp lo rằng người mới vào nghề sẽ chẳng bao giờ học được nghề nếu máy móc làm hết phần nền tảng.",
+      "Tôi hiểu quan điểm của họ, nhưng tôi nghĩ mối nguy thật sự là sự tự mãn chứ không phải bản thân công nghệ.",
+      "Nếu coi AI là con đường tắt, chúng ta sẽ đánh mất lợi thế của mình; còn nếu coi nó là người đối luyện, chúng ta sẽ mài sắc lợi thế ấy.",
+      "Về lâu dài, những người thành công sẽ là những người biết khi nào nên tin máy và khi nào nên bác bỏ nó."
+    ],
+    "vocabulary": [
+      {
+        "word": "tedious",
+        "ipa": "/ˈtiːdiəs/",
+        "pos": "adjective",
+        "meaning_vi": "tẻ nhạt, nhàm chán",
+        "example": "Copying numbers from one spreadsheet to another is a tedious task.",
+        "example_vi": "Việc chép số liệu từ bảng tính này sang bảng tính khác là một công việc nhàm chán."
+      },
+      {
+        "word": "wrestling with",
+        "ipa": "/ˈrɛslɪŋ wɪð/",
+        "pos": "phrase",
+        "meaning_vi": "vật lộn với (vấn đề, cảm xúc)",
+        "example": "She has been wrestling with the decision to change careers.",
+        "example_vi": "Cô ấy đã vật lộn với quyết định đổi nghề từ lâu nay."
+      },
+      {
+        "word": "slip under the radar",
+        "ipa": "/slɪp ˈʌndər ðə ˈreɪdɑːr/",
+        "pos": "idiom",
+        "meaning_vi": "lọt qua mà không bị chú ý",
+        "example": "Small errors in the budget can easily slip under the radar.",
+        "example_vi": "Những sai sót nhỏ trong ngân sách rất dễ bị bỏ sót."
+      },
+      {
+        "word": "made up",
+        "ipa": "/meɪd ʌp/",
+        "pos": "phrasal verb",
+        "meaning_vi": "bịa ra",
+        "example": "He made up an excuse because he had forgotten the meeting.",
+        "example_vi": "Anh ấy bịa ra một cái cớ vì đã quên mất buổi họp."
+      },
+      {
+        "word": "complacency",
+        "ipa": "/kəmˈpleɪsənsi/",
+        "pos": "noun",
+        "meaning_vi": "sự tự mãn, chủ quan",
+        "example": "Success often breeds complacency in large companies.",
+        "example_vi": "Thành công thường nuôi dưỡng sự tự mãn trong các công ty lớn."
+      },
+      {
+        "word": "lose our edge",
+        "ipa": "/luːz ˈaʊər ɛdʒ/",
+        "pos": "idiom",
+        "meaning_vi": "mất lợi thế cạnh tranh",
+        "example": "If we stop learning new skills, we will lose our edge in the market.",
+        "example_vi": "Nếu ngừng học kỹ năng mới, chúng ta sẽ mất đi lợi thế cạnh tranh trên thị trường."
+      },
+      {
+        "word": "sparring partner",
+        "ipa": "/ˈspɑːrɪŋ ˈpɑːrtnər/",
+        "pos": "noun",
+        "meaning_vi": "người cùng tranh luận, đối trọng giúp mình giỏi lên",
+        "example": "My brother is my favourite sparring partner when I rehearse debates.",
+        "example_vi": "Anh trai tôi là người đối luyện tuyệt vời nhất mỗi khi tôi tập tranh biện."
+      },
+      {
+        "word": "in the long run",
+        "ipa": "/ɪn ðə lɔːŋ rʌn/",
+        "pos": "idiom",
+        "meaning_vi": "về lâu dài",
+        "example": "Cheap tools can cost you more in the long run.",
+        "example_vi": "Những công cụ rẻ tiền về lâu dài có thể khiến bạn tốn kém hơn."
+      }
+    ],
+    "questions": [
+      {
+        "question": "How did the AI assistant change Linh's work?",
+        "options": [
+          "It replaced her whole team",
+          "It took over the boring tasks and left time for creative work",
+          "It made reports take longer",
+          "It forced her to move to another city"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Công cụ AI đảm nhận phần việc tẻ nhạt nên cả nhóm có thêm thời gian cho việc sáng tạo."
+      },
+      {
+        "question": "Why must every output be double-checked by a human?",
+        "options": [
+          "The software is too slow",
+          "Clients dislike automated reports",
+          "The tool can state false information with confidence",
+          "Managers do not trust any technology"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Phần mềm từng tự bịa ra số liệu mà vẫn tỏ ra rất chắc chắn."
+      },
+      {
+        "question": "What does the writer see as the biggest danger?",
+        "options": [
+          "Becoming complacent about relying on AI",
+          "Machines becoming too intelligent",
+          "Juniors earning too much",
+          "Companies refusing to adopt new tools"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Tác giả cho rằng mối nguy thật sự là sự chủ quan chứ không phải bản thân công nghệ."
+      },
+      {
+        "question": "What can be inferred about the writer's attitude to AI?",
+        "options": [
+          "Strongly opposed to it",
+          "Blindly enthusiastic",
+          "Cautiously positive",
+          "Completely indifferent"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Bà ghi nhận lợi ích nhưng vẫn nhấn mạnh việc kiểm tra và dùng có chừng mực."
+      }
+    ]
+  }
+]

@@ -1,8 +1,9 @@
-// Validates seed/lessons/*.json (the built-in course). Usage: node scripts/check-seed.mjs [A1.json ...]
+// Validates the built-in course (seed/live/*.json, else seed/example/*.json). Usage: node scripts/check-seed.mjs [A1.json ...]
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { SEED_DIR } from "./seed-dir.mjs";
 
-const DIR = new URL("../seed/lessons/", import.meta.url);
+const DIR = SEED_DIR;
 const CATEGORIES = ["daily", "food", "travel", "work", "study", "tech", "health", "fun", "nature", "people"];
 const LIMITS = { A1: [6, 9, 12], A2: [8, 11, 15], B1: [9, 12, 18], B2: [10, 13, 22], C1: [10, 14, 24] };
 

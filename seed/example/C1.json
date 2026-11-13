@@ -1,0 +1,142 @@
+[
+  {
+    "slug": "c1-salary-negotiation",
+    "category": "work",
+    "topic": "Negotiating a salary",
+    "level": "C1",
+    "title": "Know Your Worth",
+    "summary_vi": "Luyện cách trình bày và thương lượng mức lương một cách tự tin, tinh tế bằng tiếng Anh.",
+    "sentences": [
+      "Most people dread the moment when an employer asks, \"So, what are you looking for?\"",
+      "Yet it is precisely at that point that your leverage is greatest, provided you have done your homework.",
+      "Never walk into a negotiation without a clear sense of the going rate for your role and city.",
+      "Should the first figure they offer fall short, resist the urge to accept it out of sheer relief.",
+      "Anchoring is powerful: whoever names a number first tends to shape the entire conversation that follows.",
+      "Rather than demanding more, frame your request around the value you will bring to the team.",
+      "It is not the salary alone that matters, but the whole package, including bonuses, flexibility and training budgets.",
+      "If the company genuinely cannot stretch its budget, you can still negotiate a formal review in six months.",
+      "In Hanoi and Singapore alike, hiring managers expect some back-and-forth, and a polite counteroffer rarely offends anyone.",
+      "What truly undermines candidates is not asking too much, but apologising for asking at all.",
+      "Stay composed, let silence work in your favour, and be prepared to walk away if the terms are unreasonable.",
+      "Remember that a well-handled negotiation signals precisely the confidence employers hope to see in their future colleagues."
+    ],
+    "sentences_vi": [
+      "Hầu hết mọi người đều ngại khoảnh khắc nhà tuyển dụng hỏi: \"Vậy anh/chị đang mong muốn điều gì?\"",
+      "Thế nhưng chính vào lúc đó, lợi thế của bạn lại lớn nhất, miễn là bạn đã chuẩn bị kỹ.",
+      "Đừng bao giờ bước vào một cuộc thương lượng khi chưa nắm rõ mức lương phổ biến cho vị trí của bạn tại thành phố đó.",
+      "Nếu mức đầu tiên họ đưa ra còn thấp, đừng vì quá nhẹ nhõm mà vội nhận ngay.",
+      "Hiệu ứng neo giá rất mạnh: ai nêu con số trước thường định hình cả cuộc trao đổi sau đó.",
+      "Thay vì đòi hỏi nhiều hơn, hãy trình bày đề nghị của bạn xoay quanh giá trị bạn sẽ mang lại cho đội nhóm.",
+      "Điều quan trọng không chỉ là mức lương, mà là cả gói đãi ngộ, bao gồm thưởng, sự linh hoạt và ngân sách đào tạo.",
+      "Nếu công ty thực sự không thể tăng ngân sách, bạn vẫn có thể thương lượng một buổi đánh giá chính thức sau sáu tháng.",
+      "Ở Hanoi cũng như Singapore, các nhà quản lý tuyển dụng đều mong có qua có lại đôi chút, và một lời đề nghị lại lịch sự hiếm khi làm ai phật ý.",
+      "Điều thực sự làm ứng viên mất điểm không phải là đòi quá nhiều, mà là xin lỗi vì đã dám đòi.",
+      "Hãy giữ bình tĩnh, để sự im lặng làm việc có lợi cho mình, và sẵn sàng rút lui nếu các điều khoản không hợp lý.",
+      "Hãy nhớ rằng một cuộc thương lượng khéo léo chính là dấu hiệu của sự tự tin mà nhà tuyển dụng mong thấy ở các đồng nghiệp tương lai."
+    ],
+    "vocabulary": [
+      {
+        "word": "leverage",
+        "ipa": "/ˈlɛvərɪdʒ/",
+        "pos": "noun",
+        "meaning_vi": "lợi thế để thương lượng",
+        "example": "Having a competing job offer gave her real leverage during the talks.",
+        "example_vi": "Có trong tay một lời mời làm việc khác đã mang lại cho cô ấy lợi thế thực sự trong cuộc đàm phán."
+      },
+      {
+        "word": "going rate",
+        "ipa": "/ˈɡoʊɪŋ reɪt/",
+        "pos": "noun",
+        "meaning_vi": "mức giá/lương phổ biến hiện hành",
+        "example": "Freelance designers in this city charge the going rate of about fifty dollars an hour.",
+        "example_vi": "Các nhà thiết kế tự do ở thành phố này tính mức giá phổ biến khoảng năm mươi đô la một giờ."
+      },
+      {
+        "word": "fall short",
+        "ipa": "/fɔl ʃɔrt/",
+        "pos": "phrase",
+        "meaning_vi": "không đạt kỳ vọng",
+        "example": "If the proposal should fall short of our expectations, we will ask for revisions.",
+        "example_vi": "Nếu đề xuất không đạt kỳ vọng của chúng tôi, chúng tôi sẽ yêu cầu chỉnh sửa."
+      },
+      {
+        "word": "anchoring",
+        "ipa": "/ˈæŋkərɪŋ/",
+        "pos": "noun",
+        "meaning_vi": "hiệu ứng neo giá",
+        "example": "Anchoring explains why the first price on a menu colours how expensive the rest seems.",
+        "example_vi": "Hiệu ứng neo giá giải thích vì sao giá đầu tiên trên thực đơn lại chi phối cảm giác về độ đắt của những món còn lại."
+      },
+      {
+        "word": "counteroffer",
+        "ipa": "/ˈkaʊntərˌɔfər/",
+        "pos": "noun",
+        "meaning_vi": "đề nghị phản hồi lại",
+        "example": "After a short pause, the buyer made a counteroffer that was ten percent lower.",
+        "example_vi": "Sau một lúc im lặng, người mua đưa ra mức giá phản hồi thấp hơn mười phần trăm."
+      },
+      {
+        "word": "back-and-forth",
+        "ipa": "/ˌbæk ən ˈfɔrθ/",
+        "pos": "noun",
+        "meaning_vi": "sự trao đổi qua lại",
+        "example": "After weeks of back-and-forth, the two firms finally signed the contract.",
+        "example_vi": "Sau nhiều tuần qua lại thương lượng, hai công ty cuối cùng cũng ký hợp đồng."
+      },
+      {
+        "word": "walk away",
+        "ipa": "/wɔk əˈweɪ/",
+        "pos": "phrase",
+        "meaning_vi": "rút lui, từ chối thỏa thuận",
+        "example": "A good negotiator knows when to walk away from a deal that does not add up.",
+        "example_vi": "Một nhà đàm phán giỏi biết lúc nào nên rút khỏi một thỏa thuận không có lợi."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What is the main purpose of the passage?",
+        "options": [
+          "To warn candidates against changing jobs",
+          "To offer practical advice on negotiating pay",
+          "To compare salaries in different countries",
+          "To criticise how employers hire"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Bài viết đưa ra lời khuyên thực tế về cách thương lượng lương."
+      },
+      {
+        "question": "According to the passage, why does anchoring matter?",
+        "options": [
+          "It makes employers feel more generous",
+          "It lets candidates avoid awkward silences",
+          "The first number named tends to shape the discussion",
+          "It guarantees a higher final salary"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Người nêu con số đầu tiên thường định hướng cả cuộc trao đổi."
+      },
+      {
+        "question": "What does the writer say damages a candidate's position most?",
+        "options": [
+          "Asking for too much money",
+          "Arriving without a counteroffer",
+          "Staying silent during talks",
+          "Apologising for making a request"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Tác giả cho rằng việc xin lỗi vì đã đề nghị mới là điều gây bất lợi nhất."
+      },
+      {
+        "question": "What option is suggested if the budget cannot be increased?",
+        "options": [
+          "Negotiating a review after six months",
+          "Accepting the first offer gratefully",
+          "Asking for a longer probation period",
+          "Moving to a different city"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Nếu ngân sách hạn chế, có thể thương lượng một cuộc xem xét lại sau sáu tháng."
+      }
+    ]
+  }
+]

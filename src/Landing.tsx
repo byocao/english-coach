@@ -26,7 +26,7 @@ const DEMO: { w: string; s: "ok" | "unclear" | "missing" }[] = [
 const FAQ: [string, string][] = [
   [
     "Wancha có miễn phí không?",
-    "Có. Toàn bộ 40 bài học có sẵn, nghe, chép chính tả, đọc hiểu và thử thách đều miễn phí. Mỗi tài khoản mới còn được tạo 1 bài học riêng bằng AI và chấm điểm phát âm 10 lần.",
+    "Có. Toàn bộ bài học có sẵn, nghe, chép chính tả, đọc hiểu và thử thách đều miễn phí. Mỗi tài khoản mới còn được tạo 1 bài học riêng bằng AI và chấm điểm phát âm 10 lần.",
   ],
   [
     "AI chấm phát âm như thế nào?",
@@ -91,7 +91,7 @@ export function Landing() {
               Học tiếng Anh mỗi ngày <span className="lp-accent">cùng Wanko</span>
             </h1>
             <p className="lp-sub">
-              40 bài học có sẵn từ A1 đến C1. Học từ vựng, nghe, chép chính tả, đọc hiểu và <b>luyện nói được AI chấm phát âm</b>,
+              Hơn 80 bài học có sẵn từ A1 đến C1, thêm bài mới mỗi ngày. Học từ vựng, nghe, chép chính tả, đọc hiểu và <b>luyện nói được AI chấm phát âm</b>,
               mọi giải thích đều bằng tiếng Việt.
             </p>
             <div className="lp-cta">
