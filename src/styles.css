@@ -2414,6 +2414,114 @@ code {
   border-color: var(--line);
 }
 
+/* Word order: one slot per word, drag and drop, hints. */
+.wb-help {
+  margin: 0;
+}
+.wb-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border-radius: 18px;
+  background: var(--surface-2);
+  border: 2px dashed var(--line-strong);
+}
+.wb-slot {
+  min-width: 56px;
+  min-height: 46px;
+  touch-action: none;
+  user-select: none;
+}
+.wb-slot.empty {
+  display: inline-grid;
+  place-items: center;
+  border: 2px dashed var(--line-strong);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  padding: 0 0.9rem;
+}
+.wb-slot.sel {
+  border-color: var(--brand);
+  border-style: solid;
+  color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 25%, transparent);
+}
+.wb-slot.over {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  transform: scale(1.06);
+}
+.wb-slot.locked {
+  border-color: var(--good);
+  background: var(--good-soft);
+  color: var(--good-deep);
+  box-shadow: 0 4px 0 var(--good);
+  opacity: 1;
+}
+.wb-slot.right {
+  border-color: var(--good);
+  background: var(--good-soft);
+  box-shadow: 0 4px 0 var(--good);
+}
+.wb-slot.wrong {
+  border-color: var(--bad);
+  background: var(--bad-soft);
+  color: var(--bad-deep);
+  box-shadow: 0 4px 0 var(--bad);
+  animation: shake 0.35s;
+}
+.wb-slot:disabled {
+  cursor: default;
+}
+.wb-bank {
+  padding: 0.5rem;
+  border-radius: 18px;
+  transition: background 0.15s;
+}
+.wb-bank.over {
+  background: var(--brand-soft);
+}
+.wb-bank .tile {
+  touch-action: none;
+  user-select: none;
+}
+.tile.dragging {
+  opacity: 0.35;
+}
+.wb-ghost {
+  position: fixed;
+  z-index: 100;
+  pointer-events: none;
+  transform: translate(-50%, -60%) rotate(-3deg) scale(1.08);
+  box-shadow: var(--shadow-lg);
+  animation: none;
+}
+.wb-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.wb-tools .btn.on {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--brand-soft);
+}
+.wb-vi {
+  margin: 0;
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  background: var(--gold-soft);
+  color: var(--ink);
+  font-weight: 600;
+  text-align: center;
+}
+
 .dict-input {
   width: 100%;
   min-height: 140px;
