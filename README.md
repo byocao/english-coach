@@ -1,26 +1,94 @@
+<div align="center">
+
+<img src="public/icons/wancha-192.png" alt="Wancha" width="96" height="96">
+
 # Wancha – learn English with Wanko
 
+**Học tiếng Anh mỗi ngày cùng Wanko** · an English practice app for Vietnamese speakers
+
 [![CI/CD](https://github.com/byocao/english-coach/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/byocao/english-coach/actions/workflows/ci-cd.yml)
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers%20%2B%20D1-F38020?logo=cloudflare&logoColor=white)
+![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Claude](https://img.shields.io/badge/AI-Claude%20%2B%20Whisper-D97757)
 
-Wancha is an English practice app for Vietnamese speakers: **reading, listening, dictation and speaking**, with
-explanations in Vietnamese. A built-in course goes from A1 to C1, an AI can write extra lessons on any
-topic, and speaking is graded by speech recognition plus an AI coach. It runs on Cloudflare Workers.
+**[Mở Wancha → wancha.byocao.com](https://wancha.byocao.com)** · [Báo lỗi / góp ý](https://github.com/byocao/english-coach/issues/new/choose)
 
-Live at **https://wancha.byocao.com**.
+<img src="docs/screenshots/path.webp" alt="The learning path: today's lesson, levels A1 to C1, quests and XP" width="860">
+
+</div>
+
+Wancha teaches **reading, listening, dictation and speaking**, with every explanation in Vietnamese. A built-in
+course goes from A1 to C1 and grows every day. VIP teachers can write extra lessons with AI and run their own
+classes. Speaking is graded by speech recognition plus an AI coach. Everything runs on Cloudflare Workers.
+
+## A lesson in six steps
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/demo-exercise.gif" alt="Flipping vocabulary cards, then answering the quiz: a right answer, a wrong one with a hint and a retry" width="100%"></td>
+    <td width="50%">
+      <b>Every lesson is a short passage, learnt through six steps:</b>
+      <ol>
+        <li><b>Từ vựng</b>: flashcards, matching, fill the gap, listen and pick</li>
+        <li><b>Nghe &amp; xếp câu</b>: listen, then put the words in order</li>
+        <li><b>Chép chính tả</b>: type what you hear</li>
+        <li><b>Luyện nói</b>: read aloud; Whisper transcribes and an AI grades 0–100, marking unclear or missing words</li>
+        <li><b>Đọc hiểu</b>: read the passage, tap a word to look it up, tap a sentence for an explanation in Vietnamese</li>
+        <li><b>Thử thách</b>: a quiz about the passage</li>
+      </ol>
+      A wrong answer gets a hint and a retry before the answer is shown, and missed items come back in a review round
+      at the end of the step.
+    </td>
+  </tr>
+</table>
+
+<p align="center"><img src="docs/screenshots/phones-learn.webp" alt="On a phone: the learning path, vocabulary flashcards and a quiz answer" width="860"></p>
 
 ## Features
 
-| Area | What it does |
+| | |
 |---|---|
-| Course | A built-in course, A1 → C1, across 10 topics (daily life, food, travel, work, study, tech, health, fun, nature, people). Each lesson is a node on a learning path with 6 steps. |
-| 6 steps per lesson | Vocabulary (flashcards, matching, fill the gap, listen and pick) · Listen and order the words · Dictation · Speaking · Reading · Quiz |
-| Practice loop | A wrong answer gives a hint and a retry before the answer is shown; missed items come back in a review round at the end of the step. |
-| Library | The course and every AI-written lesson, filterable by topic and level. Typing a topic suggests similar existing lessons first. |
-| Speaking | Record → Whisper transcribes → an AI grades 0–100, colours unclear or missing words and gives pronunciation tips in Vietnamese. |
-| Placement | An adaptive test (up to 12 questions: grammar, vocabulary, listening, reading) places each account at A1–C1. |
-| Motivation | XP, streaks, a daily goal, three daily quests, combos and a weekly league. |
-| Companions | Wanko (a puppy in a matcha bowl), the cats Tororo & Hijiki, and Kitsu, an original low-poly fox. |
-| Voices | The browser's most natural English voice is picked automatically (e.g. Edge "Natural" voices); learners can choose another in their profile. |
+| 🗺️ **Learning path** | A1 → C1 across 10 topics (daily life, food, travel, work, study, tech, health, fun, nature, people). Each level shows 8 lessons; "Học thêm" unlocks 3 more once those are done. Levels below yours fold away. |
+| 🎯 **Placement test** | An adaptive test (up to 12 questions: grammar, vocabulary, listening, reading) starts each learner at the right level. |
+| 🔥 **Motivation** | XP, streaks, a daily goal, three daily quests, combos and a weekly league. |
+| 📚 **Library** | The course plus lessons written by VIP teachers, filterable by topic and level, 24 per page. |
+| 🏫 **Classes** | VIP teachers invite students by username or email, give the class public or private lessons, and follow each student's progress. |
+| 🔔 **Notifications** | Class invites (accepted right in the list), replies and new class lessons. |
+| 🐶 **Companions** | Wanko (a puppy in a matcha bowl), the cats Tororo & Hijiki, and Kitsu, an original low-poly fox. |
+| 🌗 **Light and dark** | Follows the system theme, or pick one in the profile. Works as well on a phone as on a desktop. |
+| 🗣️ **Natural voices** | The browser's most natural English voice is picked automatically (e.g. Edge "Natural" voices); learners can choose another. |
+| 💬 **Feedback** | "Báo lỗi bài này" on every lesson, and a support card that opens a prefilled GitHub issue form or an email. |
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/lesson.webp" alt="A lesson page: the six steps with the best score of each, and the vocabulary"></td>
+    <td width="50%"><img src="docs/screenshots/library.webp" alt="The library: topics, levels and lesson cards"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>A lesson: six steps with your best score each</sub></td>
+    <td align="center"><sub>The library: filter by topic and level</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/class-members.webp" alt="A teacher's class page: invite by username or email, students with their progress and weekly XP"></td>
+    <td width="50%"><img src="docs/screenshots/library-create.webp" alt="AI lesson writing for VIP teachers: topic, level, length, public or private, and the class to give it to"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Teaching a class: invites, progress, weekly XP</sub></td>
+    <td align="center"><sub>VIP: write a lesson with AI, public or just for a class</sub></td>
+  </tr>
+</table>
+
+<p align="center"><img src="docs/screenshots/phones-together.webp" alt="On a phone: the weekly league, notifications and a class in dark mode" width="860"></p>
+
+<details>
+<summary><b>More: browsing the path and the library (GIF), dark mode, the landing page</b></summary>
+<br>
+<p align="center"><img src="docs/screenshots/demo-desktop.gif" alt="Opening a folded level on the path, then filtering the library and moving to page 2" width="800"></p>
+<p align="center"><img src="docs/screenshots/path-dark.webp" alt="The learning path in dark mode" width="800"></p>
+<p align="center"><img src="docs/screenshots/landing.webp" alt="The public landing page" width="800"></p>
+</details>
+
+<sub>Screenshots use demo accounts on a local database.</sub>
 
 Signed-out visitors see a public landing page (prerendered into `index.html` for search engines); sign-in and
 sign-up live on their own page.
