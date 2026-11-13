@@ -71,6 +71,24 @@ function useNarrow(q = "(max-width: 1180px)"): boolean {
   return narrow;
 }
 
+/** Set while this browser has a session, so returning users see the loading screen, not the landing page. */
+const SIGNED_IN_HINT = "wancha_signed_in";
+function signedInHint(): boolean {
+  try {
+    return localStorage.getItem(SIGNED_IN_HINT) === "1";
+  } catch {
+    return false;
+  }
+}
+function setSignedInHint(on: boolean) {
+  try {
+    if (on) localStorage.setItem(SIGNED_IN_HINT, "1");
+    else localStorage.removeItem(SIGNED_IN_HINT);
+  } catch {
+    /* private mode */
+  }
+}
+
 export function App() {
   const [me, setMe] = useState<Me | null | undefined>(undefined);
   const [route, setRoute] = useState<Route>(parseRoute);
@@ -101,6 +119,12 @@ export function App() {
     [],
   );
 
+  useEffect(() => {
+    if (me !== undefined) setSignedInHint(me !== null);
+  }, [me]);
+
+  // While /api/me loads, first-time visitors already get the landing page (also prerendered into index.html).
+  if (me === undefined && !signedInHint() && route.name === "learn") return <Landing />;
   if (me === undefined)
     return (
       <div className="boot">

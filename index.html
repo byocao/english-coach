@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
+    <!-- Returning signed-in visitors skip the prerendered landing page (search engines never have this flag). -->
+    <script>
+      try {
+        if (localStorage.getItem("wancha_signed_in") === "1") document.documentElement.classList.add("signed-in");
+      } catch (e) {}
+    </script>
+    <style>
+      .signed-in .prerendered { display: none; }
+    </style>
     <title>Wancha – Học tiếng Anh cùng Wanko | Luyện nghe, nói, chép chính tả</title>
     <meta
       name="description"
@@ -65,6 +74,57 @@
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "VND" },
         "educationalLevel": ["A1", "A2", "B1", "B2", "C1"],
         "learningResourceType": "Interactive lesson"
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Wancha",
+        "alternateName": "Wancha – Học tiếng Anh cùng Wanko",
+        "url": "https://wancha.byocao.com/",
+        "inLanguage": "vi"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Wancha có miễn phí không?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Có. Toàn bộ 40 bài học có sẵn, nghe, chép chính tả, đọc hiểu và thử thách đều miễn phí. Mỗi tài khoản mới còn được tạo 1 bài học riêng bằng AI và chấm điểm phát âm 10 lần."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "AI chấm phát âm như thế nào?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Bạn đọc to một câu. Máy nhận dạng giọng nói nghe xem bạn nói ra những từ nào, rồi AI so với câu mẫu: từ nào rõ, từ nào nghe chưa ra, từ nào bị nuốt, kèm mẹo sửa bằng tiếng Việt."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Có cần cài ứng dụng không?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Không. Wancha chạy ngay trên trình duyệt của điện thoại hay máy tính. Trên điện thoại bạn có thể chọn \"Thêm vào màn hình chính\" để mở như một app."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Mình chưa biết trình độ của mình?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Làm bài xếp lớp ngắn (tối đa 12 câu, khoảng 3 phút). Wancha sẽ đưa bạn vào đúng cấp từ A1 đến C1."
+            }
+          }
+        ]
       }
     </script>
 
