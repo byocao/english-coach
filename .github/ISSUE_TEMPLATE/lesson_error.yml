@@ -36,3 +36,9 @@ body:
         Câu 3: "She go to school" → "She goes to school"
     validations:
       required: true
+  - type: input
+    id: device
+    attributes:
+      label: Thiết bị và trình duyệt
+      description: Cần khi lỗi về âm thanh hoặc chấm điểm nói. Nút trong app đã điền sẵn.
+      placeholder: "Ví dụ: iPhone 13, Safari"
