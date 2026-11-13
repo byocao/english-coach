@@ -1402,7 +1402,7 @@ function Admin() {
       <section className="card">
         <h2 className="card-title">Người dùng</h2>
         <p className="muted small">
-          Mỗi tài khoản (trừ byocao) được tạo {data.limits.lessons} bài riêng bằng Claude Opus và chấm điểm phát âm{" "}
+          Mỗi tài khoản (trừ quản trị viên) được tạo {data.limits.lessons} bài riêng bằng Claude Opus và chấm điểm phát âm{" "}
           {data.limits.grades} lần bằng Claude Haiku. Khi chi phí tháng chạm {usd(data.spend.budget)}, hai chức năng này
           chuyển sang "bảo trì". Bài học: mở bài để ẩn hoặc xoá.
         </p>

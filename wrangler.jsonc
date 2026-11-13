@@ -28,7 +28,6 @@
     { "tag": "v2", "deleted_classes": ["BridgeHub"] }
   ],
   "vars": {
-    "ADMIN_LOGIN": "byocao",
     "CONTACT_URL": "https://github.com/byocao",
     "WORKERS_AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
     // Claude API (secret ANTHROPIC_API_KEY): custom lessons on Opus, speaking grades on Haiku.

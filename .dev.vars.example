@@ -1,5 +1,6 @@
 # Copy to .dev.vars for local development (never commit .dev.vars).
-# Password for the byocao (ADMIN_LOGIN) account.
+# Username and password of the admin account (unlimited AI, admin page).
+ADMIN_LOGIN=
 ADMIN_PASSWORD=
 # Claude API key (custom lessons and speaking grades). In production: npx wrangler secret put ANTHROPIC_API_KEY
 ANTHROPIC_API_KEY=
