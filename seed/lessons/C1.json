@@ -1,137 +1,1118 @@
 [
-{"slug":"c1-salary-negotiation","category":"work","topic":"Negotiating a salary","level":"C1","title":"Know Your Worth",
-"summary_vi":"Luyện cách trình bày và thương lượng mức lương một cách tự tin, tinh tế bằng tiếng Anh.",
-"sentences":["Most people dread the moment when an employer asks, \"So, what are you looking for?\"","Yet it is precisely at that point that your leverage is greatest, provided you have done your homework.","Never walk into a negotiation without a clear sense of the going rate for your role and city.","Should the first figure they offer fall short, resist the urge to accept it out of sheer relief.","Anchoring is powerful: whoever names a number first tends to shape the entire conversation that follows.","Rather than demanding more, frame your request around the value you will bring to the team.","It is not the salary alone that matters, but the whole package, including bonuses, flexibility and training budgets.","If the company genuinely cannot stretch its budget, you can still negotiate a formal review in six months.","In Hanoi and Singapore alike, hiring managers expect some back-and-forth, and a polite counteroffer rarely offends anyone.","What truly undermines candidates is not asking too much, but apologising for asking at all.","Stay composed, let silence work in your favour, and be prepared to walk away if the terms are unreasonable.","Remember that a well-handled negotiation signals precisely the confidence employers hope to see in their future colleagues."],
-"vocabulary":[
-{"word":"leverage","ipa":"/ˈlɛvərɪdʒ/","pos":"noun","meaning_vi":"lợi thế để thương lượng","example":"Having a competing job offer gave her real leverage during the talks."},
-{"word":"going rate","ipa":"/ˈɡoʊɪŋ reɪt/","pos":"noun","meaning_vi":"mức giá/lương phổ biến hiện hành","example":"Freelance designers in this city charge the going rate of about fifty dollars an hour."},
-{"word":"fall short","ipa":"/fɔl ʃɔrt/","pos":"phrase","meaning_vi":"không đạt kỳ vọng","example":"If the proposal should fall short of our expectations, we will ask for revisions."},
-{"word":"anchoring","ipa":"/ˈæŋkərɪŋ/","pos":"noun","meaning_vi":"hiệu ứng neo giá","example":"Anchoring explains why the first price on a menu colours how expensive the rest seems."},
-{"word":"counteroffer","ipa":"/ˈkaʊntərˌɔfər/","pos":"noun","meaning_vi":"đề nghị phản hồi lại","example":"After a short pause, the buyer made a counteroffer that was ten percent lower."},
-{"word":"back-and-forth","ipa":"/ˌbæk ən ˈfɔrθ/","pos":"noun","meaning_vi":"sự trao đổi qua lại","example":"After weeks of back-and-forth, the two firms finally signed the contract."},
-{"word":"walk away","ipa":"/wɔk əˈweɪ/","pos":"phrase","meaning_vi":"rút lui, từ chối thỏa thuận","example":"A good negotiator knows when to walk away from a deal that does not add up."}],
-"questions":[
-{"question":"What is the main purpose of the passage?","options":["To warn candidates against changing jobs","To offer practical advice on negotiating pay","To compare salaries in different countries","To criticise how employers hire"],"answer_index":1,"explanation_vi":"Bài viết đưa ra lời khuyên thực tế về cách thương lượng lương."},
-{"question":"According to the passage, why does anchoring matter?","options":["It makes employers feel more generous","It lets candidates avoid awkward silences","The first number named tends to shape the discussion","It guarantees a higher final salary"],"answer_index":2,"explanation_vi":"Người nêu con số đầu tiên thường định hướng cả cuộc trao đổi."},
-{"question":"What does the writer say damages a candidate's position most?","options":["Asking for too much money","Arriving without a counteroffer","Staying silent during talks","Apologising for making a request"],"answer_index":3,"explanation_vi":"Tác giả cho rằng việc xin lỗi vì đã đề nghị mới là điều gây bất lợi nhất."},
-{"question":"What option is suggested if the budget cannot be increased?","options":["Negotiating a review after six months","Accepting the first offer gratefully","Asking for a longer probation period","Moving to a different city"],"answer_index":0,"explanation_vi":"Nếu ngân sách hạn chế, có thể thương lượng một cuộc xem xét lại sau sáu tháng."}]},
-
-{"slug":"c1-ai-ethics","category":"tech","topic":"The ethics of artificial intelligence","level":"C1","title":"Who Answers to the Algorithm?",
-"summary_vi":"Luyện đọc và thảo luận về các vấn đề đạo đức của trí tuệ nhân tạo với từ vựng học thuật.",
-"sentences":["Artificial intelligence is no longer a distant promise; it already decides who gets a loan, an interview or a medical scan.","That reach raises an uncomfortable question: who is accountable when an algorithm gets it wrong?","Bias is the most cited concern, and with good reason, since models learn from data that reflects historical prejudice.","A hiring tool trained on past decisions may quietly penalise women, simply because fewer of them were hired before.","Transparency offers a partial remedy, yet many systems remain black boxes even to the engineers who built them.","Were companies required to explain automated decisions, public trust would arguably be easier to earn.","Privacy poses a separate dilemma, because the data that makes these tools useful is often collected without meaningful consent.","Others worry less about present harms than about the long-term erosion of human judgement and skills.","Regulation is therefore taking shape, though lawmakers struggle to keep pace with a technology that evolves almost monthly.","In Vietnam, as elsewhere, the debate is shifting from whether to adopt AI to how to govern it responsibly.","Ultimately, it is not the machines that hold values, but the people who design, deploy and oversee them."],
-"vocabulary":[
-{"word":"accountable","ipa":"/əˈkaʊntəbəl/","pos":"adjective","meaning_vi":"phải chịu trách nhiệm","example":"Managers must be held accountable for the decisions their teams make."},
-{"word":"bias","ipa":"/ˈbaɪəs/","pos":"noun","meaning_vi":"thiên kiến, sự thiên vị","example":"The study found a clear bias against older applicants."},
-{"word":"black boxes","ipa":"/blæk ˈbɑksəz/","pos":"noun","meaning_vi":"hệ thống \"hộp đen\" khó giải thích","example":"Deep neural networks are often described as black boxes because their reasoning is hidden."},
-{"word":"meaningful consent","ipa":"/ˈminɪŋfəl kənˈsɛnt/","pos":"noun","meaning_vi":"sự đồng ý có hiểu biết thực sự","example":"Clicking \"accept\" on a thirty-page policy hardly amounts to meaningful consent."},
-{"word":"erosion","ipa":"/ɪˈroʊʒən/","pos":"noun","meaning_vi":"sự xói mòn","example":"Critics fear the erosion of trust in the news media."},
-{"word":"keep pace with","ipa":"/kip peɪs wɪð/","pos":"phrase","meaning_vi":"theo kịp","example":"Schools are struggling to keep pace with the speed of technological change."},
-{"word":"deploy","ipa":"/dɪˈplɔɪ/","pos":"verb","meaning_vi":"triển khai, đưa vào sử dụng","example":"The bank plans to deploy the new fraud-detection system next spring."}],
-"questions":[
-{"question":"Why does the writer say bias is a serious concern in AI?","options":["Engineers deliberately introduce it","Models learn from data that carries past prejudice","Users rarely read the results","It only affects financial services"],"answer_index":1,"explanation_vi":"Mô hình học từ dữ liệu phản ánh định kiến trong quá khứ."},
-{"question":"What does the hiring-tool example illustrate?","options":["A system copying historical unfairness","A tool that is too expensive to run","Women refusing to apply for jobs","Faster recruitment for large firms"],"answer_index":0,"explanation_vi":"Ví dụ cho thấy hệ thống lặp lại sự bất công vốn có trong dữ liệu cũ."},
-{"question":"What is the writer's attitude towards regulation?","options":["Dismissive of its value","Certain that it will fail","Cautiously accepting but aware of its limits","Strongly opposed to new laws"],"answer_index":2,"explanation_vi":"Tác giả ghi nhận quy định đang hình thành nhưng thừa nhận khó theo kịp công nghệ."},
-{"question":"What is the main message of the final sentence?","options":["Machines will eventually develop values","Governments should ban AI","Companies are not responsible for software","Human beings remain responsible for AI"],"answer_index":3,"explanation_vi":"Câu cuối nhấn mạnh con người mới là bên chịu trách nhiệm về AI."}]},
-
-{"slug":"c1-green-cities","category":"nature","topic":"Designing greener cities","level":"C1","title":"Concrete Meets Canopy",
-"summary_vi":"Luyện đọc bài phóng sự về thiết kế đô thị xanh với các cụm từ nâng cao về môi trường.",
-"sentences":["Walk through Singapore's Gardens by the Bay and it becomes obvious that concrete and nature need not be enemies.","Cities occupy a small fraction of the planet's land, yet they account for most of its energy consumption.","That imbalance is why planners are now rethinking streets, rooftops and even the humble pavement.","Green roofs absorb rainwater, insulate buildings and, perhaps most importantly, cool the air around them.","Cities like Copenhagen have gone further, redesigning entire districts so that heavy downpours drain into parks rather than basements.","Ho Chi Minh City, with its chronic flooding and punishing summers, has much to gain from such measures.","It is not enough, however, to plant trees and call the job done.","Without maintenance and thoughtful species selection, new greenery can wither, wasting both money and public goodwill.","Transport matters just as much; the more people cycle, walk or ride trains, the less smog settles over the skyline.","Critics warn that greening can trigger gentrification, pushing out the very residents it was meant to serve.","Addressing that risk requires affordable housing policies to be woven into the design from the outset.","A truly sustainable city, in other words, is one that is liveable for everyone, not merely photogenic."],
-"vocabulary":[
-{"word":"account for","ipa":"/əˈkaʊnt fɔr/","pos":"phrase","meaning_vi":"chiếm (một tỷ lệ)","example":"Cars account for nearly half of the city's air pollution."},
-{"word":"insulate","ipa":"/ˈɪnsəˌleɪt/","pos":"verb","meaning_vi":"cách nhiệt","example":"Thick walls insulate the old house against the summer heat."},
-{"word":"downpours","ipa":"/ˈdaʊnˌpɔrz/","pos":"noun","meaning_vi":"những trận mưa như trút","example":"Sudden downpours turned the streets into rivers within minutes."},
-{"word":"chronic","ipa":"/ˈkrɑnɪk/","pos":"adjective","meaning_vi":"kinh niên, kéo dài","example":"Chronic traffic congestion costs the economy millions every year."},
-{"word":"wither","ipa":"/ˈwɪðər/","pos":"verb","meaning_vi":"héo úa, tàn lụi","example":"Without regular watering, the young saplings will wither."},
-{"word":"gentrification","ipa":"/ˌdʒɛntrəfɪˈkeɪʃən/","pos":"noun","meaning_vi":"hiện tượng tầng lớp giàu đẩy giá khiến dân cũ phải rời đi","example":"Rapid gentrification has made the old quarter unaffordable for many families."},
-{"word":"from the outset","ipa":"/frəm ði ˈaʊtˌsɛt/","pos":"phrase","meaning_vi":"ngay từ đầu","example":"The architect made it clear from the outset that the budget was tight."}],
-"questions":[
-{"question":"What contrast does the second sentence draw?","options":["City size versus population","Small land area versus large energy use","Old buildings versus new ones","Rich cities versus poor ones"],"answer_index":1,"explanation_vi":"Thành phố chiếm ít đất nhưng tiêu thụ phần lớn năng lượng."},
-{"question":"Why does the writer mention Ho Chi Minh City?","options":["To criticise its transport system","To praise its parks","To show it could benefit from green measures","To compare it with Copenhagen's budget"],"answer_index":2,"explanation_vi":"Thành phố này chịu ngập và nóng nên được lợi từ các giải pháp xanh."},
-{"question":"What risk of greening do critics identify?","options":["Higher smog levels","Fewer cyclists","Wasted rainwater","Pushing out existing residents"],"answer_index":3,"explanation_vi":"Các nhà phê bình lo việc làm xanh gây gentrification, đẩy dân cũ đi."},
-{"question":"What is implied by the last sentence?","options":["Sustainability must include social fairness","Beauty matters more than function","Only wealthy cities can go green","Photogenic cities attract more tourists"],"answer_index":0,"explanation_vi":"Thành phố bền vững phải dễ sống cho mọi người, không chỉ đẹp."}]},
-
-{"slug":"c1-cognitive-bias","category":"people","topic":"Cognitive biases in everyday decisions","level":"C1","title":"The Mind's Shortcuts",
-"summary_vi":"Luyện đọc bài suy ngẫm về các thiên kiến nhận thức ảnh hưởng đến quyết định hằng ngày.",
-"sentences":["We like to imagine that our decisions flow from careful reasoning, but the mind prefers shortcuts.","Psychologists call these shortcuts heuristics, and while they save time, they also leave us prone to systematic error.","Take confirmation bias: once we hold a belief, we instinctively seek out evidence that supports it.","Rarely do we notice how selectively we read the news, or whom we choose to listen to.","Then there is the sunk cost fallacy, which keeps people in failing projects simply because they have already invested so much.","I once sat through an entire dreadful film for precisely that reason, having paid for the ticket.","Anchoring is subtler still, since an arbitrary first number can distort every estimate that follows.","Knowing about these traps does not make us immune; if anything, it can breed overconfidence.","What helps is slowing down, particularly when the stakes are high and emotions are running hot.","Asking a trusted friend to challenge your reasoning, or writing down your assumptions, can expose blind spots.","We will never be perfectly rational, but we can learn to catch ourselves in the act."],
-"vocabulary":[
-{"word":"prone to","ipa":"/proʊn tu/","pos":"adjective","meaning_vi":"dễ bị, có xu hướng","example":"Tired drivers are more prone to making serious mistakes."},
-{"word":"confirmation bias","ipa":"/ˌkɑnfərˈmeɪʃən ˈbaɪəs/","pos":"noun","meaning_vi":"thiên kiến xác nhận","example":"Confirmation bias leads us to share only the articles that agree with us."},
-{"word":"sunk cost fallacy","ipa":"/sʌŋk kɔst ˈfæləsi/","pos":"noun","meaning_vi":"ngụy biện chi phí chìm","example":"Staying in a bad investment because of past losses is the sunk cost fallacy in action."},
-{"word":"arbitrary","ipa":"/ˈɑrbəˌtrɛri/","pos":"adjective","meaning_vi":"tùy tiện, ngẫu nhiên","example":"The deadline seemed arbitrary, since nobody could explain how it was chosen."},
-{"word":"breed","ipa":"/brid/","pos":"verb","meaning_vi":"gây ra, nuôi dưỡng","example":"Constant praise can breed complacency in a young team."},
-{"word":"the stakes are high","ipa":"/ðə steɪks ɑr haɪ/","pos":"idiom","meaning_vi":"rủi ro/được mất rất lớn","example":"Before a final exam, the stakes are high and even small errors feel enormous."},
-{"word":"blind spots","ipa":"/blaɪnd spɑts/","pos":"noun","meaning_vi":"điểm mù, thiếu sót không nhận ra","example":"Honest feedback helps leaders identify their blind spots."}],
-"questions":[
-{"question":"What does the writer suggest about heuristics?","options":["They are always harmful","They save time but can mislead us","They only affect experts","They have been scientifically disproved"],"answer_index":1,"explanation_vi":"Heuristics tiết kiệm thời gian nhưng khiến ta dễ mắc lỗi có hệ thống."},
-{"question":"Why does the writer mention watching a dreadful film?","options":["To recommend a particular movie","To criticise cinema ticket prices","To illustrate a bias with a personal example","To show how little they value money"],"answer_index":2,"explanation_vi":"Đó là ví dụ cá nhân minh họa cho ngụy biện chi phí chìm."},
-{"question":"What ironic point is made about knowing these biases?","options":["Awareness can make us overconfident","Awareness eliminates all errors","Biases only affect the uninformed","Awareness makes decisions slower"],"answer_index":0,"explanation_vi":"Biết về thiên kiến không giúp miễn nhiễm, thậm chí có thể gây tự tin quá mức."},
-{"question":"What is the tone of the final sentence?","options":["Angry and accusing","Doubtful and confused","Mocking and sarcastic","Realistic and gently hopeful"],"answer_index":3,"explanation_vi":"Câu cuối thừa nhận sự không hoàn hảo nhưng vẫn lạc quan nhẹ nhàng."}]},
-
-{"slug":"c1-public-speaking","category":"people","topic":"Speaking in public with confidence","level":"C1","title":"Butterflies in Formation",
-"summary_vi":"Luyện nghe và nói theo một bài phát biểu về cách tự tin khi nói trước đám đông.",
-"sentences":["Good evening, everyone, and thank you for coming; I promise to keep my nerves in check.","Let me begin with a confession: for years, I would rather have done almost anything than speak in public.","My palms would sweat, my voice would tremble, and my carefully prepared words would vanish.","What changed was not that the fear disappeared, but that I learned to reinterpret it.","Those butterflies are simply your body gearing up for a challenge, and a little adrenaline sharpens focus.","Preparation matters, of course, yet over-rehearsing every word can make you sound stilted and robotic.","I now build my talks around three key ideas, which gives me something solid to fall back on.","Pausing is the most underrated skill; a well-placed silence lets your point sink in.","Equally important is eye contact, because speaking to individuals feels far less daunting than addressing a crowd.","Should you stumble, don't panic; audiences are remarkably forgiving when a speaker simply carries on.","Above all, remember that people are not there to judge you, but to hear what you have to say.","Thank you; now, I'd be glad to take your questions."],
-"vocabulary":[
-{"word":"in check","ipa":"/ɪn tʃɛk/","pos":"phrase","meaning_vi":"được kiểm soát","example":"She kept her anger in check throughout the heated meeting."},
-{"word":"gearing up for","ipa":"/ˈɡɪrɪŋ ʌp fɔr/","pos":"phrase","meaning_vi":"chuẩn bị cho","example":"The whole team is gearing up for next week's product launch."},
-{"word":"stilted","ipa":"/ˈstɪltɪd/","pos":"adjective","meaning_vi":"gượng gạo, thiếu tự nhiên","example":"His stilted greeting made the atmosphere even more awkward."},
-{"word":"fall back on","ipa":"/fɔl bæk ɑn/","pos":"phrase","meaning_vi":"dựa vào khi cần","example":"Having savings gave her something to fall back on when the business struggled."},
-{"word":"sink in","ipa":"/sɪŋk ɪn/","pos":"phrase","meaning_vi":"được thấm, hiểu dần","example":"It took a few days for the news of the promotion to sink in."},
-{"word":"daunting","ipa":"/ˈdɔntɪŋ/","pos":"adjective","meaning_vi":"khiến nản lòng, đáng sợ","example":"Starting a new career at forty can feel daunting."},
-{"word":"underrated","ipa":"/ˌʌndərˈreɪtɪd/","pos":"adjective","meaning_vi":"bị đánh giá thấp","example":"Listening is an underrated skill in any leadership role."}],
-"questions":[
-{"question":"What kind of text is this passage most likely to be?","options":["A written complaint","A spoken talk to an audience","A newspaper report","A set of instructions"],"answer_index":1,"explanation_vi":"Lời chào, cảm ơn và mời đặt câu hỏi cho thấy đây là bài nói trước khán giả."},
-{"question":"How did the speaker's attitude to fear change?","options":["She stopped feeling any fear","She avoided all speaking events","She learned to see it as useful energy","She relied entirely on notes"],"answer_index":2,"explanation_vi":"Cô học cách nhìn nỗi sợ như năng lượng hữu ích chứ không xóa bỏ nó."},
-{"question":"Why does the speaker warn against over-rehearsing?","options":["It wastes too much time","It makes the audience bored","It causes physical illness","It can make a talk sound unnatural"],"answer_index":3,"explanation_vi":"Tập quá kỹ từng chữ khiến bài nói nghe gượng gạo, như người máy."},
-{"question":"What does the speaker say about audiences?","options":["They are forgiving if you carry on after a mistake","They notice every error","They prefer very short talks","They judge speakers harshly"],"answer_index":0,"explanation_vi":"Khán giả khá bao dung khi diễn giả vẫn tiếp tục sau khi vấp."}]},
-
-{"slug":"c1-attention-economy","category":"tech","topic":"The attention economy","level":"C1","title":"The Price of a Glance",
-"summary_vi":"Luyện đọc bài luận về nền kinh tế chú ý và cách các nền tảng thu hút thời gian của chúng ta.",
-"sentences":["If a service is free, the old saying goes, then you are the product.","Nowhere is that truer than in the attention economy, where your time and focus are the scarce currency.","Platforms compete fiercely to hold your gaze, and they have engineered features to do precisely that.","Endless scrolling, autoplay and notification badges are not accidents; they are carefully tested to keep you coming back.","The consequences are subtle but cumulative, as fragmented attention makes sustained, deep thinking harder to achieve.","Many Vietnamese teenagers now spend hours on short videos, often without recalling what they watched.","It would be unfair, though, to cast technology as the sole villain.","These tools connect families across oceans, democratise information and give small businesses a global stage.","The real issue is design that profits from compulsion rather than genuine value.","Some users are fighting back by switching off notifications, setting screen limits or reclaiming whole evenings offline.","Regulators, meanwhile, are asking whether manipulative design should face the same scrutiny as misleading advertising.","Until incentives change, the burden will keep falling on individuals to guard their own attention."],
-"vocabulary":[
-{"word":"scarce","ipa":"/skɛrs/","pos":"adjective","meaning_vi":"khan hiếm","example":"Fresh water is becoming scarce in many coastal regions."},
-{"word":"engineered","ipa":"/ˌɛndʒəˈnɪrd/","pos":"verb","meaning_vi":"được thiết kế có chủ đích","example":"The snack was engineered to be impossible to stop eating."},
-{"word":"cumulative","ipa":"/ˈkjumjələtɪv/","pos":"adjective","meaning_vi":"tích lũy dần","example":"The cumulative effect of poor sleep is hard to ignore."},
-{"word":"fragmented","ipa":"/ˈfræɡˌmɛntɪd/","pos":"adjective","meaning_vi":"bị chia nhỏ, rời rạc","example":"A fragmented schedule left her no time for deep work."},
-{"word":"democratise","ipa":"/dɪˈmɑkrəˌtaɪz/","pos":"verb","meaning_vi":"phổ cập cho mọi người","example":"Open courses aim to democratise access to higher education."},
-{"word":"compulsion","ipa":"/kəmˈpʌlʃən/","pos":"noun","meaning_vi":"sự thôi thúc khó cưỡng","example":"He checked his phone out of compulsion rather than need."},
-{"word":"scrutiny","ipa":"/ˈskrutəni/","pos":"noun","meaning_vi":"sự xem xét kỹ lưỡng","example":"The company's accounts came under intense scrutiny after the scandal."}],
-"questions":[
-{"question":"What does \"you are the product\" suggest?","options":["Users receive free gifts","Companies profit from users' attention and data","Free services are always high quality","Customers help design the product"],"answer_index":1,"explanation_vi":"Câu nói ngụ ý công ty kiếm lời từ sự chú ý và dữ liệu của người dùng."},
-{"question":"According to the writer, why are features like autoplay used?","options":["To save battery power","To teach users patience","To keep people returning and engaged","To reduce advertising costs"],"answer_index":2,"explanation_vi":"Các tính năng này được thử nghiệm kỹ để giữ người dùng quay lại."},
-{"question":"What is the writer's overall view of technology?","options":["Entirely harmful","Largely irrelevant","Equally useful to all users","Beneficial but flawed by manipulative design"],"answer_index":3,"explanation_vi":"Tác giả công nhận lợi ích nhưng chỉ trích thiết kế thao túng."},
-{"question":"What does the final sentence imply?","options":["Individuals must protect their focus until incentives shift","Regulators have solved the problem","Teenagers are to blame","Platforms will soon change voluntarily"],"answer_index":0,"explanation_vi":"Chừng nào động cơ chưa đổi, cá nhân vẫn phải tự bảo vệ sự tập trung."}]},
-
-{"slug":"c1-food-heritage","category":"food","topic":"Food as cultural heritage","level":"C1","title":"More Than a Bowl",
-"summary_vi":"Luyện đọc bài viết về ẩm thực như một di sản văn hóa với những cách diễn đạt tinh tế.",
-"sentences":["A bowl of phở is never just a bowl of phở.","Behind its fragrant broth lies a century of migration, adaptation and fierce regional pride.","Food is among the most intimate ways a culture remembers itself, passed down not in books but in kitchens.","Grandmothers rarely measure ingredients; they rely on instinct, taste and a lifetime of repetition.","When such knowledge goes unrecorded, it can vanish within a single generation.","This is why UNESCO has begun recognising culinary traditions, from Neapolitan pizza to Korean kimchi-making, as intangible heritage.","Recognition, however, is a double-edged sword, since it may attract tourists who turn rituals into spectacle.","Street vendors in Huế, for instance, now compete with polished restaurants that serve imperial dishes in simplified form.","Purists argue that authenticity is being diluted, whereas others insist that cuisine has always evolved through borrowing.","Indeed, the bánh mì itself is a delicious product of colonial history and local ingenuity.","Perhaps the wisest approach is to document recipes faithfully while allowing cooks the freedom to improvise.","After all, a tradition that cannot breathe is merely a museum piece."],
-"vocabulary":[
-{"word":"passed down","ipa":"/pæst daʊn/","pos":"phrase","meaning_vi":"được truyền lại","example":"The recipe has been passed down in her family for five generations."},
-{"word":"intangible heritage","ipa":"/ɪnˈtændʒəbəl ˈhɛrɪtɪdʒ/","pos":"noun","meaning_vi":"di sản phi vật thể","example":"Folk songs are a precious form of intangible heritage."},
-{"word":"double-edged sword","ipa":"/ˌdʌbəl ɛdʒd ˈsɔrd/","pos":"idiom","meaning_vi":"con dao hai lưỡi","example":"Fame can be a double-edged sword for young chefs."},
-{"word":"authenticity","ipa":"/ˌɔθɛnˈtɪsəti/","pos":"noun","meaning_vi":"tính chân thực","example":"Diners often travel far in search of authenticity."},
-{"word":"diluted","ipa":"/daɪˈlutɪd/","pos":"verb","meaning_vi":"bị pha loãng, làm yếu đi","example":"The original message was diluted by endless compromises."},
-{"word":"ingenuity","ipa":"/ˌɪndʒəˈnuəti/","pos":"noun","meaning_vi":"sự khéo léo, sáng tạo","example":"The village cooks showed great ingenuity during the food shortage."},
-{"word":"improvise","ipa":"/ˈɪmprəˌvaɪz/","pos":"verb","meaning_vi":"ứng biến","example":"When the shop ran out of basil, she had to improvise with mint."}],
-"questions":[
-{"question":"What does the opening sentence suggest about phở?","options":["It is overrated abroad","It carries deep cultural meaning","It is too simple to describe","It was invented recently"],"answer_index":1,"explanation_vi":"Câu mở đầu ngụ ý phở mang nhiều ý nghĩa văn hóa hơn một món ăn."},
-{"question":"Why can culinary knowledge disappear so easily?","options":["Cooks refuse to share recipes","Ingredients are becoming rare","It is often unwritten and learned by instinct","Governments forbid traditional cooking"],"answer_index":2,"explanation_vi":"Kiến thức nấu ăn thường không được ghi lại mà truyền qua trực giác."},
-{"question":"Why is recognition called a double-edged sword?","options":["It makes recipes more expensive","It reduces the number of tourists","It encourages cooks to leave home","It can turn traditions into spectacle"],"answer_index":3,"explanation_vi":"Sự công nhận vừa bảo vệ vừa có thể biến nghi lễ thành màn trình diễn."},
-{"question":"What does the writer imply with the bánh mì example?","options":["Cuisine has long evolved through outside influences","Colonial food is inferior","Purists are always right","Sandwiches cannot be traditional"],"answer_index":0,"explanation_vi":"Bánh mì cho thấy ẩm thực vốn luôn tiến hóa nhờ vay mượn."}]},
-
-{"slug":"c1-lifelong-learning","category":"study","topic":"Learning for life","level":"C1","title":"Beginners Forever",
-"summary_vi":"Luyện đọc bài suy ngẫm về việc học suốt đời và cách duy trì sự tò mò khi trưởng thành.",
-"sentences":["For much of the twentieth century, education was imagined as a front-loaded affair: study first, work later.","That model is fast becoming obsolete.","Technologies shift so rapidly that skills acquired at twenty can look dated by thirty-five.","Lifelong learning, once a fashionable slogan, has therefore become a practical necessity.","Yet learning as an adult is not simply schooling repeated; it demands different habits.","Adults juggle jobs, families and fatigue, so motivation must come from relevance rather than obligation.","Many find that small, consistent effort outperforms occasional bursts of ambitious cramming.","Curiosity, moreover, is a muscle that strengthens with use and atrophies with neglect.","In Vietnam, evening classes, online courses and community libraries are widening access to people who missed formal opportunities.","Still, accessibility alone does not guarantee progress without the willingness to be a beginner again.","That humility, I would argue, is the hardest part and the most rewarding.","Those who embrace it tend to adapt more gracefully when the world inevitably changes around them."],
-"vocabulary":[
-{"word":"front-loaded","ipa":"/ˌfrʌnt ˈloʊdɪd/","pos":"adjective","meaning_vi":"dồn hết vào giai đoạn đầu","example":"The course is front-loaded, with most of the hard material in the first month."},
-{"word":"obsolete","ipa":"/ˌɑbsəˈlit/","pos":"adjective","meaning_vi":"lỗi thời","example":"Typewriters became obsolete once personal computers arrived."},
-{"word":"practical necessity","ipa":"/ˈpræktɪkəl nəˈsɛsəti/","pos":"noun","meaning_vi":"nhu cầu thiết thực","example":"For commuters in a big city, a motorbike is a practical necessity."},
-{"word":"outperforms","ipa":"/ˌaʊtpərˈfɔrmz/","pos":"verb","meaning_vi":"làm tốt hơn, vượt trội hơn","example":"Steady practice usually outperforms last-minute revision."},
-{"word":"cramming","ipa":"/ˈkræmɪŋ/","pos":"noun","meaning_vi":"học nhồi nhét","example":"Cramming the night before an exam rarely leads to lasting knowledge."},
-{"word":"atrophies","ipa":"/ˈætrəfiz/","pos":"verb","meaning_vi":"teo đi, suy yếu","example":"A skill that is never practised slowly atrophies."},
-{"word":"humility","ipa":"/hjuˈmɪləti/","pos":"noun","meaning_vi":"sự khiêm tốn","example":"Real expertise often comes with a surprising amount of humility."}],
-"questions":[
-{"question":"What does the writer say about the traditional model of education?","options":["It is more effective than ever","It no longer suits a fast-changing world","It was never widely adopted","It should be extended to adults only"],"answer_index":1,"explanation_vi":"Mô hình học trước, làm sau đang trở nên lỗi thời."},
-{"question":"According to the passage, what should motivate adult learners?","options":["Pressure from employers","Competition with friends","Relevance to their own lives","Formal qualifications"],"answer_index":2,"explanation_vi":"Người lớn cần động lực đến từ sự liên quan, không phải nghĩa vụ."},
-{"question":"What does the metaphor of curiosity as a muscle suggest?","options":["Curiosity is a natural talent","Curiosity declines with age","Curiosity needs expensive training","It grows through use and fades if neglected"],"answer_index":3,"explanation_vi":"Tò mò như cơ bắp: dùng thì mạnh lên, bỏ bê thì yếu đi."},
-{"question":"What does the writer see as the hardest part of learning?","options":["Being willing to start as a beginner again","Finding enough time","Paying for courses","Travelling to classes"],"answer_index":0,"explanation_vi":"Tác giả cho rằng sự khiêm tốn làm người mới lại là phần khó nhất."}]}
+  {
+    "slug": "c1-salary-negotiation",
+    "category": "work",
+    "topic": "Negotiating a salary",
+    "level": "C1",
+    "title": "Know Your Worth",
+    "summary_vi": "Luyện cách trình bày và thương lượng mức lương một cách tự tin, tinh tế bằng tiếng Anh.",
+    "sentences": [
+      "Most people dread the moment when an employer asks, \"So, what are you looking for?\"",
+      "Yet it is precisely at that point that your leverage is greatest, provided you have done your homework.",
+      "Never walk into a negotiation without a clear sense of the going rate for your role and city.",
+      "Should the first figure they offer fall short, resist the urge to accept it out of sheer relief.",
+      "Anchoring is powerful: whoever names a number first tends to shape the entire conversation that follows.",
+      "Rather than demanding more, frame your request around the value you will bring to the team.",
+      "It is not the salary alone that matters, but the whole package, including bonuses, flexibility and training budgets.",
+      "If the company genuinely cannot stretch its budget, you can still negotiate a formal review in six months.",
+      "In Hanoi and Singapore alike, hiring managers expect some back-and-forth, and a polite counteroffer rarely offends anyone.",
+      "What truly undermines candidates is not asking too much, but apologising for asking at all.",
+      "Stay composed, let silence work in your favour, and be prepared to walk away if the terms are unreasonable.",
+      "Remember that a well-handled negotiation signals precisely the confidence employers hope to see in their future colleagues."
+    ],
+    "sentences_vi": [
+      "Hầu hết mọi người đều ngại khoảnh khắc nhà tuyển dụng hỏi: \"Vậy anh/chị đang mong muốn điều gì?\"",
+      "Thế nhưng chính vào lúc đó, lợi thế của bạn lại lớn nhất, miễn là bạn đã chuẩn bị kỹ.",
+      "Đừng bao giờ bước vào một cuộc thương lượng khi chưa nắm rõ mức lương phổ biến cho vị trí của bạn tại thành phố đó.",
+      "Nếu mức đầu tiên họ đưa ra còn thấp, đừng vì quá nhẹ nhõm mà vội nhận ngay.",
+      "Hiệu ứng neo giá rất mạnh: ai nêu con số trước thường định hình cả cuộc trao đổi sau đó.",
+      "Thay vì đòi hỏi nhiều hơn, hãy trình bày đề nghị của bạn xoay quanh giá trị bạn sẽ mang lại cho đội nhóm.",
+      "Điều quan trọng không chỉ là mức lương, mà là cả gói đãi ngộ, bao gồm thưởng, sự linh hoạt và ngân sách đào tạo.",
+      "Nếu công ty thực sự không thể tăng ngân sách, bạn vẫn có thể thương lượng một buổi đánh giá chính thức sau sáu tháng.",
+      "Ở Hanoi cũng như Singapore, các nhà quản lý tuyển dụng đều mong có qua có lại đôi chút, và một lời đề nghị lại lịch sự hiếm khi làm ai phật ý.",
+      "Điều thực sự làm ứng viên mất điểm không phải là đòi quá nhiều, mà là xin lỗi vì đã dám đòi.",
+      "Hãy giữ bình tĩnh, để sự im lặng làm việc có lợi cho mình, và sẵn sàng rút lui nếu các điều khoản không hợp lý.",
+      "Hãy nhớ rằng một cuộc thương lượng khéo léo chính là dấu hiệu của sự tự tin mà nhà tuyển dụng mong thấy ở các đồng nghiệp tương lai."
+    ],
+    "vocabulary": [
+      {
+        "word": "leverage",
+        "ipa": "/ˈlɛvərɪdʒ/",
+        "pos": "noun",
+        "meaning_vi": "lợi thế để thương lượng",
+        "example": "Having a competing job offer gave her real leverage during the talks.",
+        "example_vi": "Có trong tay một lời mời làm việc khác đã mang lại cho cô ấy lợi thế thực sự trong cuộc đàm phán."
+      },
+      {
+        "word": "going rate",
+        "ipa": "/ˈɡoʊɪŋ reɪt/",
+        "pos": "noun",
+        "meaning_vi": "mức giá/lương phổ biến hiện hành",
+        "example": "Freelance designers in this city charge the going rate of about fifty dollars an hour.",
+        "example_vi": "Các nhà thiết kế tự do ở thành phố này tính mức giá phổ biến khoảng năm mươi đô la một giờ."
+      },
+      {
+        "word": "fall short",
+        "ipa": "/fɔl ʃɔrt/",
+        "pos": "phrase",
+        "meaning_vi": "không đạt kỳ vọng",
+        "example": "If the proposal should fall short of our expectations, we will ask for revisions.",
+        "example_vi": "Nếu đề xuất không đạt kỳ vọng của chúng tôi, chúng tôi sẽ yêu cầu chỉnh sửa."
+      },
+      {
+        "word": "anchoring",
+        "ipa": "/ˈæŋkərɪŋ/",
+        "pos": "noun",
+        "meaning_vi": "hiệu ứng neo giá",
+        "example": "Anchoring explains why the first price on a menu colours how expensive the rest seems.",
+        "example_vi": "Hiệu ứng neo giá giải thích vì sao giá đầu tiên trên thực đơn lại chi phối cảm giác về độ đắt của những món còn lại."
+      },
+      {
+        "word": "counteroffer",
+        "ipa": "/ˈkaʊntərˌɔfər/",
+        "pos": "noun",
+        "meaning_vi": "đề nghị phản hồi lại",
+        "example": "After a short pause, the buyer made a counteroffer that was ten percent lower.",
+        "example_vi": "Sau một lúc im lặng, người mua đưa ra mức giá phản hồi thấp hơn mười phần trăm."
+      },
+      {
+        "word": "back-and-forth",
+        "ipa": "/ˌbæk ən ˈfɔrθ/",
+        "pos": "noun",
+        "meaning_vi": "sự trao đổi qua lại",
+        "example": "After weeks of back-and-forth, the two firms finally signed the contract.",
+        "example_vi": "Sau nhiều tuần qua lại thương lượng, hai công ty cuối cùng cũng ký hợp đồng."
+      },
+      {
+        "word": "walk away",
+        "ipa": "/wɔk əˈweɪ/",
+        "pos": "phrase",
+        "meaning_vi": "rút lui, từ chối thỏa thuận",
+        "example": "A good negotiator knows when to walk away from a deal that does not add up.",
+        "example_vi": "Một nhà đàm phán giỏi biết lúc nào nên rút khỏi một thỏa thuận không có lợi."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What is the main purpose of the passage?",
+        "options": [
+          "To warn candidates against changing jobs",
+          "To offer practical advice on negotiating pay",
+          "To compare salaries in different countries",
+          "To criticise how employers hire"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Bài viết đưa ra lời khuyên thực tế về cách thương lượng lương."
+      },
+      {
+        "question": "According to the passage, why does anchoring matter?",
+        "options": [
+          "It makes employers feel more generous",
+          "It lets candidates avoid awkward silences",
+          "The first number named tends to shape the discussion",
+          "It guarantees a higher final salary"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Người nêu con số đầu tiên thường định hướng cả cuộc trao đổi."
+      },
+      {
+        "question": "What does the writer say damages a candidate's position most?",
+        "options": [
+          "Asking for too much money",
+          "Arriving without a counteroffer",
+          "Staying silent during talks",
+          "Apologising for making a request"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Tác giả cho rằng việc xin lỗi vì đã đề nghị mới là điều gây bất lợi nhất."
+      },
+      {
+        "question": "What option is suggested if the budget cannot be increased?",
+        "options": [
+          "Negotiating a review after six months",
+          "Accepting the first offer gratefully",
+          "Asking for a longer probation period",
+          "Moving to a different city"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Nếu ngân sách hạn chế, có thể thương lượng một cuộc xem xét lại sau sáu tháng."
+      }
+    ]
+  },
+  {
+    "slug": "c1-ai-ethics",
+    "category": "tech",
+    "topic": "The ethics of artificial intelligence",
+    "level": "C1",
+    "title": "Who Answers to the Algorithm?",
+    "summary_vi": "Luyện đọc và thảo luận về các vấn đề đạo đức của trí tuệ nhân tạo với từ vựng học thuật.",
+    "sentences": [
+      "Artificial intelligence is no longer a distant promise; it already decides who gets a loan, an interview or a medical scan.",
+      "That reach raises an uncomfortable question: who is accountable when an algorithm gets it wrong?",
+      "Bias is the most cited concern, and with good reason, since models learn from data that reflects historical prejudice.",
+      "A hiring tool trained on past decisions may quietly penalise women, simply because fewer of them were hired before.",
+      "Transparency offers a partial remedy, yet many systems remain black boxes even to the engineers who built them.",
+      "Were companies required to explain automated decisions, public trust would arguably be easier to earn.",
+      "Privacy poses a separate dilemma, because the data that makes these tools useful is often collected without meaningful consent.",
+      "Others worry less about present harms than about the long-term erosion of human judgement and skills.",
+      "Regulation is therefore taking shape, though lawmakers struggle to keep pace with a technology that evolves almost monthly.",
+      "In Vietnam, as elsewhere, the debate is shifting from whether to adopt AI to how to govern it responsibly.",
+      "Ultimately, it is not the machines that hold values, but the people who design, deploy and oversee them."
+    ],
+    "sentences_vi": [
+      "Trí tuệ nhân tạo không còn là một lời hứa xa vời; nó đã quyết định ai được vay tiền, được phỏng vấn hay được chụp chiếu y tế.",
+      "Tầm ảnh hưởng ấy đặt ra một câu hỏi khó chịu: ai sẽ chịu trách nhiệm khi thuật toán sai?",
+      "Thiên kiến là mối lo được nhắc đến nhiều nhất, và điều đó có lý do, vì các mô hình học từ dữ liệu phản ánh định kiến trong quá khứ.",
+      "Một công cụ tuyển dụng được huấn luyện trên các quyết định trước đây có thể âm thầm gây bất lợi cho phụ nữ, đơn giản vì trước kia họ được tuyển ít hơn.",
+      "Tính minh bạch là một phần lời giải, nhưng nhiều hệ thống vẫn là những chiếc hộp đen, ngay cả với các kỹ sư đã xây dựng nên chúng.",
+      "Nếu các công ty buộc phải giải thích những quyết định tự động, có lẽ lòng tin của công chúng sẽ dễ có được hơn.",
+      "Quyền riêng tư là một thế tiến thoái lưỡng nan khác, vì dữ liệu làm nên giá trị của các công cụ này thường được thu thập mà không có sự đồng ý đúng nghĩa.",
+      "Một số người lo ngại không phải về những tác hại hiện tại mà về việc khả năng phán đoán và kỹ năng của con người sẽ dần bị mai một về lâu dài.",
+      "Vì vậy, các quy định đang dần hình thành, dù các nhà làm luật khó theo kịp một công nghệ gần như tháng nào cũng đổi thay.",
+      "Ở Vietnam cũng như nhiều nơi khác, cuộc tranh luận đang chuyển từ việc có nên áp dụng AI hay không sang việc quản lý nó một cách có trách nhiệm như thế nào.",
+      "Suy cho cùng, không phải máy móc mang giá trị, mà là những con người thiết kế, triển khai và giám sát chúng."
+    ],
+    "vocabulary": [
+      {
+        "word": "accountable",
+        "ipa": "/əˈkaʊntəbəl/",
+        "pos": "adjective",
+        "meaning_vi": "phải chịu trách nhiệm",
+        "example": "Managers must be held accountable for the decisions their teams make.",
+        "example_vi": "Các nhà quản lý phải chịu trách nhiệm về những quyết định mà nhóm của mình đưa ra."
+      },
+      {
+        "word": "bias",
+        "ipa": "/ˈbaɪəs/",
+        "pos": "noun",
+        "meaning_vi": "thiên kiến, sự thiên vị",
+        "example": "The study found a clear bias against older applicants.",
+        "example_vi": "Nghiên cứu cho thấy có sự thiên vị rõ rệt đối với các ứng viên lớn tuổi."
+      },
+      {
+        "word": "black boxes",
+        "ipa": "/blæk ˈbɑksəz/",
+        "pos": "noun",
+        "meaning_vi": "hệ thống \"hộp đen\" khó giải thích",
+        "example": "Deep neural networks are often described as black boxes because their reasoning is hidden.",
+        "example_vi": "Mạng nơ-ron sâu thường được gọi là hộp đen vì cách chúng suy luận bị che giấu."
+      },
+      {
+        "word": "meaningful consent",
+        "ipa": "/ˈminɪŋfəl kənˈsɛnt/",
+        "pos": "noun",
+        "meaning_vi": "sự đồng ý có hiểu biết thực sự",
+        "example": "Clicking \"accept\" on a thirty-page policy hardly amounts to meaningful consent.",
+        "example_vi": "Bấm \"đồng ý\" với một bản chính sách dài ba mươi trang khó có thể coi là sự đồng thuận thực sự."
+      },
+      {
+        "word": "erosion",
+        "ipa": "/ɪˈroʊʒən/",
+        "pos": "noun",
+        "meaning_vi": "sự xói mòn",
+        "example": "Critics fear the erosion of trust in the news media.",
+        "example_vi": "Các nhà phê bình lo ngại lòng tin vào truyền thông tin tức đang dần xói mòn."
+      },
+      {
+        "word": "keep pace with",
+        "ipa": "/kip peɪs wɪð/",
+        "pos": "phrase",
+        "meaning_vi": "theo kịp",
+        "example": "Schools are struggling to keep pace with the speed of technological change.",
+        "example_vi": "Các trường học đang chật vật để theo kịp tốc độ thay đổi của công nghệ."
+      },
+      {
+        "word": "deploy",
+        "ipa": "/dɪˈplɔɪ/",
+        "pos": "verb",
+        "meaning_vi": "triển khai, đưa vào sử dụng",
+        "example": "The bank plans to deploy the new fraud-detection system next spring.",
+        "example_vi": "Ngân hàng dự định triển khai hệ thống phát hiện gian lận mới vào mùa xuân tới."
+      }
+    ],
+    "questions": [
+      {
+        "question": "Why does the writer say bias is a serious concern in AI?",
+        "options": [
+          "Engineers deliberately introduce it",
+          "Models learn from data that carries past prejudice",
+          "Users rarely read the results",
+          "It only affects financial services"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Mô hình học từ dữ liệu phản ánh định kiến trong quá khứ."
+      },
+      {
+        "question": "What does the hiring-tool example illustrate?",
+        "options": [
+          "A system copying historical unfairness",
+          "A tool that is too expensive to run",
+          "Women refusing to apply for jobs",
+          "Faster recruitment for large firms"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Ví dụ cho thấy hệ thống lặp lại sự bất công vốn có trong dữ liệu cũ."
+      },
+      {
+        "question": "What is the writer's attitude towards regulation?",
+        "options": [
+          "Dismissive of its value",
+          "Certain that it will fail",
+          "Cautiously accepting but aware of its limits",
+          "Strongly opposed to new laws"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Tác giả ghi nhận quy định đang hình thành nhưng thừa nhận khó theo kịp công nghệ."
+      },
+      {
+        "question": "What is the main message of the final sentence?",
+        "options": [
+          "Machines will eventually develop values",
+          "Governments should ban AI",
+          "Companies are not responsible for software",
+          "Human beings remain responsible for AI"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Câu cuối nhấn mạnh con người mới là bên chịu trách nhiệm về AI."
+      }
+    ]
+  },
+  {
+    "slug": "c1-green-cities",
+    "category": "nature",
+    "topic": "Designing greener cities",
+    "level": "C1",
+    "title": "Concrete Meets Canopy",
+    "summary_vi": "Luyện đọc bài phóng sự về thiết kế đô thị xanh với các cụm từ nâng cao về môi trường.",
+    "sentences": [
+      "Walk through Singapore's Gardens by the Bay and it becomes obvious that concrete and nature need not be enemies.",
+      "Cities occupy a small fraction of the planet's land, yet they account for most of its energy consumption.",
+      "That imbalance is why planners are now rethinking streets, rooftops and even the humble pavement.",
+      "Green roofs absorb rainwater, insulate buildings and, perhaps most importantly, cool the air around them.",
+      "Cities like Copenhagen have gone further, redesigning entire districts so that heavy downpours drain into parks rather than basements.",
+      "Ho Chi Minh City, with its chronic flooding and punishing summers, has much to gain from such measures.",
+      "It is not enough, however, to plant trees and call the job done.",
+      "Without maintenance and thoughtful species selection, new greenery can wither, wasting both money and public goodwill.",
+      "Transport matters just as much; the more people cycle, walk or ride trains, the less smog settles over the skyline.",
+      "Critics warn that greening can trigger gentrification, pushing out the very residents it was meant to serve.",
+      "Addressing that risk requires affordable housing policies to be woven into the design from the outset.",
+      "A truly sustainable city, in other words, is one that is liveable for everyone, not merely photogenic."
+    ],
+    "sentences_vi": [
+      "Hãy dạo bước qua Gardens by the Bay của Singapore, bạn sẽ thấy rõ bê tông và thiên nhiên không nhất thiết là kẻ thù của nhau.",
+      "Các thành phố chỉ chiếm một phần nhỏ diện tích đất của hành tinh, nhưng lại tiêu thụ phần lớn năng lượng của nó.",
+      "Sự mất cân đối đó là lý do các nhà quy hoạch đang suy nghĩ lại về đường phố, mái nhà và cả những vỉa hè bình thường.",
+      "Mái nhà xanh hấp thụ nước mưa, cách nhiệt cho công trình và, có lẽ quan trọng nhất, làm mát không khí xung quanh.",
+      "Những thành phố như Copenhagen còn đi xa hơn, thiết kế lại cả khu vực để nước từ những trận mưa lớn chảy vào công viên thay vì tràn xuống tầng hầm.",
+      "Ho Chi Minh City, với tình trạng ngập lụt triền miên và những mùa hè oi ả, có rất nhiều điều để hưởng lợi từ các biện pháp như vậy.",
+      "Tuy nhiên, chỉ trồng cây rồi coi như xong việc thì chưa đủ.",
+      "Nếu thiếu việc chăm sóc và chọn loài cây phù hợp, mảng xanh mới có thể héo úa, lãng phí cả tiền bạc lẫn thiện cảm của người dân.",
+      "Giao thông cũng quan trọng không kém: càng nhiều người đi xe đạp, đi bộ hay đi tàu, khói bụi phủ trên bầu trời thành phố càng ít.",
+      "Các nhà phê bình cảnh báo rằng việc xanh hóa có thể kéo theo quá trình tư sản hóa đô thị, đẩy chính những cư dân mà nó phục vụ ra khỏi khu vực.",
+      "Để giải quyết rủi ro này, các chính sách nhà ở giá rẻ cần được lồng ghép vào thiết kế ngay từ đầu.",
+      "Nói cách khác, một thành phố bền vững thực sự là nơi đáng sống cho mọi người, chứ không chỉ đẹp để chụp ảnh."
+    ],
+    "vocabulary": [
+      {
+        "word": "account for",
+        "ipa": "/əˈkaʊnt fɔr/",
+        "pos": "phrase",
+        "meaning_vi": "chiếm (một tỷ lệ)",
+        "example": "Cars account for nearly half of the city's air pollution.",
+        "example_vi": "Xe hơi gây ra gần một nửa tình trạng ô nhiễm không khí của thành phố."
+      },
+      {
+        "word": "insulate",
+        "ipa": "/ˈɪnsəˌleɪt/",
+        "pos": "verb",
+        "meaning_vi": "cách nhiệt",
+        "example": "Thick walls insulate the old house against the summer heat.",
+        "example_vi": "Những bức tường dày giúp ngôi nhà cổ cách nhiệt khỏi cái nóng mùa hè."
+      },
+      {
+        "word": "downpours",
+        "ipa": "/ˈdaʊnˌpɔrz/",
+        "pos": "noun",
+        "meaning_vi": "những trận mưa như trút",
+        "example": "Sudden downpours turned the streets into rivers within minutes.",
+        "example_vi": "Những trận mưa lớn bất chợt biến các con phố thành sông chỉ trong vài phút."
+      },
+      {
+        "word": "chronic",
+        "ipa": "/ˈkrɑnɪk/",
+        "pos": "adjective",
+        "meaning_vi": "kinh niên, kéo dài",
+        "example": "Chronic traffic congestion costs the economy millions every year.",
+        "example_vi": "Tình trạng kẹt xe triền miên khiến nền kinh tế thiệt hại hàng triệu mỗi năm."
+      },
+      {
+        "word": "wither",
+        "ipa": "/ˈwɪðər/",
+        "pos": "verb",
+        "meaning_vi": "héo úa, tàn lụi",
+        "example": "Without regular watering, the young saplings will wither.",
+        "example_vi": "Nếu không được tưới nước thường xuyên, những cây non sẽ héo úa."
+      },
+      {
+        "word": "gentrification",
+        "ipa": "/ˌdʒɛntrəfɪˈkeɪʃən/",
+        "pos": "noun",
+        "meaning_vi": "hiện tượng tầng lớp giàu đẩy giá khiến dân cũ phải rời đi",
+        "example": "Rapid gentrification has made the old quarter unaffordable for many families.",
+        "example_vi": "Quá trình tư sản hóa đô thị nhanh chóng đã khiến khu phố cổ trở nên quá đắt đỏ với nhiều gia đình."
+      },
+      {
+        "word": "from the outset",
+        "ipa": "/frəm ði ˈaʊtˌsɛt/",
+        "pos": "phrase",
+        "meaning_vi": "ngay từ đầu",
+        "example": "The architect made it clear from the outset that the budget was tight.",
+        "example_vi": "Ngay từ đầu, kiến trúc sư đã nói rõ rằng ngân sách rất eo hẹp."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What contrast does the second sentence draw?",
+        "options": [
+          "City size versus population",
+          "Small land area versus large energy use",
+          "Old buildings versus new ones",
+          "Rich cities versus poor ones"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Thành phố chiếm ít đất nhưng tiêu thụ phần lớn năng lượng."
+      },
+      {
+        "question": "Why does the writer mention Ho Chi Minh City?",
+        "options": [
+          "To criticise its transport system",
+          "To praise its parks",
+          "To show it could benefit from green measures",
+          "To compare it with Copenhagen's budget"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Thành phố này chịu ngập và nóng nên được lợi từ các giải pháp xanh."
+      },
+      {
+        "question": "What risk of greening do critics identify?",
+        "options": [
+          "Higher smog levels",
+          "Fewer cyclists",
+          "Wasted rainwater",
+          "Pushing out existing residents"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Các nhà phê bình lo việc làm xanh gây gentrification, đẩy dân cũ đi."
+      },
+      {
+        "question": "What is implied by the last sentence?",
+        "options": [
+          "Sustainability must include social fairness",
+          "Beauty matters more than function",
+          "Only wealthy cities can go green",
+          "Photogenic cities attract more tourists"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Thành phố bền vững phải dễ sống cho mọi người, không chỉ đẹp."
+      }
+    ]
+  },
+  {
+    "slug": "c1-cognitive-bias",
+    "category": "people",
+    "topic": "Cognitive biases in everyday decisions",
+    "level": "C1",
+    "title": "The Mind's Shortcuts",
+    "summary_vi": "Luyện đọc bài suy ngẫm về các thiên kiến nhận thức ảnh hưởng đến quyết định hằng ngày.",
+    "sentences": [
+      "We like to imagine that our decisions flow from careful reasoning, but the mind prefers shortcuts.",
+      "Psychologists call these shortcuts heuristics, and while they save time, they also leave us prone to systematic error.",
+      "Take confirmation bias: once we hold a belief, we instinctively seek out evidence that supports it.",
+      "Rarely do we notice how selectively we read the news, or whom we choose to listen to.",
+      "Then there is the sunk cost fallacy, which keeps people in failing projects simply because they have already invested so much.",
+      "I once sat through an entire dreadful film for precisely that reason, having paid for the ticket.",
+      "Anchoring is subtler still, since an arbitrary first number can distort every estimate that follows.",
+      "Knowing about these traps does not make us immune; if anything, it can breed overconfidence.",
+      "What helps is slowing down, particularly when the stakes are high and emotions are running hot.",
+      "Asking a trusted friend to challenge your reasoning, or writing down your assumptions, can expose blind spots.",
+      "We will never be perfectly rational, but we can learn to catch ourselves in the act."
+    ],
+    "sentences_vi": [
+      "Chúng ta thích nghĩ rằng quyết định của mình xuất phát từ suy luận cẩn trọng, nhưng bộ não lại thích đi đường tắt.",
+      "Các nhà tâm lý học gọi những lối tắt này là heuristics; chúng tiết kiệm thời gian nhưng cũng khiến ta dễ mắc lỗi có tính hệ thống.",
+      "Hãy lấy thiên kiến xác nhận làm ví dụ: một khi đã tin điều gì, ta sẽ theo bản năng tìm kiếm bằng chứng ủng hộ nó.",
+      "Hiếm khi ta nhận ra mình chọn lọc đến mức nào khi đọc tin tức, hay khi chọn người để lắng nghe.",
+      "Rồi còn có ngụy biện chi phí chìm, thứ khiến người ta ở lại những dự án đang thất bại chỉ vì đã bỏ ra quá nhiều.",
+      "Có lần tôi ngồi xem hết một bộ phim dở tệ cũng vì chính lý do đó, vì đã mua vé rồi.",
+      "Hiệu ứng neo giá còn tinh vi hơn, vì một con số đầu tiên tùy tiện cũng có thể làm sai lệch mọi ước tính sau đó.",
+      "Biết về những cái bẫy này không giúp ta miễn nhiễm; thậm chí, nó còn có thể sinh ra sự tự tin thái quá.",
+      "Điều giúp ích là chậm lại, nhất là khi rủi ro cao và cảm xúc đang bốc lên.",
+      "Nhờ một người bạn đáng tin thử phản biện lập luận của bạn, hoặc viết ra các giả định của mình, có thể giúp lộ ra những điểm mù.",
+      "Chúng ta sẽ không bao giờ hoàn toàn lý trí, nhưng có thể học cách bắt quả tang chính mình."
+    ],
+    "vocabulary": [
+      {
+        "word": "prone to",
+        "ipa": "/proʊn tu/",
+        "pos": "adjective",
+        "meaning_vi": "dễ bị, có xu hướng",
+        "example": "Tired drivers are more prone to making serious mistakes.",
+        "example_vi": "Những tài xế mệt mỏi dễ mắc sai lầm nghiêm trọng hơn."
+      },
+      {
+        "word": "confirmation bias",
+        "ipa": "/ˌkɑnfərˈmeɪʃən ˈbaɪəs/",
+        "pos": "noun",
+        "meaning_vi": "thiên kiến xác nhận",
+        "example": "Confirmation bias leads us to share only the articles that agree with us.",
+        "example_vi": "Thiên kiến xác nhận khiến chúng ta chỉ chia sẻ những bài báo đồng tình với mình."
+      },
+      {
+        "word": "sunk cost fallacy",
+        "ipa": "/sʌŋk kɔst ˈfæləsi/",
+        "pos": "noun",
+        "meaning_vi": "ngụy biện chi phí chìm",
+        "example": "Staying in a bad investment because of past losses is the sunk cost fallacy in action.",
+        "example_vi": "Cố giữ một khoản đầu tư tồi vì những khoản lỗ trước đó chính là ngụy biện chi phí chìm."
+      },
+      {
+        "word": "arbitrary",
+        "ipa": "/ˈɑrbəˌtrɛri/",
+        "pos": "adjective",
+        "meaning_vi": "tùy tiện, ngẫu nhiên",
+        "example": "The deadline seemed arbitrary, since nobody could explain how it was chosen.",
+        "example_vi": "Thời hạn đó có vẻ tùy tiện, vì không ai giải thích được nó được chọn như thế nào."
+      },
+      {
+        "word": "breed",
+        "ipa": "/brid/",
+        "pos": "verb",
+        "meaning_vi": "gây ra, nuôi dưỡng",
+        "example": "Constant praise can breed complacency in a young team.",
+        "example_vi": "Lời khen liên tục có thể nuôi dưỡng sự tự mãn trong một đội ngũ trẻ."
+      },
+      {
+        "word": "the stakes are high",
+        "ipa": "/ðə steɪks ɑr haɪ/",
+        "pos": "idiom",
+        "meaning_vi": "rủi ro/được mất rất lớn",
+        "example": "Before a final exam, the stakes are high and even small errors feel enormous.",
+        "example_vi": "Trước kỳ thi cuối kỳ, áp lực rất lớn và ngay cả những lỗi nhỏ cũng thấy nghiêm trọng."
+      },
+      {
+        "word": "blind spots",
+        "ipa": "/blaɪnd spɑts/",
+        "pos": "noun",
+        "meaning_vi": "điểm mù, thiếu sót không nhận ra",
+        "example": "Honest feedback helps leaders identify their blind spots.",
+        "example_vi": "Những phản hồi thẳng thắn giúp người lãnh đạo nhận ra điểm mù của mình."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What does the writer suggest about heuristics?",
+        "options": [
+          "They are always harmful",
+          "They save time but can mislead us",
+          "They only affect experts",
+          "They have been scientifically disproved"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Heuristics tiết kiệm thời gian nhưng khiến ta dễ mắc lỗi có hệ thống."
+      },
+      {
+        "question": "Why does the writer mention watching a dreadful film?",
+        "options": [
+          "To recommend a particular movie",
+          "To criticise cinema ticket prices",
+          "To illustrate a bias with a personal example",
+          "To show how little they value money"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Đó là ví dụ cá nhân minh họa cho ngụy biện chi phí chìm."
+      },
+      {
+        "question": "What ironic point is made about knowing these biases?",
+        "options": [
+          "Awareness can make us overconfident",
+          "Awareness eliminates all errors",
+          "Biases only affect the uninformed",
+          "Awareness makes decisions slower"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Biết về thiên kiến không giúp miễn nhiễm, thậm chí có thể gây tự tin quá mức."
+      },
+      {
+        "question": "What is the tone of the final sentence?",
+        "options": [
+          "Angry and accusing",
+          "Doubtful and confused",
+          "Mocking and sarcastic",
+          "Realistic and gently hopeful"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Câu cuối thừa nhận sự không hoàn hảo nhưng vẫn lạc quan nhẹ nhàng."
+      }
+    ]
+  },
+  {
+    "slug": "c1-public-speaking",
+    "category": "people",
+    "topic": "Speaking in public with confidence",
+    "level": "C1",
+    "title": "Butterflies in Formation",
+    "summary_vi": "Luyện nghe và nói theo một bài phát biểu về cách tự tin khi nói trước đám đông.",
+    "sentences": [
+      "Good evening, everyone, and thank you for coming; I promise to keep my nerves in check.",
+      "Let me begin with a confession: for years, I would rather have done almost anything than speak in public.",
+      "My palms would sweat, my voice would tremble, and my carefully prepared words would vanish.",
+      "What changed was not that the fear disappeared, but that I learned to reinterpret it.",
+      "Those butterflies are simply your body gearing up for a challenge, and a little adrenaline sharpens focus.",
+      "Preparation matters, of course, yet over-rehearsing every word can make you sound stilted and robotic.",
+      "I now build my talks around three key ideas, which gives me something solid to fall back on.",
+      "Pausing is the most underrated skill; a well-placed silence lets your point sink in.",
+      "Equally important is eye contact, because speaking to individuals feels far less daunting than addressing a crowd.",
+      "Should you stumble, don't panic; audiences are remarkably forgiving when a speaker simply carries on.",
+      "Above all, remember that people are not there to judge you, but to hear what you have to say.",
+      "Thank you; now, I'd be glad to take your questions."
+    ],
+    "sentences_vi": [
+      "Chào mọi người, cảm ơn vì đã đến; tôi hứa sẽ giữ cho mình bình tĩnh.",
+      "Trước hết tôi xin thú nhận: suốt nhiều năm, tôi thà làm bất cứ việc gì còn hơn phải nói trước đám đông.",
+      "Lòng bàn tay tôi toát mồ hôi, giọng run lên, và những lời tôi đã chuẩn bị kỹ lưỡng bỗng biến mất.",
+      "Điều thay đổi không phải là nỗi sợ biến mất, mà là tôi học được cách nhìn nhận nó theo hướng khác.",
+      "Cảm giác bồn chồn đó chỉ là cơ thể bạn đang chuẩn bị cho một thử thách, và một chút adrenaline giúp bạn tập trung hơn.",
+      "Tất nhiên, chuẩn bị là quan trọng, nhưng luyện tập từng chữ quá mức có thể khiến bạn nói gượng gạo và máy móc.",
+      "Giờ tôi xây dựng bài nói quanh ba ý chính, nhờ vậy tôi có điểm tựa vững chắc để quay về.",
+      "Biết ngắt nghỉ là kỹ năng bị đánh giá thấp nhất; một khoảng lặng đúng lúc giúp ý của bạn thấm sâu.",
+      "Giao tiếp bằng mắt cũng quan trọng không kém, vì nói với từng người đỡ đáng sợ hơn nhiều so với nói trước cả đám đông.",
+      "Nếu bạn vấp, đừng hoảng; khán giả rất bao dung khi diễn giả cứ bình thản nói tiếp.",
+      "Trên hết, hãy nhớ rằng mọi người đến đây không phải để phán xét bạn, mà để nghe điều bạn muốn nói.",
+      "Cảm ơn mọi người; giờ tôi rất sẵn lòng trả lời các câu hỏi của quý vị."
+    ],
+    "vocabulary": [
+      {
+        "word": "in check",
+        "ipa": "/ɪn tʃɛk/",
+        "pos": "phrase",
+        "meaning_vi": "được kiểm soát",
+        "example": "She kept her anger in check throughout the heated meeting.",
+        "example_vi": "Cô ấy kiềm chế được cơn giận suốt cuộc họp căng thẳng."
+      },
+      {
+        "word": "gearing up for",
+        "ipa": "/ˈɡɪrɪŋ ʌp fɔr/",
+        "pos": "phrase",
+        "meaning_vi": "chuẩn bị cho",
+        "example": "The whole team is gearing up for next week's product launch.",
+        "example_vi": "Cả nhóm đang chuẩn bị cho đợt ra mắt sản phẩm vào tuần tới."
+      },
+      {
+        "word": "stilted",
+        "ipa": "/ˈstɪltɪd/",
+        "pos": "adjective",
+        "meaning_vi": "gượng gạo, thiếu tự nhiên",
+        "example": "His stilted greeting made the atmosphere even more awkward.",
+        "example_vi": "Lời chào gượng gạo của anh ấy khiến bầu không khí càng thêm ngượng ngập."
+      },
+      {
+        "word": "fall back on",
+        "ipa": "/fɔl bæk ɑn/",
+        "pos": "phrase",
+        "meaning_vi": "dựa vào khi cần",
+        "example": "Having savings gave her something to fall back on when the business struggled.",
+        "example_vi": "Có khoản tiết kiệm giúp cô ấy có chỗ dựa khi việc kinh doanh gặp khó khăn."
+      },
+      {
+        "word": "sink in",
+        "ipa": "/sɪŋk ɪn/",
+        "pos": "phrase",
+        "meaning_vi": "được thấm, hiểu dần",
+        "example": "It took a few days for the news of the promotion to sink in.",
+        "example_vi": "Phải mất vài ngày thì tin được thăng chức mới thấm vào đầu cô ấy."
+      },
+      {
+        "word": "daunting",
+        "ipa": "/ˈdɔntɪŋ/",
+        "pos": "adjective",
+        "meaning_vi": "khiến nản lòng, đáng sợ",
+        "example": "Starting a new career at forty can feel daunting.",
+        "example_vi": "Bắt đầu một sự nghiệp mới ở tuổi bốn mươi có thể khiến người ta thấy chùn bước."
+      },
+      {
+        "word": "underrated",
+        "ipa": "/ˌʌndərˈreɪtɪd/",
+        "pos": "adjective",
+        "meaning_vi": "bị đánh giá thấp",
+        "example": "Listening is an underrated skill in any leadership role.",
+        "example_vi": "Biết lắng nghe là một kỹ năng bị đánh giá thấp ở bất kỳ vai trò lãnh đạo nào."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What kind of text is this passage most likely to be?",
+        "options": [
+          "A written complaint",
+          "A spoken talk to an audience",
+          "A newspaper report",
+          "A set of instructions"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Lời chào, cảm ơn và mời đặt câu hỏi cho thấy đây là bài nói trước khán giả."
+      },
+      {
+        "question": "How did the speaker's attitude to fear change?",
+        "options": [
+          "She stopped feeling any fear",
+          "She avoided all speaking events",
+          "She learned to see it as useful energy",
+          "She relied entirely on notes"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Cô học cách nhìn nỗi sợ như năng lượng hữu ích chứ không xóa bỏ nó."
+      },
+      {
+        "question": "Why does the speaker warn against over-rehearsing?",
+        "options": [
+          "It wastes too much time",
+          "It makes the audience bored",
+          "It causes physical illness",
+          "It can make a talk sound unnatural"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Tập quá kỹ từng chữ khiến bài nói nghe gượng gạo, như người máy."
+      },
+      {
+        "question": "What does the speaker say about audiences?",
+        "options": [
+          "They are forgiving if you carry on after a mistake",
+          "They notice every error",
+          "They prefer very short talks",
+          "They judge speakers harshly"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Khán giả khá bao dung khi diễn giả vẫn tiếp tục sau khi vấp."
+      }
+    ]
+  },
+  {
+    "slug": "c1-attention-economy",
+    "category": "tech",
+    "topic": "The attention economy",
+    "level": "C1",
+    "title": "The Price of a Glance",
+    "summary_vi": "Luyện đọc bài luận về nền kinh tế chú ý và cách các nền tảng thu hút thời gian của chúng ta.",
+    "sentences": [
+      "If a service is free, the old saying goes, then you are the product.",
+      "Nowhere is that truer than in the attention economy, where your time and focus are the scarce currency.",
+      "Platforms compete fiercely to hold your gaze, and they have engineered features to do precisely that.",
+      "Endless scrolling, autoplay and notification badges are not accidents; they are carefully tested to keep you coming back.",
+      "The consequences are subtle but cumulative, as fragmented attention makes sustained, deep thinking harder to achieve.",
+      "Many Vietnamese teenagers now spend hours on short videos, often without recalling what they watched.",
+      "It would be unfair, though, to cast technology as the sole villain.",
+      "These tools connect families across oceans, democratise information and give small businesses a global stage.",
+      "The real issue is design that profits from compulsion rather than genuine value.",
+      "Some users are fighting back by switching off notifications, setting screen limits or reclaiming whole evenings offline.",
+      "Regulators, meanwhile, are asking whether manipulative design should face the same scrutiny as misleading advertising.",
+      "Until incentives change, the burden will keep falling on individuals to guard their own attention."
+    ],
+    "sentences_vi": [
+      "Có câu nói xưa rằng nếu một dịch vụ miễn phí thì chính bạn là sản phẩm.",
+      "Không đâu đúng hơn trong nền kinh tế chú ý, nơi thời gian và sự tập trung của bạn là thứ tiền tệ khan hiếm.",
+      "Các nền tảng cạnh tranh quyết liệt để giữ ánh nhìn của bạn, và họ đã thiết kế những tính năng để làm đúng việc đó.",
+      "Cuộn trang bất tận, tự động phát video và các biểu tượng thông báo không phải ngẫu nhiên; chúng được thử nghiệm kỹ lưỡng để khiến bạn quay lại mãi.",
+      "Hậu quả tuy âm thầm nhưng tích tụ dần, khi sự chú ý bị phân mảnh khiến việc suy nghĩ sâu và bền bỉ trở nên khó khăn hơn.",
+      "Nhiều thanh thiếu niên Vietnam giờ dành hàng giờ xem video ngắn mà thường không nhớ mình đã xem gì.",
+      "Tuy nhiên, sẽ không công bằng nếu coi công nghệ là kẻ xấu duy nhất.",
+      "Những công cụ này kết nối các gia đình ở hai bên đại dương, đại chúng hóa thông tin và mang đến cho doanh nghiệp nhỏ một sân khấu toàn cầu.",
+      "Vấn đề thực sự là kiểu thiết kế kiếm lợi từ sự ép buộc thay vì giá trị đích thực.",
+      "Một số người dùng đang phản kháng bằng cách tắt thông báo, đặt giới hạn thời gian dùng màn hình hoặc giành lại cả buổi tối để không dùng mạng.",
+      "Trong khi đó, các cơ quan quản lý đang đặt câu hỏi liệu thiết kế mang tính thao túng có nên bị giám sát nghiêm ngặt như quảng cáo gây hiểu lầm hay không.",
+      "Cho đến khi các động cơ lợi ích thay đổi, gánh nặng bảo vệ sự chú ý của mình sẽ vẫn đè lên vai mỗi cá nhân."
+    ],
+    "vocabulary": [
+      {
+        "word": "scarce",
+        "ipa": "/skɛrs/",
+        "pos": "adjective",
+        "meaning_vi": "khan hiếm",
+        "example": "Fresh water is becoming scarce in many coastal regions.",
+        "example_vi": "Nước ngọt đang trở nên khan hiếm ở nhiều vùng ven biển."
+      },
+      {
+        "word": "engineered",
+        "ipa": "/ˌɛndʒəˈnɪrd/",
+        "pos": "verb",
+        "meaning_vi": "được thiết kế có chủ đích",
+        "example": "The snack was engineered to be impossible to stop eating.",
+        "example_vi": "Món ăn vặt này được thiết kế để khiến người ta không thể ngừng ăn."
+      },
+      {
+        "word": "cumulative",
+        "ipa": "/ˈkjumjələtɪv/",
+        "pos": "adjective",
+        "meaning_vi": "tích lũy dần",
+        "example": "The cumulative effect of poor sleep is hard to ignore.",
+        "example_vi": "Tác động tích lũy của việc thiếu ngủ thật khó mà phớt lờ."
+      },
+      {
+        "word": "fragmented",
+        "ipa": "/ˈfræɡˌmɛntɪd/",
+        "pos": "adjective",
+        "meaning_vi": "bị chia nhỏ, rời rạc",
+        "example": "A fragmented schedule left her no time for deep work.",
+        "example_vi": "Lịch trình rời rạc khiến cô ấy không còn thời gian cho công việc đòi hỏi tập trung sâu."
+      },
+      {
+        "word": "democratise",
+        "ipa": "/dɪˈmɑkrəˌtaɪz/",
+        "pos": "verb",
+        "meaning_vi": "phổ cập cho mọi người",
+        "example": "Open courses aim to democratise access to higher education.",
+        "example_vi": "Các khóa học mở nhằm đại chúng hóa cơ hội tiếp cận giáo dục đại học."
+      },
+      {
+        "word": "compulsion",
+        "ipa": "/kəmˈpʌlʃən/",
+        "pos": "noun",
+        "meaning_vi": "sự thôi thúc khó cưỡng",
+        "example": "He checked his phone out of compulsion rather than need.",
+        "example_vi": "Anh ấy kiểm tra điện thoại vì thói quen khó cưỡng chứ không phải vì cần thiết."
+      },
+      {
+        "word": "scrutiny",
+        "ipa": "/ˈskrutəni/",
+        "pos": "noun",
+        "meaning_vi": "sự xem xét kỹ lưỡng",
+        "example": "The company's accounts came under intense scrutiny after the scandal.",
+        "example_vi": "Sổ sách của công ty bị soi xét gắt gao sau vụ bê bối."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What does \"you are the product\" suggest?",
+        "options": [
+          "Users receive free gifts",
+          "Companies profit from users' attention and data",
+          "Free services are always high quality",
+          "Customers help design the product"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Câu nói ngụ ý công ty kiếm lời từ sự chú ý và dữ liệu của người dùng."
+      },
+      {
+        "question": "According to the writer, why are features like autoplay used?",
+        "options": [
+          "To save battery power",
+          "To teach users patience",
+          "To keep people returning and engaged",
+          "To reduce advertising costs"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Các tính năng này được thử nghiệm kỹ để giữ người dùng quay lại."
+      },
+      {
+        "question": "What is the writer's overall view of technology?",
+        "options": [
+          "Entirely harmful",
+          "Largely irrelevant",
+          "Equally useful to all users",
+          "Beneficial but flawed by manipulative design"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Tác giả công nhận lợi ích nhưng chỉ trích thiết kế thao túng."
+      },
+      {
+        "question": "What does the final sentence imply?",
+        "options": [
+          "Individuals must protect their focus until incentives shift",
+          "Regulators have solved the problem",
+          "Teenagers are to blame",
+          "Platforms will soon change voluntarily"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Chừng nào động cơ chưa đổi, cá nhân vẫn phải tự bảo vệ sự tập trung."
+      }
+    ]
+  },
+  {
+    "slug": "c1-food-heritage",
+    "category": "food",
+    "topic": "Food as cultural heritage",
+    "level": "C1",
+    "title": "More Than a Bowl",
+    "summary_vi": "Luyện đọc bài viết về ẩm thực như một di sản văn hóa với những cách diễn đạt tinh tế.",
+    "sentences": [
+      "A bowl of phở is never just a bowl of phở.",
+      "Behind its fragrant broth lies a century of migration, adaptation and fierce regional pride.",
+      "Food is among the most intimate ways a culture remembers itself, passed down not in books but in kitchens.",
+      "Grandmothers rarely measure ingredients; they rely on instinct, taste and a lifetime of repetition.",
+      "When such knowledge goes unrecorded, it can vanish within a single generation.",
+      "This is why UNESCO has begun recognising culinary traditions, from Neapolitan pizza to Korean kimchi-making, as intangible heritage.",
+      "Recognition, however, is a double-edged sword, since it may attract tourists who turn rituals into spectacle.",
+      "Street vendors in Huế, for instance, now compete with polished restaurants that serve imperial dishes in simplified form.",
+      "Purists argue that authenticity is being diluted, whereas others insist that cuisine has always evolved through borrowing.",
+      "Indeed, the bánh mì itself is a delicious product of colonial history and local ingenuity.",
+      "Perhaps the wisest approach is to document recipes faithfully while allowing cooks the freedom to improvise.",
+      "After all, a tradition that cannot breathe is merely a museum piece."
+    ],
+    "sentences_vi": [
+      "Một tô phở không bao giờ chỉ là một tô phở.",
+      "Đằng sau nước dùng thơm lừng là cả một thế kỷ di cư, thích nghi và niềm tự hào vùng miền mãnh liệt.",
+      "Ẩm thực là một trong những cách gần gũi nhất để một nền văn hóa nhớ về chính mình, được truyền lại không phải trong sách vở mà trong những căn bếp.",
+      "Các bà các mẹ hiếm khi cân đo nguyên liệu; họ dựa vào bản năng, vị giác và cả một đời lặp đi lặp lại.",
+      "Khi những kiến thức như vậy không được ghi chép lại, chúng có thể biến mất chỉ trong một thế hệ.",
+      "Đó là lý do UNESCO bắt đầu công nhận các truyền thống ẩm thực, từ pizza Neapolitan đến nghề làm kimchi của Hàn Quốc, là di sản phi vật thể.",
+      "Tuy nhiên, sự công nhận là con dao hai lưỡi, vì nó có thể thu hút du khách biến các nghi lễ thành màn trình diễn.",
+      "Chẳng hạn, những người bán hàng rong ở Huế nay phải cạnh tranh với các nhà hàng sang trọng phục vụ món cung đình dưới dạng đơn giản hóa.",
+      "Những người theo chủ nghĩa thuần túy cho rằng tính nguyên bản đang bị pha loãng, trong khi những người khác khẳng định ẩm thực luôn phát triển nhờ vay mượn.",
+      "Thật vậy, bánh mì chính là một sản phẩm ngon lành của lịch sử thuộc địa và sự khéo léo sáng tạo của người địa phương.",
+      "Có lẽ cách tiếp cận khôn ngoan nhất là ghi chép công thức một cách trung thực, đồng thời để người nấu được tự do ứng biến.",
+      "Suy cho cùng, một truyền thống không thể thở được chỉ là một hiện vật trong viện bảo tàng."
+    ],
+    "vocabulary": [
+      {
+        "word": "passed down",
+        "ipa": "/pæst daʊn/",
+        "pos": "phrase",
+        "meaning_vi": "được truyền lại",
+        "example": "The recipe has been passed down in her family for five generations.",
+        "example_vi": "Công thức này đã được truyền lại trong gia đình cô ấy qua năm thế hệ."
+      },
+      {
+        "word": "intangible heritage",
+        "ipa": "/ɪnˈtændʒəbəl ˈhɛrɪtɪdʒ/",
+        "pos": "noun",
+        "meaning_vi": "di sản phi vật thể",
+        "example": "Folk songs are a precious form of intangible heritage.",
+        "example_vi": "Dân ca là một dạng di sản phi vật thể quý giá."
+      },
+      {
+        "word": "double-edged sword",
+        "ipa": "/ˌdʌbəl ɛdʒd ˈsɔrd/",
+        "pos": "idiom",
+        "meaning_vi": "con dao hai lưỡi",
+        "example": "Fame can be a double-edged sword for young chefs.",
+        "example_vi": "Danh tiếng có thể là con dao hai lưỡi đối với các đầu bếp trẻ."
+      },
+      {
+        "word": "authenticity",
+        "ipa": "/ˌɔθɛnˈtɪsəti/",
+        "pos": "noun",
+        "meaning_vi": "tính chân thực",
+        "example": "Diners often travel far in search of authenticity.",
+        "example_vi": "Thực khách thường đi rất xa để tìm kiếm hương vị nguyên bản."
+      },
+      {
+        "word": "diluted",
+        "ipa": "/daɪˈlutɪd/",
+        "pos": "verb",
+        "meaning_vi": "bị pha loãng, làm yếu đi",
+        "example": "The original message was diluted by endless compromises.",
+        "example_vi": "Thông điệp ban đầu đã bị pha loãng bởi vô số lần thỏa hiệp."
+      },
+      {
+        "word": "ingenuity",
+        "ipa": "/ˌɪndʒəˈnuəti/",
+        "pos": "noun",
+        "meaning_vi": "sự khéo léo, sáng tạo",
+        "example": "The village cooks showed great ingenuity during the food shortage.",
+        "example_vi": "Những người nấu ăn trong làng đã cho thấy sự khéo léo sáng tạo tuyệt vời trong lúc thiếu lương thực."
+      },
+      {
+        "word": "improvise",
+        "ipa": "/ˈɪmprəˌvaɪz/",
+        "pos": "verb",
+        "meaning_vi": "ứng biến",
+        "example": "When the shop ran out of basil, she had to improvise with mint.",
+        "example_vi": "Khi cửa hàng hết húng quế, cô ấy phải ứng biến bằng bạc hà."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What does the opening sentence suggest about phở?",
+        "options": [
+          "It is overrated abroad",
+          "It carries deep cultural meaning",
+          "It is too simple to describe",
+          "It was invented recently"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Câu mở đầu ngụ ý phở mang nhiều ý nghĩa văn hóa hơn một món ăn."
+      },
+      {
+        "question": "Why can culinary knowledge disappear so easily?",
+        "options": [
+          "Cooks refuse to share recipes",
+          "Ingredients are becoming rare",
+          "It is often unwritten and learned by instinct",
+          "Governments forbid traditional cooking"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Kiến thức nấu ăn thường không được ghi lại mà truyền qua trực giác."
+      },
+      {
+        "question": "Why is recognition called a double-edged sword?",
+        "options": [
+          "It makes recipes more expensive",
+          "It reduces the number of tourists",
+          "It encourages cooks to leave home",
+          "It can turn traditions into spectacle"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Sự công nhận vừa bảo vệ vừa có thể biến nghi lễ thành màn trình diễn."
+      },
+      {
+        "question": "What does the writer imply with the bánh mì example?",
+        "options": [
+          "Cuisine has long evolved through outside influences",
+          "Colonial food is inferior",
+          "Purists are always right",
+          "Sandwiches cannot be traditional"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Bánh mì cho thấy ẩm thực vốn luôn tiến hóa nhờ vay mượn."
+      }
+    ]
+  },
+  {
+    "slug": "c1-lifelong-learning",
+    "category": "study",
+    "topic": "Learning for life",
+    "level": "C1",
+    "title": "Beginners Forever",
+    "summary_vi": "Luyện đọc bài suy ngẫm về việc học suốt đời và cách duy trì sự tò mò khi trưởng thành.",
+    "sentences": [
+      "For much of the twentieth century, education was imagined as a front-loaded affair: study first, work later.",
+      "That model is fast becoming obsolete.",
+      "Technologies shift so rapidly that skills acquired at twenty can look dated by thirty-five.",
+      "Lifelong learning, once a fashionable slogan, has therefore become a practical necessity.",
+      "Yet learning as an adult is not simply schooling repeated; it demands different habits.",
+      "Adults juggle jobs, families and fatigue, so motivation must come from relevance rather than obligation.",
+      "Many find that small, consistent effort outperforms occasional bursts of ambitious cramming.",
+      "Curiosity, moreover, is a muscle that strengthens with use and atrophies with neglect.",
+      "In Vietnam, evening classes, online courses and community libraries are widening access to people who missed formal opportunities.",
+      "Still, accessibility alone does not guarantee progress without the willingness to be a beginner again.",
+      "That humility, I would argue, is the hardest part and the most rewarding.",
+      "Those who embrace it tend to adapt more gracefully when the world inevitably changes around them."
+    ],
+    "sentences_vi": [
+      "Trong phần lớn thế kỷ hai mươi, giáo dục được hình dung là chuyện dồn hết về đầu đời: học trước, làm việc sau.",
+      "Mô hình đó đang nhanh chóng trở nên lỗi thời.",
+      "Công nghệ thay đổi nhanh đến mức những kỹ năng học được ở tuổi hai mươi có thể trông lạc hậu khi bạn ba mươi lăm.",
+      "Vì vậy, học tập suốt đời, từng là một khẩu hiệu thời thượng, nay đã trở thành nhu cầu thiết thực.",
+      "Tuy nhiên, học khi đã trưởng thành không đơn giản là đi học lại; nó đòi hỏi những thói quen khác.",
+      "Người lớn phải xoay xở giữa công việc, gia đình và sự mệt mỏi, nên động lực phải đến từ sự thiết thực chứ không phải nghĩa vụ.",
+      "Nhiều người nhận ra rằng nỗ lực nhỏ nhưng đều đặn hiệu quả hơn những đợt học nhồi đầy tham vọng thỉnh thoảng mới có.",
+      "Hơn nữa, sự tò mò giống như một cơ bắp: càng dùng càng khỏe, càng bỏ bê càng teo đi.",
+      "Ở Vietnam, các lớp học buổi tối, khóa học trực tuyến và thư viện cộng đồng đang mở rộng cơ hội cho những người từng lỡ mất con đường học tập chính quy.",
+      "Dù vậy, chỉ có cơ hội tiếp cận thôi thì chưa đảm bảo tiến bộ nếu thiếu sự sẵn lòng làm người mới bắt đầu một lần nữa.",
+      "Theo tôi, sự khiêm tốn ấy là phần khó nhất và cũng đáng giá nhất.",
+      "Những ai đón nhận nó thường thích nghi nhẹ nhàng hơn khi thế giới chắc chắn sẽ đổi thay quanh họ."
+    ],
+    "vocabulary": [
+      {
+        "word": "front-loaded",
+        "ipa": "/ˌfrʌnt ˈloʊdɪd/",
+        "pos": "adjective",
+        "meaning_vi": "dồn hết vào giai đoạn đầu",
+        "example": "The course is front-loaded, with most of the hard material in the first month.",
+        "example_vi": "Khóa học này dồn nặng về đầu, với phần lớn kiến thức khó nằm ở tháng đầu tiên."
+      },
+      {
+        "word": "obsolete",
+        "ipa": "/ˌɑbsəˈlit/",
+        "pos": "adjective",
+        "meaning_vi": "lỗi thời",
+        "example": "Typewriters became obsolete once personal computers arrived.",
+        "example_vi": "Máy đánh chữ trở nên lỗi thời khi máy tính cá nhân xuất hiện."
+      },
+      {
+        "word": "practical necessity",
+        "ipa": "/ˈpræktɪkəl nəˈsɛsəti/",
+        "pos": "noun",
+        "meaning_vi": "nhu cầu thiết thực",
+        "example": "For commuters in a big city, a motorbike is a practical necessity.",
+        "example_vi": "Với những người đi làm ở thành phố lớn, xe máy là nhu cầu thiết yếu."
+      },
+      {
+        "word": "outperforms",
+        "ipa": "/ˌaʊtpərˈfɔrmz/",
+        "pos": "verb",
+        "meaning_vi": "làm tốt hơn, vượt trội hơn",
+        "example": "Steady practice usually outperforms last-minute revision.",
+        "example_vi": "Luyện tập đều đặn thường hiệu quả hơn ôn thi cấp tốc vào phút chót."
+      },
+      {
+        "word": "cramming",
+        "ipa": "/ˈkræmɪŋ/",
+        "pos": "noun",
+        "meaning_vi": "học nhồi nhét",
+        "example": "Cramming the night before an exam rarely leads to lasting knowledge.",
+        "example_vi": "Học nhồi vào đêm trước kỳ thi hiếm khi để lại kiến thức lâu dài."
+      },
+      {
+        "word": "atrophies",
+        "ipa": "/ˈætrəfiz/",
+        "pos": "verb",
+        "meaning_vi": "teo đi, suy yếu",
+        "example": "A skill that is never practised slowly atrophies.",
+        "example_vi": "Một kỹ năng không bao giờ được thực hành sẽ dần mai một."
+      },
+      {
+        "word": "humility",
+        "ipa": "/hjuˈmɪləti/",
+        "pos": "noun",
+        "meaning_vi": "sự khiêm tốn",
+        "example": "Real expertise often comes with a surprising amount of humility.",
+        "example_vi": "Chuyên môn thực thụ thường đi kèm một sự khiêm tốn đáng ngạc nhiên."
+      }
+    ],
+    "questions": [
+      {
+        "question": "What does the writer say about the traditional model of education?",
+        "options": [
+          "It is more effective than ever",
+          "It no longer suits a fast-changing world",
+          "It was never widely adopted",
+          "It should be extended to adults only"
+        ],
+        "answer_index": 1,
+        "explanation_vi": "Mô hình học trước, làm sau đang trở nên lỗi thời."
+      },
+      {
+        "question": "According to the passage, what should motivate adult learners?",
+        "options": [
+          "Pressure from employers",
+          "Competition with friends",
+          "Relevance to their own lives",
+          "Formal qualifications"
+        ],
+        "answer_index": 2,
+        "explanation_vi": "Người lớn cần động lực đến từ sự liên quan, không phải nghĩa vụ."
+      },
+      {
+        "question": "What does the metaphor of curiosity as a muscle suggest?",
+        "options": [
+          "Curiosity is a natural talent",
+          "Curiosity declines with age",
+          "Curiosity needs expensive training",
+          "It grows through use and fades if neglected"
+        ],
+        "answer_index": 3,
+        "explanation_vi": "Tò mò như cơ bắp: dùng thì mạnh lên, bỏ bê thì yếu đi."
+      },
+      {
+        "question": "What does the writer see as the hardest part of learning?",
+        "options": [
+          "Being willing to start as a beginner again",
+          "Finding enough time",
+          "Paying for courses",
+          "Travelling to classes"
+        ],
+        "answer_index": 0,
+        "explanation_vi": "Tác giả cho rằng sự khiêm tốn làm người mới lại là phần khó nhất."
+      }
+    ]
+  }
 ]

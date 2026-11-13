@@ -20,62 +20,84 @@
       "If we treat AI as a shortcut, we will lose our edge; as a sparring partner, we will sharpen it.",
       "In the long run, the people who thrive will know when to trust the machine and when to overrule it."
     ],
+    "sentences_vi": [
+      "Khi công ty đưa trợ lý AI vào sử dụng hồi mùa xuân năm ngoái, tôi đã tin chắc rằng nó sẽ cướp mất việc của mình.",
+      "Thay vào đó, nó gánh đi những phần nhàm chán nhất của công việc, và từ đó đến nay tôi luôn có cảm xúc lẫn lộn.",
+      "Tôi tên là Linh, quản lý một nhóm marketing nhỏ ở Da Nang.",
+      "Những bản báo cáo từng tốn cả buổi chiều giờ được soạn xong trong vài phút, nhờ vậy cả nhóm có thêm thời gian cho những việc sáng tạo hơn.",
+      "Giá mà biết trước nó hữu ích đến thế, tôi đã xin trang bị từ nhiều năm trước rồi.",
+      "Tuy nhiên, công cụ này còn lâu mới hoàn hảo, và những lỗi sai được nó đưa ra một cách đầy tự tin rất dễ bị bỏ sót.",
+      "Tháng trước, một khách hàng suýt nữa đã nhận được bản đề xuất chứa những số liệu mà phần mềm tự bịa ra.",
+      "Đó là lý do mọi kết quả đầu ra đều phải được một người kiểm tra lại cẩn thận trước khi gửi đi.",
+      "Một số đồng nghiệp lo rằng người mới vào nghề sẽ chẳng bao giờ học được nghề nếu máy móc làm hết phần nền tảng.",
+      "Tôi hiểu quan điểm của họ, nhưng tôi nghĩ mối nguy thật sự là sự tự mãn chứ không phải bản thân công nghệ.",
+      "Nếu coi AI là con đường tắt, chúng ta sẽ đánh mất lợi thế của mình; còn nếu coi nó là người đối luyện, chúng ta sẽ mài sắc lợi thế ấy.",
+      "Về lâu dài, những người thành công sẽ là những người biết khi nào nên tin máy và khi nào nên bác bỏ nó."
+    ],
     "vocabulary": [
       {
         "word": "tedious",
         "ipa": "/ˈtiːdiəs/",
         "pos": "adjective",
         "meaning_vi": "tẻ nhạt, nhàm chán",
-        "example": "Copying numbers from one spreadsheet to another is a tedious task."
+        "example": "Copying numbers from one spreadsheet to another is a tedious task.",
+        "example_vi": "Việc chép số liệu từ bảng tính này sang bảng tính khác là một công việc nhàm chán."
       },
       {
         "word": "wrestling with",
         "ipa": "/ˈrɛslɪŋ wɪð/",
         "pos": "phrase",
         "meaning_vi": "vật lộn với (vấn đề, cảm xúc)",
-        "example": "She has been wrestling with the decision to change careers."
+        "example": "She has been wrestling with the decision to change careers.",
+        "example_vi": "Cô ấy đã vật lộn với quyết định đổi nghề từ lâu nay."
       },
       {
         "word": "slip under the radar",
         "ipa": "/slɪp ˈʌndər ðə ˈreɪdɑːr/",
         "pos": "idiom",
         "meaning_vi": "lọt qua mà không bị chú ý",
-        "example": "Small errors in the budget can easily slip under the radar."
+        "example": "Small errors in the budget can easily slip under the radar.",
+        "example_vi": "Những sai sót nhỏ trong ngân sách rất dễ bị bỏ sót."
       },
       {
         "word": "made up",
         "ipa": "/meɪd ʌp/",
         "pos": "phrasal verb",
         "meaning_vi": "bịa ra",
-        "example": "He made up an excuse because he had forgotten the meeting."
+        "example": "He made up an excuse because he had forgotten the meeting.",
+        "example_vi": "Anh ấy bịa ra một cái cớ vì đã quên mất buổi họp."
       },
       {
         "word": "complacency",
         "ipa": "/kəmˈpleɪsənsi/",
         "pos": "noun",
         "meaning_vi": "sự tự mãn, chủ quan",
-        "example": "Success often breeds complacency in large companies."
+        "example": "Success often breeds complacency in large companies.",
+        "example_vi": "Thành công thường nuôi dưỡng sự tự mãn trong các công ty lớn."
       },
       {
         "word": "lose our edge",
         "ipa": "/luːz ˈaʊər ɛdʒ/",
         "pos": "idiom",
         "meaning_vi": "mất lợi thế cạnh tranh",
-        "example": "If we stop learning new skills, we will lose our edge in the market."
+        "example": "If we stop learning new skills, we will lose our edge in the market.",
+        "example_vi": "Nếu ngừng học kỹ năng mới, chúng ta sẽ mất đi lợi thế cạnh tranh trên thị trường."
       },
       {
         "word": "sparring partner",
         "ipa": "/ˈspɑːrɪŋ ˈpɑːrtnər/",
         "pos": "noun",
         "meaning_vi": "người cùng tranh luận, đối trọng giúp mình giỏi lên",
-        "example": "My brother is my favourite sparring partner when I rehearse debates."
+        "example": "My brother is my favourite sparring partner when I rehearse debates.",
+        "example_vi": "Anh trai tôi là người đối luyện tuyệt vời nhất mỗi khi tôi tập tranh biện."
       },
       {
         "word": "in the long run",
         "ipa": "/ɪn ðə lɔːŋ rʌn/",
         "pos": "idiom",
         "meaning_vi": "về lâu dài",
-        "example": "Cheap tools can cost you more in the long run."
+        "example": "Cheap tools can cost you more in the long run.",
+        "example_vi": "Những công cụ rẻ tiền về lâu dài có thể khiến bạn tốn kém hơn."
       }
     ],
     "questions": [
@@ -146,55 +168,76 @@
       "It also meant asking for help, which turned out to be harder than any coding problem.",
       "Today I still care about my work, but I no longer let it define my worth."
     ],
+    "sentences_vi": [
+      "Hai mùa đông trước, tôi bỗng không còn đọc nổi email của chính mình.",
+      "Chữ vẫn ở đó, nhưng não tôi không chịu ghi nhớ chúng, như thể có ai đó đã rút phích cắm.",
+      "Tôi từng là kỹ sư phần mềm ở Ho Chi Minh City, và đã chạy trong tình trạng cạn kiệt năng lượng suốt gần một năm.",
+      "Lúc đó tôi gọi đó là mệt mỏi và tự nhủ rằng một kỳ nghỉ cuối tuần dài sẽ giải quyết được tất cả.",
+      "Mãi đến khi chị gái nhận ra tôi không còn cười nữa, tôi mới chịu đi khám bác sĩ.",
+      "Bác sĩ giải thích rằng kiệt sức không đơn giản là làm việc quá sức; đó là tình trạng mệt mỏi kéo dài đi kèm sự hoài nghi, chán chường và hiệu suất sa sút.",
+      "Nếu tôi nghiêm túc xem xét những dấu hiệu cảnh báo sớm, có lẽ tôi đã không mất ba tháng để hồi phục.",
+      "Một phần vấn đề nằm ở thứ văn hóa coi sự kiệt sức như một huy hiệu danh dự.",
+      "Ở lại muộn thì được khen, còn nghỉ một ngày thì bị ngầm cho là thiếu tận tâm.",
+      "Hồi phục nghĩa là đặt ra những ranh giới rõ ràng, chẳng hạn như tắt thông báo sau bảy giờ tối.",
+      "Nó cũng có nghĩa là biết nhờ người giúp, điều mà hóa ra còn khó hơn bất kỳ bài toán lập trình nào.",
+      "Ngày nay tôi vẫn quan tâm đến công việc, nhưng tôi không còn để nó quyết định giá trị của bản thân nữa."
+    ],
     "vocabulary": [
       {
         "word": "pulled the plug",
         "ipa": "/pʊld ðə plʌɡ/",
         "pos": "idiom",
         "meaning_vi": "ngắt, dừng hẳn (như rút phích cắm)",
-        "example": "The investors pulled the plug on the project after two years."
+        "example": "The investors pulled the plug on the project after two years.",
+        "example_vi": "Các nhà đầu tư đã dừng hẳn dự án sau hai năm."
       },
       {
         "word": "running on empty",
         "ipa": "/ˈrʌnɪŋ ɑːn ˈɛmpti/",
         "pos": "idiom",
         "meaning_vi": "cạn kiệt năng lượng mà vẫn cố làm",
-        "example": "By the end of exam season, most students are running on empty."
+        "example": "By the end of exam season, most students are running on empty.",
+        "example_vi": "Đến cuối mùa thi, hầu hết học sinh đều đã cạn kiệt sức lực."
       },
       {
         "word": "chronic",
         "ipa": "/ˈkrɑːnɪk/",
         "pos": "adjective",
         "meaning_vi": "mãn tính, kéo dài",
-        "example": "Chronic stress can weaken your immune system."
+        "example": "Chronic stress can weaken your immune system.",
+        "example_vi": "Căng thẳng kéo dài có thể làm suy yếu hệ miễn dịch của bạn."
       },
       {
         "word": "cynicism",
         "ipa": "/ˈsɪnɪsɪzəm/",
         "pos": "noun",
         "meaning_vi": "thói hoài nghi, bi quan",
-        "example": "Years of broken promises had left him with a deep cynicism about politics."
+        "example": "Years of broken promises had left him with a deep cynicism about politics.",
+        "example_vi": "Nhiều năm thất hứa đã để lại trong anh ấy một sự hoài nghi sâu sắc về chính trị."
       },
       {
         "word": "warning signs",
         "ipa": "/ˈwɔːrnɪŋ saɪnz/",
         "pos": "noun",
         "meaning_vi": "dấu hiệu cảnh báo",
-        "example": "Constant headaches can be one of the warning signs of overwork."
+        "example": "Constant headaches can be one of the warning signs of overwork.",
+        "example_vi": "Những cơn đau đầu liên miên có thể là một trong những dấu hiệu cảnh báo của việc làm việc quá sức."
       },
       {
         "word": "a badge of honour",
         "ipa": "/ə bædʒ əv ˈɑːnər/",
         "pos": "idiom",
         "meaning_vi": "niềm tự hào, thứ để khoe",
-        "example": "For some people, sleeping only four hours is a badge of honour."
+        "example": "For some people, sleeping only four hours is a badge of honour.",
+        "example_vi": "Với một số người, chỉ ngủ bốn tiếng một ngày là điều đáng tự hào."
       },
       {
         "word": "firm boundaries",
         "ipa": "/fɜːrm ˈbaʊndriz/",
         "pos": "noun",
         "meaning_vi": "ranh giới rõ ràng",
-        "example": "Parents who set firm boundaries usually raise more confident children."
+        "example": "Parents who set firm boundaries usually raise more confident children.",
+        "example_vi": "Những bậc cha mẹ đặt ra ranh giới rõ ràng thường nuôi dạy được những đứa con tự tin hơn."
       }
     ],
     "questions": [
@@ -265,55 +308,76 @@
       "Critics reply that a business built on workers' insecurity is not sustainable in the long term.",
       "Whatever the outcome, it is clear that the way we define work is being rewritten."
     ],
+    "sentences_vi": [
+      "Mỗi sáng lúc sáu giờ, Minh Tuan bật điện thoại và chờ yêu cầu giao hàng đầu tiên đến.",
+      "Anh là một trong hàng trăm nghìn tài xế xe công nghệ và giao hàng đang làm việc tại các thành phố lớn ở Việt Nam.",
+      "Với nhiều người trong số họ, công việc tự do mang lại sự linh hoạt mà các công việc truyền thống đơn giản là không thể sánh được.",
+      "Tài xế tự chọn giờ làm, và một số người kiếm được nhiều hơn hồi làm trong nhà máy.",
+      "Tuy nhiên, sự tự do này phải trả giá, vì người làm việc tự do được xếp vào nhóm nhà thầu độc lập chứ không phải nhân viên.",
+      "Họ không có nghỉ phép hưởng lương, không có trợ cấp ốm đau và trong nhiều trường hợp cũng không có bảo hiểm, trừ khi tự lo.",
+      "Thu nhập cũng khó đoán, vì các nền tảng điều chỉnh mức hoa hồng mà ít khi báo trước.",
+      "\"Có tuần tôi kiếm được khá, tuần sau thì chỉ vừa đủ hòa vốn,\" Minh Tuan nói.",
+      "Các nhà làm luật ở nhiều quốc gia hiện đang tranh luận xem những người lao động này có xứng đáng được xếp vào một nhóm pháp lý mới hay không.",
+      "Những người ủng hộ mô hình việc làm tự do cho rằng quy định chặt chẽ hơn sẽ khiến các công ty rời đi và làm mất việc làm.",
+      "Những người phản đối đáp lại rằng một doanh nghiệp xây dựng trên sự bấp bênh của người lao động thì không thể bền vững về lâu dài.",
+      "Dù kết quả ra sao, rõ ràng cách chúng ta định nghĩa công việc đang được viết lại."
+    ],
     "vocabulary": [
       {
         "word": "comes at a price",
         "ipa": "/kʌmz æt ə praɪs/",
         "pos": "idiom",
         "meaning_vi": "phải trả giá, có cái giá đi kèm",
-        "example": "Fast growth often comes at a price, usually in the form of stress."
+        "example": "Fast growth often comes at a price, usually in the form of stress.",
+        "example_vi": "Tăng trưởng nhanh thường phải trả giá, thường là dưới dạng căng thẳng."
       },
       {
         "word": "independent contractors",
         "ipa": "/ˌɪndɪˈpɛndənt ˈkɑːntræktərz/",
         "pos": "noun",
         "meaning_vi": "người làm hợp đồng độc lập",
-        "example": "Many designers work as independent contractors for several clients."
+        "example": "Many designers work as independent contractors for several clients.",
+        "example_vi": "Nhiều nhà thiết kế làm việc như những nhà thầu độc lập cho nhiều khách hàng."
       },
       {
         "word": "paid leave",
         "ipa": "/peɪd liːv/",
         "pos": "noun",
         "meaning_vi": "nghỉ phép có lương",
-        "example": "New parents in some countries receive a year of paid leave."
+        "example": "New parents in some countries receive a year of paid leave.",
+        "example_vi": "Ở một số nước, các bậc cha mẹ mới sinh con được nghỉ phép hưởng lương một năm."
       },
       {
         "word": "commission",
         "ipa": "/kəˈmɪʃən/",
         "pos": "noun",
         "meaning_vi": "tiền hoa hồng",
-        "example": "The salesman earns a ten percent commission on every phone he sells."
+        "example": "The salesman earns a ten percent commission on every phone he sells.",
+        "example_vi": "Anh nhân viên bán hàng nhận mười phần trăm hoa hồng cho mỗi chiếc điện thoại bán được."
       },
       {
         "word": "make a decent living",
         "ipa": "/meɪk ə ˈdiːsənt ˈlɪvɪŋ/",
         "pos": "phrase",
         "meaning_vi": "kiếm đủ sống tử tế",
-        "example": "It is hard to make a decent living as a freelance musician."
+        "example": "It is hard to make a decent living as a freelance musician.",
+        "example_vi": "Rất khó để kiếm sống khá giả với nghề nhạc sĩ tự do."
       },
       {
         "word": "break even",
         "ipa": "/breɪk ˈiːvən/",
         "pos": "phrasal verb",
         "meaning_vi": "hòa vốn",
-        "example": "The new café hopes to break even by the end of the year."
+        "example": "The new café hopes to break even by the end of the year.",
+        "example_vi": "Quán cà phê mới hy vọng hòa vốn vào cuối năm nay."
       },
       {
         "word": "sustainable",
         "ipa": "/səˈsteɪnəbəl/",
         "pos": "adjective",
         "meaning_vi": "bền vững",
-        "example": "A sustainable business model does not depend on exhausting its workers."
+        "example": "A sustainable business model does not depend on exhausting its workers.",
+        "example_vi": "Một mô hình kinh doanh bền vững không dựa vào việc vắt kiệt sức người lao động."
       }
     ],
     "questions": [
@@ -384,55 +448,76 @@
       "They can also avoid peak season, when the strain on water and waste services is at its worst.",
       "After all, a destination that loses its soul has little left to offer."
     ],
+    "sentences_vi": [
+      "Ở khu phố cổ Hoi An, người dân giờ đây đùa rằng họ phải mua vé mới được đi trên chính con phố của mình.",
+      "Năm ngoái thị trấn đón hàng triệu du khách, nhiều hơn rất nhiều so với sức chứa mà những con ngõ hẹp của nó từng được thiết kế.",
+      "Du lịch chắc chắn đã mang lại sự giàu có, nhưng nó cũng đẩy giá thuê nhà lên cao và khiến những gia đình sống lâu đời phải rời đi.",
+      "Những cửa hàng từng bán đồ sắt và gạo đang bị thay thế bằng các quầy quà lưu niệm và quán cà phê nhắm vào khách nước ngoài.",
+      "Câu chuyện tương tự cũng diễn ra ở Venice, Barcelona và Kyoto, nơi người dân địa phương đã tổ chức biểu tình phản đối đám đông du khách.",
+      "Một số thành phố đã ứng phó bằng cách giới hạn lượng du khách hoặc thu phí vào cửa vào những ngày đông.",
+      "Những nơi khác khuyến khích du khách khám phá các khu vực ít người biết hơn, để áp lực được phân bổ đều hơn.",
+      "Giá như chính quyền hành động sớm hơn, nhiều cộng đồng có lẽ đã tránh được sự bực bội đang tràn ra hiện nay.",
+      "Các chuyên gia nhấn mạnh rằng du khách không phải là kẻ thù; chính sự tăng trưởng không được kiểm soát mới gây ra thiệt hại.",
+      "Du khách có thể tạo ra sự khác biệt bằng cách ở nhà nghỉ do người địa phương làm chủ và ăn ở những quán mà người dân vẫn ăn.",
+      "Họ cũng có thể tránh mùa cao điểm, khi các dịch vụ cấp nước và xử lý rác phải chịu áp lực nặng nề nhất.",
+      "Suy cho cùng, một điểm đến đánh mất linh hồn thì chẳng còn gì nhiều để mang đến cho du khách."
+    ],
     "vocabulary": [
       {
         "word": "pushed up",
         "ipa": "/pʊʃt ʌp/",
         "pos": "phrasal verb",
         "meaning_vi": "đẩy (giá) lên",
-        "example": "The new airport pushed up property prices across the region."
+        "example": "The new airport pushed up property prices across the region.",
+        "example_vi": "Sân bay mới đã đẩy giá bất động sản trong khu vực lên cao."
       },
       {
         "word": "driven out",
         "ipa": "/ˈdrɪvən aʊt/",
         "pos": "phrasal verb",
         "meaning_vi": "bị đuổi đi, buộc phải rời",
-        "example": "Small bakeries were driven out by the big supermarket chains."
+        "example": "Small bakeries were driven out by the big supermarket chains.",
+        "example_vi": "Những tiệm bánh nhỏ bị các chuỗi siêu thị lớn đẩy ra khỏi thị trường."
       },
       {
         "word": "capping",
         "ipa": "/ˈkæpɪŋ/",
         "pos": "verb",
         "meaning_vi": "đặt mức trần, giới hạn",
-        "example": "The council is considering capping the number of tour buses downtown."
+        "example": "The council is considering capping the number of tour buses downtown.",
+        "example_vi": "Hội đồng đang cân nhắc việc giới hạn số lượng xe buýt du lịch trong trung tâm thành phố."
       },
       {
         "word": "spilling over",
         "ipa": "/ˈspɪlɪŋ ˈoʊvər/",
         "pos": "phrasal verb",
         "meaning_vi": "tràn ra, bùng phát",
-        "example": "The argument was spilling over into every family dinner."
+        "example": "The argument was spilling over into every family dinner.",
+        "example_vi": "Cuộc tranh cãi đang lan sang cả những bữa cơm gia đình."
       },
       {
         "word": "unmanaged",
         "ipa": "/ʌnˈmænɪdʒd/",
         "pos": "adjective",
         "meaning_vi": "không được quản lý",
-        "example": "Unmanaged waste has turned the beach into a health hazard."
+        "example": "Unmanaged waste has turned the beach into a health hazard.",
+        "example_vi": "Rác thải không được quản lý đã biến bãi biển thành mối nguy hại cho sức khỏe."
       },
       {
         "word": "make a difference",
         "ipa": "/meɪk ə ˈdɪfrəns/",
         "pos": "idiom",
         "meaning_vi": "tạo ra khác biệt, có tác động",
-        "example": "Even small donations can make a difference to a village school."
+        "example": "Even small donations can make a difference to a village school.",
+        "example_vi": "Ngay cả những khoản quyên góp nhỏ cũng có thể tạo ra khác biệt cho một ngôi trường làng."
       },
       {
         "word": "peak season",
         "ipa": "/piːk ˈsiːzən/",
         "pos": "noun",
         "meaning_vi": "mùa cao điểm",
-        "example": "Hotel rooms are twice as expensive during peak season."
+        "example": "Hotel rooms are twice as expensive during peak season.",
+        "example_vi": "Giá phòng khách sạn đắt gấp đôi vào mùa cao điểm."
       }
     ],
     "questions": [
@@ -503,55 +588,76 @@
       "Until then, the most sustainable garment is the one already hanging in your wardrobe.",
       "So before you hit the buy button, ask yourself whether you will still love it in thirty wears."
     ],
+    "sentences_vi": [
+      "Chào mừng các bạn quay trở lại với chương trình.",
+      "Hôm nay tôi muốn nói về chiếc áo phông mà bạn đã mua với giá một ly cà phê.",
+      "Thời trang nhanh phát triển mạnh nhờ tốc độ, biến các xu hướng trên sàn diễn thành quần áo giá rẻ chỉ trong vài tuần.",
+      "Ngành này hiện sản xuất lượng quần áo nhiều gấp khoảng hai lần so với hai mươi năm trước.",
+      "Phần lớn số quần áo đó chỉ được mặc vài lần rồi bị vứt ra bãi rác.",
+      "Chỉ một chiếc quần jeans có thể tiêu tốn hàng nghìn lít nước, trong khi việc nhuộm vải gây ô nhiễm sông ngòi ở nhiều quốc gia.",
+      "Các loại sợi tổng hợp như polyester thải ra vi nhựa mỗi lần giặt.",
+      "Trong khi đó, những người công nhân may các món đồ này thường nhận mức lương chỉ vừa đủ trả tiền thuê nhà.",
+      "Thật dễ để đổ lỗi cho người mua sắm, nhưng cả hệ thống được thiết kế để khiến việc mua hàng trở nên dễ dàng như không.",
+      "Nếu các thương hiệu phải chịu trách nhiệm về lượng rác thải mình tạo ra, giá cả có lẽ sẽ phản ánh đúng chi phí thực.",
+      "Cho đến lúc đó, món đồ bền vững nhất chính là món đã nằm sẵn trong tủ quần áo của bạn.",
+      "Vì vậy, trước khi bấm nút mua, hãy tự hỏi liệu bạn có còn yêu thích nó sau ba mươi lần mặc hay không."
+    ],
     "vocabulary": [
       {
         "word": "thrives on",
         "ipa": "/θraɪvz ɑːn/",
         "pos": "phrasal verb",
         "meaning_vi": "phát triển mạnh nhờ vào",
-        "example": "Social media thrives on attention and quick reactions."
+        "example": "Social media thrives on attention and quick reactions.",
+        "example_vi": "Mạng xã hội phát triển mạnh nhờ sự chú ý và những phản ứng nhanh chóng."
       },
       {
         "word": "in a matter of weeks",
         "ipa": "/ɪn ə ˈmætər əv wiːks/",
         "pos": "phrase",
         "meaning_vi": "chỉ trong vài tuần",
-        "example": "The little shop became famous in a matter of weeks."
+        "example": "The little shop became famous in a matter of weeks.",
+        "example_vi": "Cửa hàng nhỏ ấy trở nên nổi tiếng chỉ trong vài tuần."
       },
       {
         "word": "ends up in landfill",
         "ipa": "/ɛndz ʌp ɪn ˈlændfɪl/",
         "pos": "phrase",
         "meaning_vi": "cuối cùng bị đổ ra bãi rác",
-        "example": "Most plastic packaging ends up in landfill within a year."
+        "example": "Most plastic packaging ends up in landfill within a year.",
+        "example_vi": "Hầu hết bao bì nhựa kết thúc ở bãi rác trong vòng một năm."
       },
       {
         "word": "shed",
         "ipa": "/ʃɛd/",
         "pos": "verb",
         "meaning_vi": "rụng ra, thải ra",
-        "example": "My cat sheds hair all over the sofa in summer."
+        "example": "My cat sheds hair all over the sofa in summer.",
+        "example_vi": "Con mèo của tôi rụng lông khắp ghế sofa vào mùa hè."
       },
       {
         "word": "barely cover",
         "ipa": "/ˈbɛrli ˈkʌvər/",
         "pos": "phrase",
         "meaning_vi": "chỉ vừa đủ trang trải",
-        "example": "Her scholarship will barely cover her tuition, let alone living costs."
+        "example": "Her scholarship will barely cover her tuition, let alone living costs.",
+        "example_vi": "Học bổng của cô ấy chỉ vừa đủ trả học phí, chứ đừng nói đến chi phí sinh hoạt."
       },
       {
         "word": "held accountable",
         "ipa": "/hɛld əˈkaʊntəbəl/",
         "pos": "phrase",
         "meaning_vi": "bị buộc phải chịu trách nhiệm",
-        "example": "Company directors should be held accountable for serious safety failures."
+        "example": "Company directors should be held accountable for serious safety failures.",
+        "example_vi": "Các giám đốc công ty phải chịu trách nhiệm về những sai phạm nghiêm trọng về an toàn."
       },
       {
         "word": "sustainable",
         "ipa": "/səˈsteɪnəbəl/",
         "pos": "adjective",
         "meaning_vi": "bền vững, thân thiện với môi trường",
-        "example": "Bamboo is a sustainable alternative to plastic straws."
+        "example": "Bamboo is a sustainable alternative to plastic straws.",
+        "example_vi": "Tre là một giải pháp bền vững thay cho ống hút nhựa."
       }
     ],
     "questions": [
@@ -622,55 +728,76 @@
       "Whichever format is chosen, success depends less on the technology than on the quality of the teaching.",
       "A mediocre lecture does not become inspiring simply because it is streamed."
     ],
+    "sentences_vi": [
+      "Khi các lớp học chuyển sang trực tuyến năm 2020, tôi tưởng đó chỉ là một sự bất tiện tạm thời.",
+      "Năm năm sau, tôi là giảng viên đại học ở Hanoi, dạy một nửa số môn của mình qua màn hình.",
+      "Học trực tuyến rõ ràng đã mở rộng cơ hội tiếp cận, cho phép con gái của một người nông dân ở Gia Lai theo học các bài giảng của những trường đại học hàng đầu.",
+      "Nó cũng cho phép sinh viên học theo tốc độ riêng, tạm dừng và xem lại một phần giải thích khó bao nhiêu lần tùy ý.",
+      "Tuy vậy, tôi nhận thấy động lực thường tan biến khi không có nề nếp của một thời khóa biểu thực tế.",
+      "Tỷ lệ hoàn thành các khóa học miễn phí thấp đến đáng ngạc nhiên, thường dưới mười phần trăm.",
+      "Trong lớp học, một gương mặt bối rối được nhận ra ngay lập tức, còn trong cuộc gọi video thì nó dễ dàng bị giấu sau chiếc camera đã tắt.",
+      "Những cuộc trò chuyện tình cờ ngoài hành lang, vốn góp phần hình thành tình bạn và ý tưởng, hầu như không thể tái tạo trên mạng.",
+      "Dù vậy, tôi cũng không muốn quay lại hoàn toàn với mô hình truyền thống.",
+      "Kết quả tốt nhất đến từ hình thức học kết hợp, trong đó bài giảng được xem ở nhà còn thời gian trên lớp dành cho thảo luận.",
+      "Dù chọn hình thức nào, thành công phụ thuộc vào chất lượng giảng dạy nhiều hơn là công nghệ.",
+      "Một bài giảng tầm thường không trở nên truyền cảm hứng chỉ vì được phát trực tuyến."
+    ],
     "vocabulary": [
       {
         "word": "widened access",
         "ipa": "/ˈwaɪdənd ˈæksɛs/",
         "pos": "phrase",
         "meaning_vi": "mở rộng khả năng tiếp cận",
-        "example": "Public libraries have widened access to books for poor families."
+        "example": "Public libraries have widened access to books for poor families.",
+        "example_vi": "Các thư viện công cộng đã mở rộng cơ hội tiếp cận sách cho các gia đình nghèo."
       },
       {
         "word": "at their own pace",
         "ipa": "/æt ðɛr oʊn peɪs/",
         "pos": "phrase",
         "meaning_vi": "theo tốc độ của riêng mình",
-        "example": "Children should be allowed to read at their own pace."
+        "example": "Children should be allowed to read at their own pace.",
+        "example_vi": "Trẻ em nên được phép đọc theo tốc độ của riêng mình."
       },
       {
         "word": "evaporate",
         "ipa": "/ɪˈvæpəreɪt/",
         "pos": "verb",
         "meaning_vi": "tan biến, bay mất",
-        "example": "My enthusiasm began to evaporate after the third rainy day."
+        "example": "My enthusiasm began to evaporate after the third rainy day.",
+        "example_vi": "Sự nhiệt tình của tôi bắt đầu tan biến sau ngày mưa thứ ba."
       },
       {
         "word": "completion rates",
         "ipa": "/kəmˈpliːʃən reɪts/",
         "pos": "noun",
         "meaning_vi": "tỷ lệ hoàn thành",
-        "example": "Completion rates rise when courses include short quizzes."
+        "example": "Completion rates rise when courses include short quizzes.",
+        "example_vi": "Tỷ lệ hoàn thành tăng lên khi các khóa học có những bài kiểm tra ngắn."
       },
       {
         "word": "replicate",
         "ipa": "/ˈrɛplɪkeɪt/",
         "pos": "verb",
         "meaning_vi": "tái tạo, sao chép lại",
-        "example": "No app can replicate the atmosphere of a live concert."
+        "example": "No app can replicate the atmosphere of a live concert.",
+        "example_vi": "Không ứng dụng nào có thể tái tạo được bầu không khí của một buổi hòa nhạc trực tiếp."
       },
       {
         "word": "blended learning",
         "ipa": "/ˈblɛndɪd ˈlɜːrnɪŋ/",
         "pos": "noun",
         "meaning_vi": "học kết hợp (trực tuyến và trực tiếp)",
-        "example": "Our school adopted blended learning to make better use of class time."
+        "example": "Our school adopted blended learning to make better use of class time.",
+        "example_vi": "Trường chúng tôi áp dụng học kết hợp để tận dụng thời gian trên lớp tốt hơn."
       },
       {
         "word": "that said",
         "ipa": "/ðæt sɛd/",
         "pos": "phrase",
         "meaning_vi": "tuy nhiên, dẫu vậy",
-        "example": "The film was too long; that said, the ending was brilliant."
+        "example": "The film was too long; that said, the ending was brilliant.",
+        "example_vi": "Bộ phim quá dài; dù vậy, đoạn kết thật tuyệt vời."
       }
     ],
     "questions": [
@@ -741,55 +868,76 @@
       "Personally, I binge-watch more than I would like to admit, and I rarely remember what I have seen.",
       "Perhaps the real luxury today is not having more choice, but having the patience to choose well."
     ],
+    "sentences_vi": [
+      "Hồi còn là thiếu niên, tôi từng xếp hàng hai tiếng đồng hồ để xem một bộ phim đã chiếu ở nước ngoài từ mấy tháng trước.",
+      "Ngày nay, cũng bộ phim ấy sẽ nằm sẵn trong điện thoại của tôi trước khi tôi ăn xong bữa sáng.",
+      "Các nền tảng phát trực tuyến đã đảo lộn ngành giải trí chỉ trong chưa đầy mười lăm năm.",
+      "Các hãng phim từng sống nhờ doanh thu phòng vé nay phải cạnh tranh để có người đăng ký theo tháng.",
+      "Kết quả là mỗi năm có hàng nghìn giờ nội dung được sản xuất, và khán giả có quá nhiều thứ để lựa chọn.",
+      "Điều này đã mở ra cơ hội cho những câu chuyện ngoài Hollywood, như phim truyền hình Hàn Quốc và phim kinh dị Tây Ban Nha, vốn có người hâm mộ toàn cầu chỉ sau một đêm.",
+      "Các đạo diễn có kinh phí lớn hơn và tự do sáng tạo hơn so với những gì một hãng phim truyền thống sẽ cho họ.",
+      "Mặt khác, số lượng quá lớn khiến những bộ phim nhẹ nhàng khó được chú ý.",
+      "Các chương trình bị hủy sau một mùa nếu thuật toán cho rằng chúng không đáng để đánh cược.",
+      "Rạp chiếu phim cũng chịu thiệt hại, dù những rạp tốt nhất vẫn trụ lại được nhờ mang đến trải nghiệm mà chiếc ghế sofa không thể sánh bằng.",
+      "Cá nhân tôi cày phim nhiều hơn mức tôi muốn thừa nhận, và hiếm khi nhớ mình đã xem những gì.",
+      "Có lẽ thứ xa xỉ thật sự ngày nay không phải là có nhiều lựa chọn hơn, mà là có đủ kiên nhẫn để chọn cho tốt."
+    ],
     "vocabulary": [
       {
         "word": "upside down",
         "ipa": "/ˈʌpsaɪd daʊn/",
         "pos": "adverb",
         "meaning_vi": "đảo lộn hoàn toàn",
-        "example": "The pandemic turned our travel plans upside down."
+        "example": "The pandemic turned our travel plans upside down.",
+        "example_vi": "Đại dịch đã đảo lộn các kế hoạch du lịch của chúng tôi."
       },
       {
         "word": "box office",
         "ipa": "/bɑːks ˈɑːfɪs/",
         "pos": "noun",
         "meaning_vi": "doanh thu phòng vé",
-        "example": "The sequel was a huge success at the box office."
+        "example": "The sequel was a huge success at the box office.",
+        "example_vi": "Phần tiếp theo đã thành công vang dội ở phòng vé."
       },
       {
         "word": "spoilt for choice",
         "ipa": "/spɔɪlt fər tʃɔɪs/",
         "pos": "idiom",
         "meaning_vi": "có quá nhiều lựa chọn",
-        "example": "In this street food market, you are spoilt for choice."
+        "example": "In this street food market, you are spoilt for choice.",
+        "example_vi": "Ở khu chợ ẩm thực đường phố này, bạn có quá nhiều món để lựa chọn."
       },
       {
         "word": "overnight",
         "ipa": "/ˌoʊvərˈnaɪt/",
         "pos": "adverb",
         "meaning_vi": "chỉ sau một đêm, rất nhanh",
-        "example": "The young singer became famous overnight after one video."
+        "example": "The young singer became famous overnight after one video.",
+        "example_vi": "Ca sĩ trẻ ấy nổi tiếng chỉ sau một đêm nhờ một đoạn video."
       },
       {
         "word": "creative freedom",
         "ipa": "/kriˈeɪtɪv ˈfriːdəm/",
         "pos": "noun",
         "meaning_vi": "sự tự do sáng tạo",
-        "example": "The writer accepted the job because she was given complete creative freedom."
+        "example": "The writer accepted the job because she was given complete creative freedom.",
+        "example_vi": "Nhà văn nhận lời làm công việc đó vì được trao toàn quyền sáng tạo."
       },
       {
         "word": "the sheer volume",
         "ipa": "/ðə ʃɪr ˈvɑːljuːm/",
         "pos": "phrase",
         "meaning_vi": "khối lượng quá lớn",
-        "example": "The sheer volume of emails made it impossible to reply to everyone."
+        "example": "The sheer volume of emails made it impossible to reply to everyone.",
+        "example_vi": "Số lượng email quá lớn khiến không thể trả lời hết mọi người."
       },
       {
         "word": "worth the gamble",
         "ipa": "/wɜːrθ ðə ˈɡæmbəl/",
         "pos": "phrase",
         "meaning_vi": "đáng để mạo hiểm",
-        "example": "Opening a restaurant in a quiet town seemed worth the gamble."
+        "example": "Opening a restaurant in a quiet town seemed worth the gamble.",
+        "example_vi": "Mở một nhà hàng ở thị trấn yên tĩnh dường như là một canh bạc đáng thử."
       }
     ],
     "questions": [
@@ -860,55 +1008,76 @@
       "None of this is glamorous, but it works better than any supplement on the market.",
       "In short, a good night's sleep is not a luxury; it is the foundation on which everything else is built."
     ],
+    "sentences_vi": [
+      "Trước đây, giấc ngủ bị coi là thời gian lãng phí, thứ mà những người có hoài bão có thể cắt giảm để dành chỗ cho thành công.",
+      "Các nghiên cứu trong hai thập kỷ qua đã lật ngược niềm tin ấy.",
+      "Trong giấc ngủ sâu, não bộ dọn dẹp các chất thải và chuyển những ký ức trong ngày vào kho lưu trữ dài hạn.",
+      "Những người trưởng thành thường xuyên ngủ ít hơn sáu tiếng có nguy cơ mắc bệnh tim và trầm cảm cao hơn.",
+      "Chỉ một đêm ngủ tồi cũng có thể làm giảm sự tập trung, chẳng khác nào uống vài ly rượu vang.",
+      "Thanh thiếu niên đặc biệt dễ bị ảnh hưởng, vì đồng hồ sinh học của các em tự nhiên lùi về muộn hơn, vậy mà trường học thường bắt đầu từ tờ mờ sáng.",
+      "Một vài khu học chánh đã lùi giờ vào học thêm một tiếng và ghi nhận điểm số tốt hơn cùng ít tai nạn xe hơn.",
+      "Bác sĩ Ana Ferreira, một nhà nghiên cứu giấc ngủ ở Lisbon, cho biết người ta thường xuyên đánh giá thấp mức độ suy giảm của bản thân.",
+      "\"Nếu bạn cần chuông báo thức và một ly cà phê mới tỉnh táo, nhiều khả năng bạn đang mang một khoản nợ ngủ,\" bà giải thích.",
+      "Những thói quen đơn giản sẽ giúp ích: giờ đi ngủ đều đặn, một căn phòng mát và tối, và không dùng màn hình trong một tiếng trước khi ngủ.",
+      "Không điều nào trong số này hào nhoáng, nhưng nó hiệu quả hơn bất kỳ loại thực phẩm chức năng nào trên thị trường.",
+      "Tóm lại, một giấc ngủ ngon không phải là thứ xa xỉ; nó là nền móng để mọi thứ khác được xây dựng lên."
+    ],
     "vocabulary": [
       {
         "word": "cut down",
         "ipa": "/kʌt daʊn/",
         "pos": "phrasal verb",
         "meaning_vi": "cắt giảm",
-        "example": "The doctor told him to cut down on salt and sugar."
+        "example": "The doctor told him to cut down on salt and sugar.",
+        "example_vi": "Bác sĩ bảo anh ấy giảm ăn muối và đường."
       },
       {
         "word": "overturned",
         "ipa": "/ˌoʊvərˈtɜːrnd/",
         "pos": "verb",
         "meaning_vi": "lật đổ, bác bỏ",
-        "example": "The new evidence overturned the court's earlier decision."
+        "example": "The new evidence overturned the court's earlier decision.",
+        "example_vi": "Bằng chứng mới đã lật ngược quyết định trước đó của tòa án."
       },
       {
         "word": "vulnerable",
         "ipa": "/ˈvʌlnərəbəl/",
         "pos": "adjective",
         "meaning_vi": "dễ bị tổn thương",
-        "example": "Elderly people are more vulnerable to extreme heat."
+        "example": "Elderly people are more vulnerable to extreme heat.",
+        "example_vi": "Người cao tuổi dễ bị tổn thương hơn trước thời tiết nóng cực đoan."
       },
       {
         "word": "body clocks",
         "ipa": "/ˈbɑːdi klɑːks/",
         "pos": "noun",
         "meaning_vi": "đồng hồ sinh học",
-        "example": "Flying across time zones confuses our body clocks for days."
+        "example": "Flying across time zones confuses our body clocks for days.",
+        "example_vi": "Bay qua nhiều múi giờ làm đồng hồ sinh học của chúng ta rối loạn trong nhiều ngày."
       },
       {
         "word": "underestimate",
         "ipa": "/ˌʌndərˈɛstɪmeɪt/",
         "pos": "verb",
         "meaning_vi": "đánh giá thấp",
-        "example": "Never underestimate the power of a good night's rest."
+        "example": "Never underestimate the power of a good night's rest.",
+        "example_vi": "Đừng bao giờ đánh giá thấp sức mạnh của một giấc ngủ ngon."
       },
       {
         "word": "sleep debt",
         "ipa": "/sliːp dɛt/",
         "pos": "noun",
         "meaning_vi": "nợ ngủ (thiếu ngủ tích lũy)",
-        "example": "A weekend lie-in cannot repay months of sleep debt."
+        "example": "A weekend lie-in cannot repay months of sleep debt.",
+        "example_vi": "Một buổi sáng cuối tuần ngủ nướng không thể trả hết nợ ngủ tích lũy nhiều tháng."
       },
       {
         "word": "in short",
         "ipa": "/ɪn ʃɔːrt/",
         "pos": "phrase",
         "meaning_vi": "tóm lại",
-        "example": "The plan was costly and slow; in short, it was a mistake."
+        "example": "The plan was costly and slow; in short, it was a mistake.",
+        "example_vi": "Kế hoạch vừa tốn kém vừa chậm chạp; tóm lại, đó là một sai lầm."
       }
     ],
     "questions": [

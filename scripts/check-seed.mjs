@@ -41,11 +41,13 @@ for (const f of files) {
     }
     if (!Array.isArray(l.sentences) || l.sentences.length < lim[0] || l.sentences.length > lim[1])
       bad(at, `needs ${lim[0]}-${lim[1]} sentences, has ${l.sentences?.length}`);
+    if (!Array.isArray(l.sentences_vi) || l.sentences_vi.length !== (l.sentences ?? []).length || l.sentences_vi.some((t) => typeof t !== "string" || !t.trim()))
+      bad(at, "sentences_vi must translate every sentence, same count and order");
     const passage = norm((l.sentences ?? []).join(" "));
     for (const s of l.sentences ?? []) if (s.split(/\s+/).length > lim[2]) bad(at, `sentence over ${lim[2]} words: "${s}"`);
     if (!Array.isArray(l.vocabulary) || l.vocabulary.length < 6 || l.vocabulary.length > 8) bad(at, `needs 6-8 vocabulary items`);
     for (const v of l.vocabulary ?? []) {
-      for (const k of ["word", "ipa", "pos", "meaning_vi", "example"]) if (typeof v[k] !== "string" || !v[k].trim()) bad(at, `vocab ${v.word}: missing ${k}`);
+      for (const k of ["word", "ipa", "pos", "meaning_vi", "example", "example_vi"]) if (typeof v[k] !== "string" || !v[k].trim()) bad(at, `vocab ${v.word}: missing ${k}`);
       if (v.word && !passage.includes(norm(v.word))) bad(at, `vocab "${v.word}" not found verbatim in the passage`);
       if (v.word && v.example && !norm(v.example).includes(norm(v.word))) bad(at, `example for "${v.word}" must contain it verbatim`);
       if (v.ipa && !/^\/.+\/$/.test(v.ipa)) bad(at, `ipa for "${v.word}" must be wrapped in slashes`);

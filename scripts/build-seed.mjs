@@ -16,7 +16,14 @@ for (const level of LEVELS) {
   if (!file) continue;
   for (const l of JSON.parse(readFileSync(new URL(file, dir), "utf8"))) {
     order += 1;
-    const content = { title: l.title, summary_vi: l.summary_vi, sentences: l.sentences, vocabulary: l.vocabulary, questions: l.questions };
+    const content = {
+      title: l.title,
+      summary_vi: l.summary_vi,
+      sentences: l.sentences,
+      sentences_vi: l.sentences_vi,
+      vocabulary: l.vocabulary,
+      questions: l.questions,
+    };
     lines.push(
       `INSERT INTO lessons (user_id, title, topic, level, content, provider, is_public, slug, category, course_order)
 VALUES ((SELECT id FROM users WHERE login = 'byocao'), ${q(l.title)}, ${q(l.topic)}, ${q(l.level)}, ${q(JSON.stringify(content))}, 'course', 1, ${q(l.slug)}, ${q(l.category)}, ${order})
