@@ -33,11 +33,14 @@
     // Claude API (secret ANTHROPIC_API_KEY): custom lessons on Opus, speaking grades on Haiku.
     "LESSON_MODEL": "claude-opus-5-5",
     "GRADE_MODEL": "claude-haiku-5-5",
-    // Per account, except the admin (unlimited).
-    "LESSON_LIMIT": "1",
+    // Per account, except the admin (unlimited). Only VIP and admin accounts write lessons.
     "GRADE_LIMIT": "10",
     "VIP_LESSON_LIMIT": "10",
     "VIP_GRADE_LIMIT": "100",
+    // Classes (VIP and admin only): classes per VIP, students and co-teachers per class.
+    "CLASS_LIMIT": "3",
+    "CLASS_STUDENT_LIMIT": "15",
+    "CLASS_TEACHER_LIMIT": "1",
     // Once a month's Claude spend reaches this, lesson creation and grading show "đang bảo trì".
     "MONTHLY_BUDGET_USD": "70"
   },

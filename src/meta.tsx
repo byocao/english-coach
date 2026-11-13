@@ -2,8 +2,10 @@
 // Icons: Phosphor (MIT), drawn as crisp vectors in each concept's own colour.
 import {
   AirplaneTilt,
+  BellRinging,
   BookOpenText,
   Briefcase,
+  ChalkboardTeacher,
   Cards,
   ChartBar,
   ChatsCircle,
@@ -11,6 +13,7 @@ import {
   Confetti,
   Crown,
   Diamond,
+  EnvelopeSimple,
   FilmSlate,
   Fire,
   ForkKnife,
@@ -42,6 +45,7 @@ import {
   Target,
   Tree,
   Trophy,
+  UsersThree,
   XCircle,
   type Icon,
 } from "@phosphor-icons/react";
@@ -93,6 +97,10 @@ const ICONS = {
   alarm_clock: [GearSix, "#4c8a2a"],
   hundred_points: [SealCheck, "#18b96b"],
   paw: [PawPrint, "#ff7a59"],
+  classroom: [ChalkboardTeacher, "#3f8a2a"],
+  bell: [BellRinging, "#ffb020"],
+  envelope: [EnvelopeSimple, "#2aa8ff"],
+  students: [UsersThree, "#7a4cf0"],
 } satisfies Record<string, [Icon, string]>;
 
 export type FxName = keyof typeof ICONS;

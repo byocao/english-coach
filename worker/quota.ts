@@ -3,9 +3,14 @@ import type { Env, User } from "./env";
 export type Allowance = "lessons" | "grades";
 export type Period = "account" | "week";
 
-/** Per-account allowances for trial and member accounts (they never reset). */
+/** Per-account allowances for trial and member accounts (they never reset). Only VIP and admin write lessons. */
 export function limits(env: Env): Record<Allowance, number> {
-  return { lessons: Number(env.LESSON_LIMIT) || 1, grades: Number(env.GRADE_LIMIT) || 10 };
+  return { lessons: 0, grades: Number(env.GRADE_LIMIT) || 10 };
+}
+
+/** VIP and admin accounts write lessons with AI and run classes. */
+export function canTeach(user: Pick<User, "role">): boolean {
+  return user.role === "vip" || user.role === "admin";
 }
 
 /** Weekly allowances for VIP accounts. */

@@ -29,7 +29,7 @@ sign-up live on their own page.
 
 ```
 Browser (React 19, Vite) ──► Cloudflare Worker (Hono)
-                               ├─ D1: users, sessions, lessons, progress, XP, attempts, ai_spend
+                               ├─ D1: users, sessions, lessons, progress, XP, attempts, ai_spend, classes, notifications
                                ├─ Workers AI: Whisper large-v3-turbo (speech to text), Llama 3.3 70B (sentence explanations)
                                └─ Claude API: lesson writing and speaking grades
 ```
@@ -38,7 +38,7 @@ Browser (React 19, Vite) ──► Cloudflare Worker (Hono)
 
 | Feature | Model | Trial / member account | VIP account (per week) |
 |---|---|---|---|
-| Write a custom lesson | Claude (`LESSON_MODEL`) | `LESSON_LIMIT` lessons | `VIP_LESSON_LIMIT` lessons |
+| Write a custom lesson | Claude (`LESSON_MODEL`) | Not available | `VIP_LESSON_LIMIT` lessons |
 | Grade a spoken sentence | Whisper transcribes, Claude (`GRADE_MODEL`) grades | `GRADE_LIMIT` grades | `VIP_GRADE_LIMIT` grades |
 | Explain a sentence | Workers AI (`WORKERS_AI_MODEL`) | Unlimited, within Cloudflare's free daily allowance | Unlimited |
 
@@ -51,6 +51,20 @@ month. The admin page shows the month's spend per model and can give an account 
 
 The speaking score reflects **intelligibility** (whether the recogniser heard the right words); it does not analyse
 individual phonemes.
+
+### Classes
+
+VIP accounts (and the admin) can run classes:
+
+- A VIP owns up to `CLASS_LIMIT` classes; each class takes up to `CLASS_STUDENT_LIMIT` students (pending invites
+  included) and `CLASS_TEACHER_LIMIT` co-teachers, who must be VIP too. The admin has no class limit.
+- Teachers invite by username or by the email on the invitee's profile (optional, one per account, unique, never
+  shown to others). Nobody joins a class without accepting the invite.
+- A lesson is **public** (in the shared library) or **private**. A private lesson opens only for its author, the
+  admin and the members of a class it was added to. Teachers add their own lessons or any public lesson to a class
+  and see each student's finished lessons and weekly XP.
+- In-app notifications cover invites (accepted or declined right in the list), replies, removals, new class
+  lessons and deleted classes.
 
 ### Accounts
 
@@ -109,10 +123,12 @@ Plain settings live in `wrangler.jsonc` → `vars`:
 | `CONTACT_URL` | Where users are sent when they run out of AI uses |
 | `LESSON_MODEL` | Claude model that writes custom lessons |
 | `GRADE_MODEL` | Claude model that grades speaking |
-| `LESSON_LIMIT` | Custom lessons per account |
-| `GRADE_LIMIT` | Speaking grades per account |
+| `GRADE_LIMIT` | Speaking grades per trial or member account (only VIP and admin write lessons) |
 | `VIP_LESSON_LIMIT` | Custom lessons per week for VIP accounts |
 | `VIP_GRADE_LIMIT` | Speaking grades per week for VIP accounts |
+| `CLASS_LIMIT` | Classes a VIP account can own |
+| `CLASS_STUDENT_LIMIT` | Students per class, pending invites included |
+| `CLASS_TEACHER_LIMIT` | Co-teachers per class |
 | `MONTHLY_BUDGET_USD` | Monthly Claude API spend before lesson writing and grading pause |
 | `WORKERS_AI_MODEL` | Workers AI model for sentence explanations |
 

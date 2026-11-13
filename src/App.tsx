@@ -1,8 +1,9 @@
 import {
   ArrowLeft,
   ArrowRight,
+  Bell,
   BookOpenText,
-  ChatText,
+  ChalkboardTeacher,
   Desktop,
   Eye,
   EyeSlash,
@@ -19,11 +20,12 @@ import {
   Trash,
   Trophy,
   UserCircle,
-  Users,
   Wrench,
 } from "@phosphor-icons/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { api, onApiError, type ApiError, type LessonDetail, type LessonRow, type Me } from "./api";
+import { api, onApiError, type ApiError, type ClassList, type LessonDetail, type LessonRow, type Me } from "./api";
+import { ClassPage, Classes } from "./Classes";
+import { Notifications } from "./Notifications";
 import { englishVoices, isNaturalVoice, onVoicesChanged, preferredVoice, setPreferredVoice, speak } from "./audio";
 import { Exercise } from "./Exercise";
 import { Landing } from "./Landing";
@@ -33,10 +35,14 @@ import { Placement } from "./Placement";
 import { CATEGORIES, Fx, LEVELS, LEVEL_LABEL, STEPS, category, parseProgress, quests } from "./meta";
 import { setSoundOn, soundOn } from "./sound";
 import { getTheme, setTheme, type Theme } from "./theme";
+import { LessonCard, Loading, Meter, stepsDone } from "./ui";
 
 type Route =
   | { name: "learn" }
-  | { name: "library" }
+  | { name: "library"; classId?: number }
+  | { name: "classes" }
+  | { name: "class"; id: number }
+  | { name: "notifications" }
   | { name: "lesson"; id: number }
   | { name: "exercise"; id: number; step: string }
   | { name: "rank" }
@@ -52,7 +58,12 @@ function parseRoute(): Route {
   if (m) return { name: "exercise", id: Number(m[1]), step: m[2] };
   m = h.match(/^lesson\/(\d+)/);
   if (m) return { name: "lesson", id: Number(m[1]) };
-  if (h === "library") return { name: "library" };
+  m = h.match(/^library(?:\?class=(\d+))?$/);
+  if (m) return { name: "library", classId: m[1] ? Number(m[1]) : undefined };
+  if (h === "classes") return { name: "classes" };
+  m = h.match(/^class\/(\d+)/);
+  if (m) return { name: "class", id: Number(m[1]) };
+  if (h === "notifications") return { name: "notifications" };
   if (h === "rank") return { name: "rank" };
   if (h === "me") return { name: "me" };
   if (h === "admin") return { name: "admin" };
@@ -95,6 +106,7 @@ export function App() {
   const [me, setMe] = useState<Me | null | undefined>(undefined);
   const [route, setRoute] = useState<Route>(parseRoute);
   const [locked, setLocked] = useState<ApiError | null>(null);
+  const [unread, setUnread] = useState(0);
 
   const refreshMe = useCallback(() => {
     api<Me>("/api/me")
@@ -114,7 +126,7 @@ export function App() {
   useEffect(
     () =>
       onApiError((err) => {
-        if (["blocked", "lesson_limit", "grade_limit", "maintenance"].includes(err.code ?? "")) setLocked(err);
+        if (["blocked", "lesson_limit", "grade_limit", "maintenance", "vip_only"].includes(err.code ?? "")) setLocked(err);
         if (err.code === "maintenance") refreshMe();
         if (err.code === "unauthenticated") setMe(null);
       }),
@@ -123,7 +135,24 @@ export function App() {
 
   useEffect(() => {
     if (me !== undefined) setSignedInHint(me !== null);
+    if (me) setUnread(me.unread);
   }, [me]);
+  // The bell's count: checked again on every page change and every minute while the tab is open.
+  const signedIn = !!me;
+  useEffect(() => {
+    if (!signedIn) return;
+    const check = () => {
+      if (document.visibilityState === "visible") {
+        api<{ unread: number }>("/api/notifications/unread")
+          .then((r) => setUnread(r.unread))
+          .catch(() => {});
+      }
+    };
+    const t = setInterval(check, 60_000);
+    if (route.name !== "notifications") check();
+    return () => clearInterval(t);
+  }, [signedIn, route]);
+  const clearUnread = useCallback(() => setUnread(0), []);
 
   // While /api/me loads, first-time visitors already get the landing page (also prerendered into index.html).
   if (me === undefined && !signedInHint() && route.name === "learn") return <Landing />;
@@ -166,6 +195,7 @@ export function App() {
   const nav = [
     { href: "#/", Icon: House, label: "Học", on: route.name === "learn" || route.name === "lesson" },
     { href: "#/library", Icon: BookOpenText, label: "Thư viện", on: route.name === "library" },
+    { href: "#/classes", Icon: ChalkboardTeacher, label: "Lớp học", on: route.name === "classes" || route.name === "class" },
     { href: "#/rank", Icon: Trophy, label: "Xếp hạng", on: route.name === "rank" },
     { href: "#/me", Icon: UserCircle, label: "Hồ sơ", on: route.name === "me" },
     ...(me.user.role === "admin" ? [{ href: "#/admin", Icon: Wrench, label: "Quản trị", on: route.name === "admin" }] : []),
@@ -188,6 +218,18 @@ export function App() {
               <span>{label}</span>
             </a>
           ))}
+          <a
+            href="#/notifications"
+            className={route.name === "notifications" ? "navlink on" : "navlink"}
+            aria-current={route.name === "notifications" ? "page" : undefined}
+            aria-label={unread ? `Thông báo, ${unread} chưa đọc` : "Thông báo"}
+          >
+            <span className="bell">
+              <Bell size={26} weight={route.name === "notifications" ? "fill" : "duotone"} />
+              {unread > 0 && <span className="badge">{unread > 9 ? "9+" : unread}</span>}
+            </span>
+            <span>Thông báo</span>
+          </a>
         </nav>
       </aside>
 
@@ -197,10 +239,21 @@ export function App() {
             <Logo />
           </a>
           <StatPills me={me} />
+          <a
+            href="#/notifications"
+            className={route.name === "notifications" ? "top-bell on" : "top-bell"}
+            aria-label={unread ? `Thông báo, ${unread} chưa đọc` : "Thông báo"}
+          >
+            <Bell size={24} weight={route.name === "notifications" ? "fill" : "duotone"} />
+            {unread > 0 && <span className="badge">{unread > 9 ? "9+" : unread}</span>}
+          </a>
         </header>
         <main className="content">
           {route.name === "learn" && <Learn me={me} />}
-          {route.name === "library" && <Library me={me} onQuota={refreshMe} />}
+          {route.name === "library" && <Library me={me} onQuota={refreshMe} classId={route.classId} />}
+          {route.name === "classes" && <Classes me={me} onChange={refreshMe} />}
+          {route.name === "class" && <ClassPage key={route.id} id={route.id} me={me} onChange={refreshMe} />}
+          {route.name === "notifications" && <Notifications onRead={clearUnread} onJoin={refreshMe} />}
           {route.name === "lesson" && <LessonPage id={route.id} me={me} />}
           {route.name === "rank" && <Leaderboard me={me} />}
           {route.name === "me" && <Profile me={me} onChange={refreshMe} />}
@@ -262,15 +315,6 @@ function StatPills({ me }: { me: Me }) {
       <span className="pill goal" title="XP hôm nay / mục tiêu">
         <Fx name="bullseye" size={24} /> {g.todayXp}/{g.dailyGoal}
       </span>
-    </div>
-  );
-}
-
-function Meter({ value, max, tone = "" }: { value: number; max: number; tone?: string }) {
-  const pct = Math.max(0, Math.min(100, (value / Math.max(1, max)) * 100));
-  return (
-    <div className={`meter ${tone}`} role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={max}>
-      <span style={{ width: `${pct}%` }} />
     </div>
   );
 }
@@ -354,10 +398,14 @@ function QuotaCard({ me }: { me: Me }) {
         <h3>{weekly ? "Lượt AI tuần này" : "Lượt AI của bạn"}</h3>
         {weekly && <span className="role vip">VIP</span>}
       </header>
-      <span className="small">
-        Tạo bài riêng: còn <b>{lessons.left}</b>/{lessons.limit}
-      </span>
-      <Meter value={lessons.left} max={lessons.limit} tone="violet" />
+      {lessons.limit > 0 && (
+        <>
+          <span className="small">
+            Soạn bài bằng AI: còn <b>{lessons.left}</b>/{lessons.limit}
+          </span>
+          <Meter value={lessons.left} max={lessons.limit} tone="violet" />
+        </>
+      )}
       <span className="small">
         Chấm điểm phát âm: còn <b>{grades.left}</b>/{grades.limit}
       </span>
@@ -378,7 +426,9 @@ function LockedDialog({ err, onClose }: { err: ApiError; onClose: () => void }) 
             ? "Tài khoản đã bị khoá"
             : err.code === "maintenance"
               ? "Đang bảo trì"
-              : err.code === "lesson_limit"
+              : err.code === "vip_only"
+                ? "Dành cho tài khoản VIP"
+                : err.code === "lesson_limit"
                 ? "Hết lượt tạo bài"
                 : "Hết lượt chấm điểm"}
         </h2>
@@ -387,7 +437,9 @@ function LockedDialog({ err, onClose }: { err: ApiError; onClose: () => void }) 
             ? "Tài khoản của bạn không còn dùng được các tính năng AI."
             : err.code === "maintenance"
               ? "Chức năng tạo bài và chấm điểm phát âm đang bảo trì. Bạn vẫn học được toàn bộ khoá học có sẵn."
-              : err.code === "lesson_limit"
+              : err.code === "vip_only"
+                ? "Soạn bài bằng AI và mở lớp học là tính năng của tài khoản VIP. Bạn vẫn học được toàn bộ khoá học, thư viện và các lớp được mời vào."
+                : err.code === "lesson_limit"
                 ? `Bạn đã dùng hết lượt tạo bài học riêng bằng AI${err.resetsAt ? " của tuần này" : ""}. Bạn vẫn học được toàn bộ khoá học và các bài trong thư viện.`
                 : `Bạn đã dùng hết lượt chấm điểm phát âm${err.resetsAt ? " của tuần này" : ""}. Bạn vẫn luyện từ vựng, nghe, chép chính tả, đọc và thử thách.`}
         </p>
@@ -430,10 +482,6 @@ function writeExtra(userId: number, extra: Record<string, number>) {
   } catch {
     /* private mode: the choice just isn't remembered */
   }
-}
-
-function stepsDone(l: LessonRow): number {
-  return Object.keys(parseProgress(l.my_progress)).length;
 }
 
 function nextStepOf(progress: Record<string, number>) {
@@ -724,15 +772,6 @@ function PathNode({
   );
 }
 
-function Loading() {
-  return (
-    <div className="loading">
-      <Fx name="books" size={56} className="bob" />
-      <span className="muted">Đang tải…</span>
-    </div>
-  );
-}
-
 // ---- One lesson ------------------------------------------------------------------------
 
 function LessonPage({ id, me }: { id: number; me: Me }) {
@@ -751,7 +790,9 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
   const next = nextStepOf(prog);
   const cat = category(l.category);
   const isAdmin = me.user.role === "admin";
-  const canDelete = (l.user_id === me.user.id && l.course_order === null) || isAdmin;
+  const isAuthor = l.user_id === me.user.id && l.course_order === null;
+  const canDelete = isAuthor || isAdmin;
+  const canHide = isAuthor || isAdmin;
 
   const togglePublic = async () => {
     await api(`/api/lessons/${l.id}`, { method: "PATCH", body: { is_public: !l.is_public } });
@@ -775,7 +816,7 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
               {l.level} · {LEVEL_LABEL[l.level]}
             </span>
             <span className="chip-light">{cat.label}</span>
-            {!l.is_public && <span className="chip-light">Đang ẩn</span>}
+            {!l.is_public && <span className="chip-light">Bài riêng</span>}
           </div>
           <h1>{l.content.title}</h1>
           <p>{l.content.summary_vi}</p>
@@ -816,12 +857,19 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
         </div>
       </section>
 
-      {(isAdmin || canDelete) && (
+      {(canHide || canDelete) && (
         <div className="row gap wrap">
-          {isAdmin && (
+          {canHide && (
             <button className="btn small ghost" onClick={togglePublic}>
-              {l.is_public ? <EyeSlash size={18} /> : <Eye size={18} />} {l.is_public ? "Ẩn khỏi thư viện" : "Hiện trong thư viện"}
+              {l.is_public ? <EyeSlash size={18} /> : <Eye size={18} />} {l.is_public ? "Chuyển thành bài riêng" : "Công khai trong thư viện"}
             </button>
+          )}
+          {canHide && (
+            <span className="small muted">
+              {l.is_public
+                ? "Đang công khai: ai cũng học được."
+                : "Bài riêng: chỉ bạn và học sinh của lớp có bài này mới mở được."}
+            </span>
           )}
           {canDelete &&
             (confirmDelete ? (
@@ -847,7 +895,7 @@ function LessonPage({ id, me }: { id: number; me: Me }) {
 
 // ---- Library -----------------------------------------------------------------------------
 
-function Library({ me, onQuota }: { me: Me; onQuota: () => void }) {
+function Library({ me, onQuota, classId }: { me: Me; onQuota: () => void; classId?: number }) {
   const [lessons, setLessons] = useState<LessonRow[] | null>(null);
   const [level, setLevel] = useState("");
   const [cat, setCat] = useState("");
@@ -870,10 +918,16 @@ function Library({ me, onQuota }: { me: Me; onQuota: () => void }) {
           Khoá học có sẵn và bài do mọi người tạo. Học lại bài có sẵn thì <b>không tốn lượt AI</b>.
         </p>
       </div>
-      <CreateLesson me={me} onQuota={onQuota} />
+      {me.canTeach ? <CreateLesson me={me} onQuota={onQuota} classId={classId} /> : <VipLessonCard me={me} />}
 
       <div className="cat-scroll" role="tablist" aria-label="Chủ đề">
-        {[{ key: "", label: "Tất cả", fx: "books" as const }, ...CATEGORIES, { key: "community", label: "Cộng đồng", fx: "sparkles" as const }].map((c) => (
+        {[
+          { key: "", label: "Tất cả", fx: "books" as const },
+          ...(me.canTeach ? [{ key: "mine", label: "Bài của tôi", fx: "robot" as const }] : []),
+          ...(me.classes > 0 ? [{ key: "class", label: "Bài của lớp", fx: "classroom" as const }] : []),
+          ...CATEGORIES,
+          { key: "community", label: "Cộng đồng", fx: "sparkles" as const },
+        ].map((c) => (
           <button key={c.key || "all"} className={cat === c.key ? "cat-tile on" : "cat-tile"} onClick={() => setCat(c.key)} role="tab" aria-selected={cat === c.key}>
             <Fx name={c.fx} size={44} tile />
             <span>{c.label}</span>
@@ -900,7 +954,13 @@ function Library({ me, onQuota }: { me: Me; onQuota: () => void }) {
       ) : lessons.length === 0 ? (
         <div className="empty">
           <Fx name="light_bulb" size={64} />
-          <p className="muted">Chưa có bài nào khớp. Thử nhờ AI soạn bài ở trên!</p>
+          <p className="muted">
+            {cat === "mine"
+              ? "Bạn chưa soạn bài nào. Dùng khung AI soạn bài ở trên nhé!"
+              : me.canTeach
+                ? "Chưa có bài nào khớp. Thử nhờ AI soạn bài ở trên!"
+                : "Chưa có bài nào khớp. Thử chủ đề hoặc trình độ khác nhé."}
+          </p>
         </div>
       ) : (
         <div className="lib-grid">
@@ -913,39 +973,38 @@ function Library({ me, onQuota }: { me: Me; onQuota: () => void }) {
   );
 }
 
-function LessonCard({ l }: { l: LessonRow }) {
-  const done = stepsDone(l);
-  const cat = category(l.category);
+const TOPIC_IDEAS = ["Ordering bubble tea", "A trip to Ha Long Bay", "My dream job", "Gaming with friends", "Tết holiday", "Learning to code"];
+
+/** Free accounts: what lesson writing is, and who has it. */
+function VipLessonCard({ me }: { me: Me }) {
   return (
-    <a className="lesson-card" href={`#/lesson/${l.id}`}>
-      <div className={`lc-cover cat-${cat.key}`}>
-        <span className="lvl light">{l.level}</span>
-        {done === STEPS.length && <Fx name="crown" size={28} className="lc-crown" />}
-        <Fx name={cat.fx} size={56} className="lc-fx" />
+    <section className="card vip-card">
+      <Fx name="robot" size={48} tile />
+      <div>
+        <b>AI soạn bài theo ý bạn · dành cho tài khoản VIP</b>
+        <p className="small muted">
+          Tài khoản VIP gõ một chủ đề bất kỳ để AI viết bài kèm từ vựng và câu hỏi, công khai cho mọi người hoặc giữ riêng cho
+          học sinh trong lớp. Bạn vẫn học miễn phí toàn bộ khoá học và các bài trong thư viện. Muốn nâng cấp, liên hệ{" "}
+          <a href={me.contact} target="_blank" rel="noreferrer">
+            {me.contact.replace(/^https?:\/\//, "")}
+          </a>
+          .
+        </p>
       </div>
-      <div className="lc-body">
-        <span className="lc-cat">{cat.label}</span>
-        <h3>{l.title}</h3>
-        <p className="small muted clamp2">{l.summary ?? l.topic}</p>
-        <div className="lc-foot small muted">
-          <span>
-            <Users size={16} /> {l.learners}
-          </span>
-          <span>
-            <ChatText size={16} /> {l.sentences} câu
-          </span>
-          {l.course_order === null && <span className="by">bởi {l.author}</span>}
-        </div>
-        {done > 0 && <Meter value={done} max={STEPS.length} tone="good" />}
-      </div>
-    </a>
+    </section>
   );
 }
 
-const TOPIC_IDEAS = ["Ordering bubble tea", "A trip to Ha Long Bay", "My dream job", "Gaming with friends", "Tết holiday", "Learning to code"];
-
-function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
+function CreateLesson({ me, onQuota, classId }: { me: Me; onQuota: () => void; classId?: number }) {
   const [topic, setTopic] = useState("");
+  const [visibility, setVisibility] = useState<"public" | "private">(classId ? "private" : "public");
+  const [target, setTarget] = useState(classId ? String(classId) : "");
+  const [myClasses, setMyClasses] = useState<{ id: number; name: string }[]>([]);
+  useEffect(() => {
+    api<ClassList>("/api/classes")
+      .then((r) => setMyClasses(r.classes.filter((c) => c.my_status === "active" && c.my_role !== "student")))
+      .catch(() => {});
+  }, []);
   const [level, setLevel] = useState("B1");
   const [cat, setCat] = useState("");
   const [length, setLength] = useState("medium");
@@ -969,7 +1028,9 @@ function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
     setBusy(true);
     setError("");
     try {
-      const r = await api<{ id: number }>("/api/lessons", { body: { topic, level, length, category: cat || undefined } });
+      const r = await api<{ id: number }>("/api/lessons", {
+        body: { topic, level, length, category: cat || undefined, visibility, classId: target ? Number(target) : undefined },
+      });
       onQuota();
       location.hash = `#/lesson/${r.id}`;
     } catch (err) {
@@ -985,7 +1046,8 @@ function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
         <div>
           <h2>AI soạn bài theo ý bạn</h2>
           <p className="small">
-            Gõ một chủ đề bất kỳ, AI viết đoạn văn kèm từ vựng và câu hỏi rồi lưu vào thư viện cho mọi người.
+            Gõ một chủ đề bất kỳ, AI viết đoạn văn kèm từ vựng và câu hỏi. Chọn công khai cho mọi người, hoặc bài riêng chỉ học
+            sinh trong lớp của bạn mới mở được.
             {me.maintenance
               ? " Chức năng này đang bảo trì."
               : me.quota.limited &&
@@ -1005,13 +1067,13 @@ function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
         />
         <div className="chips ideas">
           {TOPIC_IDEAS.map((t) => (
-            <button key={t} type="button" className="chip glass" onClick={() => setTopic(t)}>
+            <button key={t} type="button" className="chip" onClick={() => setTopic(t)}>
               {t}
             </button>
           ))}
         </div>
         <div className="create-opts">
-          <div className="seg light" role="group" aria-label="Trình độ">
+          <div className="seg" role="group" aria-label="Trình độ">
             {["A1", "A2", "B1", "B2", "C1"].map((lv) => (
               <button type="button" key={lv} className={level === lv ? "on" : ""} onClick={() => setLevel(lv)}>
                 {lv}
@@ -1032,6 +1094,31 @@ function CreateLesson({ me, onQuota }: { me: Me; onQuota: () => void }) {
             <option value="long">Dài · 16 câu</option>
           </select>
         </div>
+        <div className="create-opts">
+          <div className="seg" role="group" aria-label="Ai được học">
+            <button type="button" className={visibility === "public" ? "on" : ""} onClick={() => setVisibility("public")}>
+              <Eye size={16} weight="bold" /> Công khai
+            </button>
+            <button type="button" className={visibility === "private" ? "on" : ""} onClick={() => setVisibility("private")}>
+              <LockSimple size={16} weight="bold" /> Bài riêng
+            </button>
+          </div>
+          {myClasses.length > 0 && (
+            <select value={target} onChange={(e) => setTarget(e.target.value)} className="select" aria-label="Giao cho lớp">
+              <option value="">Không giao cho lớp nào</option>
+              {myClasses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  Giao cho lớp: {c.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+        {visibility === "private" && !target && (
+          <p className="small muted">
+            Bài riêng không hiện trong thư viện. Thêm bài vào một lớp để học sinh của lớp đó mở được.
+          </p>
+        )}
         {similar.length > 0 && (
           <div className="similar">
             <b>Đã có bài giống vậy, học luôn không tốn lượt AI:</b>
@@ -1152,6 +1239,7 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
       </header>
 
       <LevelCard me={me} onChange={onChange} />
+      <EmailCard me={me} onChange={onChange} />
       <CompanionPicker me={me} onChange={onChange} />
 
       <div className="stat-grid">
@@ -1253,6 +1341,64 @@ function Profile({ me, onChange }: { me: Me; onChange: () => void }) {
         {MASCOT_CREDIT} Icon: Phosphor Icons (MIT).
       </p>
     </div>
+  );
+}
+
+/** One email per account; teachers can invite by it. It is never shown to other people. */
+function EmailCard({ me, onChange }: { me: Me; onChange: () => void }) {
+  const [email, setEmail] = useState(me.user.email ?? "");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const save = async (value: string | null) => {
+    setBusy(true);
+    setMsg(null);
+    try {
+      await api("/api/me", { method: "PATCH", body: { email: value } });
+      setMsg({ ok: true, text: value ? "Đã lưu email." : "Đã xoá email." });
+      if (!value) setEmail("");
+      onChange();
+    } catch (e) {
+      setMsg({ ok: false, text: (e as Error).message });
+    }
+    setBusy(false);
+  };
+  const changed = email.trim().toLowerCase() !== (me.user.email ?? "");
+  return (
+    <section className="card">
+      <h2 className="card-title">
+        <Fx name="envelope" size={34} tile /> Email
+      </h2>
+      <p className="small muted">
+        Giáo viên có thể mời bạn vào lớp bằng email này. Mỗi email chỉ dùng cho một tài khoản và không hiện cho người khác.
+      </p>
+      <form
+        className="email-row"
+        onSubmit={(e) => {
+          e.preventDefault();
+          save(email.trim() || null);
+        }}
+      >
+        <input
+          type="email"
+          className="invite-input"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="ban@vidu.com"
+          aria-label="Email"
+          autoComplete="email"
+          maxLength={254}
+        />
+        <button className="btn primary small" disabled={busy || !changed}>
+          Lưu
+        </button>
+        {me.user.email && (
+          <button type="button" className="btn ghost small" disabled={busy} onClick={() => save(null)}>
+            Xoá
+          </button>
+        )}
+      </form>
+      {msg && <p className={msg.ok ? "ok-text small" : "error"}>{msg.text}</p>}
+    </section>
   );
 }
 
@@ -1446,6 +1592,7 @@ function Admin() {
     const used = what === "lessons" ? u.lessons_used : u.grades_used;
     if (u.role === "admin") return used;
     const limit = (u.role === "vip" ? data.vipLimits : data.limits)[what];
+    if (limit === 0) return <span className="muted">–</span>;
     return (
       <span className="nowrap">
         {used}/{limit}
@@ -1488,9 +1635,9 @@ function Admin() {
       <section className="card">
         <h2 className="card-title">Người dùng</h2>
         <p className="muted small">
-          Mỗi tài khoản (trừ quản trị viên) được tạo {data.limits.lessons} bài riêng bằng Claude Opus và chấm điểm phát âm{" "}
-          {data.limits.grades} lần bằng Claude Haiku. Tài khoản VIP được {data.vipLimits.lessons} bài và{" "}
-          {data.vipLimits.grades} lần chấm mỗi tuần (làm mới vào thứ Hai). Khi chi phí tháng chạm {usd(data.spend.budget)},
+          Tài khoản thường (dùng thử, thành viên) được chấm điểm phát âm {data.limits.grades} lần bằng Claude Haiku và không
+          soạn bài bằng AI. Tài khoản VIP soạn {data.vipLimits.lessons} bài bằng Claude Opus và chấm {data.vipLimits.grades} lần mỗi
+          tuần (làm mới vào thứ Hai), và mở được lớp học. Khi chi phí tháng chạm {usd(data.spend.budget)},
           hai chức năng này chuyển sang "bảo trì". Bài học: mở bài để ẩn hoặc xoá.
         </p>
         <div className="table-wrap">
