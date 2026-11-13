@@ -1,4 +1,4 @@
-export type Role = "admin" | "member" | "trial" | "blocked";
+export type Role = "admin" | "vip" | "member" | "trial" | "blocked";
 
 export interface Game {
   xp: number;
@@ -39,6 +39,10 @@ export interface Allowance {
 /** Per-account allowances for the Claude features; limited is false for the admin. */
 export interface Quota {
   limited: boolean;
+  /** "week" for VIP accounts, whose allowances come back every Monday (Vietnam time). */
+  period: "account" | "week";
+  /** When a weekly allowance comes back (ISO timestamp); null for per-account allowances. */
+  resetsAt: string | null;
   lessons: Allowance;
   grades: Allowance;
 }
@@ -114,6 +118,8 @@ export class ApiError extends Error {
     readonly status: number,
     readonly code?: string,
     readonly contact?: string,
+    /** For a weekly allowance that ran out: when it comes back. */
+    readonly resetsAt?: string,
   ) {
     super(message);
   }
@@ -136,9 +142,9 @@ export async function api<T>(path: string, init?: { method?: string; body?: unkn
     body: init?.body ? JSON.stringify(init.body) : undefined,
     credentials: "same-origin",
   });
-  const data = (await res.json().catch(() => ({}))) as { error?: string; code?: string; contact?: string };
+  const data = (await res.json().catch(() => ({}))) as { error?: string; code?: string; contact?: string; resetsAt?: string };
   if (!res.ok) {
-    const err = new ApiError(data.error || `Lỗi ${res.status}`, res.status, data.code, data.contact);
+    const err = new ApiError(data.error || `Lỗi ${res.status}`, res.status, data.code, data.contact, data.resetsAt);
     listeners.forEach((fn) => fn(err));
     throw err;
   }

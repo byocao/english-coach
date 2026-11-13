@@ -4,7 +4,7 @@ import { AiError, runJson, transcribe, wordMatchRatio } from "./ai";
 import { authRoutes, requireAdmin, requireUser } from "./auth";
 import { budgetUsd, claudeJson, monthSpend, overBudget } from "./claude";
 import { learn } from "./learn";
-import { limits, quota, refund, reserve, type Allowance } from "./quota";
+import { limits, quota, refund, reserve, type Allowance, usedNow, vipLimits, weekResetsAt } from "./quota";
 import type { AppEnv, Env, Role, User } from "./env";
 import {
   EXPLAIN_SYSTEM,
@@ -49,8 +49,8 @@ function gate(c: Context<AppEnv>) {
 }
 
 const LIMIT_TEXT: Record<Allowance, string> = {
-  lessons: "Bạn đã dùng hết lượt tạo bài học riêng.",
-  grades: "Bạn đã dùng hết lượt chấm điểm phát âm.",
+  lessons: "Bạn đã dùng hết lượt tạo bài học riêng",
+  grades: "Bạn đã dùng hết lượt chấm điểm phát âm",
 };
 
 /**
@@ -66,9 +66,16 @@ async function claudeGate(c: Context<AppEnv>, what: Allowance) {
       503,
     );
   }
-  if (!(await reserve(c.env, c.get("user"), what))) {
+  const user = c.get("user");
+  if (!(await reserve(c.env, user, what))) {
+    const weekly = user.role === "vip";
     return c.json(
-      { error: LIMIT_TEXT[what], code: what === "lessons" ? "lesson_limit" : "grade_limit", contact: c.env.CONTACT_URL },
+      {
+        error: LIMIT_TEXT[what] + (weekly ? " của tuần này." : "."),
+        code: what === "lessons" ? "lesson_limit" : "grade_limit",
+        contact: c.env.CONTACT_URL,
+        resetsAt: weekly ? weekResetsAt() : undefined,
+      },
       402,
     );
   }
@@ -224,7 +231,7 @@ api.post("/explain", async (c) => {
 
 api.get("/admin/users", requireAdmin, async (c) => {
   const { results } = await c.env.DB.prepare(
-    `SELECT u.id, u.login, u.role, u.ai_used, u.lessons_used, u.grades_used, u.xp, u.streak, u.created_at, u.last_seen_at,
+    `SELECT u.id, u.login, u.role, u.ai_used, u.lessons_used, u.grades_used, u.quota_week, u.xp, u.streak, u.created_at, u.last_seen_at,
             (SELECT COUNT(*) FROM attempts a WHERE a.user_id = u.id) AS attempts
        FROM users u ORDER BY u.last_seen_at DESC NULLS LAST LIMIT 500`,
   ).all();
@@ -233,8 +240,14 @@ api.get("/admin/users", requireAdmin, async (c) => {
        FROM ai_spend WHERE created_at >= strftime('%Y-%m-01 00:00:00', 'now') GROUP BY kind, model ORDER BY usd DESC`,
   ).all();
   return c.json({
-    users: results,
+    // A VIP's counters from an earlier week no longer count, so show them as zero.
+    users: (results as unknown as User[]).map((u) => ({
+      ...u,
+      lessons_used: usedNow(u, "lessons"),
+      grades_used: usedNow(u, "grades"),
+    })),
     limits: limits(c.env),
+    vipLimits: vipLimits(c.env),
     spend: { usd: await monthSpend(c.env), budget: budgetUsd(c.env), byModel },
   });
 });
@@ -243,8 +256,14 @@ api.patch("/admin/users/:id", requireAdmin, async (c) => {
   const body = await c.req.json<{ role?: Role; resetUsage?: boolean }>().catch(() => ({}) as never);
   const id = Number(c.req.param("id"));
   if (id === c.get("user").id) return c.json({ error: "Không đổi quyền của chính mình." }, 400);
-  if (body.role && ["member", "trial", "blocked"].includes(body.role)) {
-    await c.env.DB.prepare("UPDATE users SET role = ?1 WHERE id = ?2").bind(body.role, id).run();
+  if (body.role && ["vip", "member", "trial", "blocked"].includes(body.role)) {
+    // An account that becomes VIP starts a fresh week at its next use (quota_week NULL counts as "another week").
+    await c.env.DB.prepare(
+      `UPDATE users SET quota_week = CASE WHEN ?1 = 'vip' AND role != 'vip' THEN NULL ELSE quota_week END, role = ?1
+        WHERE id = ?2`,
+    )
+      .bind(body.role, id)
+      .run();
   }
   if (body.resetUsage) {
     await c.env.DB.prepare("UPDATE users SET ai_used = 0, lessons_used = 0, grades_used = 0 WHERE id = ?1").bind(id).run();

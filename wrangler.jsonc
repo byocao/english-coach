@@ -36,6 +36,8 @@
     // Per account, except the admin (unlimited).
     "LESSON_LIMIT": "1",
     "GRADE_LIMIT": "10",
+    "VIP_LESSON_LIMIT": "10",
+    "VIP_GRADE_LIMIT": "100",
     // Once a month's Claude spend reaches this, lesson creation and grading show "đang bảo trì".
     "MONTHLY_BUDGET_USD": "70"
   },
