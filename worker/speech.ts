@@ -102,49 +102,118 @@ const wordSchema = {
   },
 } as const;
 
-/** A learner's word card: base form, IPA and up to three common senses with a Vietnamese meaning and an example. */
-speech.get("/word", async (c) => {
-  const word = (c.req.query("w") ?? "")
+const str = (v: unknown) => (typeof v === "string" ? v.trim().slice(0, 200) : "");
+
+/** Lower-case English word, or "" when it is not one. */
+function cleanWord(w: unknown): string {
+  const s = (typeof w === "string" ? w : "")
     .toLowerCase()
     .replace(/[’]/g, "'")
     .replace(/^[^a-z]+|[^a-z]+$/g, "")
     .slice(0, 40);
-  if (!/^[a-z][a-z'-]*$/.test(word)) return c.json({ error: "Không phải một từ tiếng Anh." }, 400);
+  return /^[a-z][a-z'-]*$/.test(s) ? s : "";
+}
 
-  const cached = await c.env.DB.prepare("SELECT data FROM word_info WHERE word = ?1").bind(word).first<{ data: string }>();
-  if (cached) return c.json({ ...(JSON.parse(cached.data) as WordInfo), cached: true });
-
-  let raw: Partial<WordInfo>;
-  try {
-    raw = (
-      await runJson<Partial<WordInfo>>(c.env, {
-        system: WORD_SYSTEM,
-        prompt: `English word: "${word}"
-
-Return:
-- "lemma": its base form (e.g. "went" -> "go", "children" -> "child"; the word itself if already basic).
-- "ipa": American IPA of "${word}" between slashes.
-- "senses": its 1-3 most common senses for a learner, most common first. For each: "pos" (noun, verb, adjective, adverb, preposition, conjunction, pronoun, determiner, phrase), "meaning_vi" (short Vietnamese meaning, a few words), "example" (a short, simple English sentence using "${word}"), "example_vi" (its Vietnamese translation).`,
-        schema: wordSchema,
-        maxTokens: 600,
-      })
-    ).data;
-  } catch (err) {
-    if (err instanceof AiError) return c.json({ error: err.message }, err.status as 429 | 502);
-    throw err;
-  }
-  const str = (v: unknown) => (typeof v === "string" ? v.trim().slice(0, 200) : "");
-  const info: WordInfo = {
+function cleanCard(word: string, raw: Partial<WordInfo> | undefined): WordInfo {
+  return {
     word,
-    lemma: str(raw.lemma).toLowerCase() || word,
-    ipa: str(raw.ipa),
-    senses: (Array.isArray(raw.senses) ? raw.senses : [])
+    lemma: str(raw?.lemma).toLowerCase() || word,
+    ipa: str(raw?.ipa),
+    senses: (Array.isArray(raw?.senses) ? raw!.senses! : [])
       .slice(0, 3)
       .map((s) => ({ pos: str(s?.pos), meaning_vi: str(s?.meaning_vi), example: str(s?.example), example_vi: str(s?.example_vi) }))
       .filter((s) => s.meaning_vi),
   };
-  if (info.senses.length) {
-    await c.env.DB.prepare("INSERT OR REPLACE INTO word_info (word, data) VALUES (?1, ?2)").bind(word, JSON.stringify(info)).run();
+}
+
+const SENSES_RULE = `"senses": its 1-3 most common senses for a learner, most common first. For each: "pos" (noun, verb, adjective, adverb, preposition, conjunction, pronoun, determiner, phrase), "meaning_vi" (short Vietnamese meaning, a few words), "example" (a short, simple English sentence using the word), "example_vi" (its Vietnamese translation).`;
+
+const wordsSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["words"],
+  properties: {
+    words: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["word", "lemma", "ipa", "senses"],
+        properties: { word: { type: "string" }, ...wordSchema.properties },
+      },
+    },
+  },
+} as const;
+
+/** Cached cards for `words`; the missing ones are written by Workers AI in one call and cached in D1. */
+async function cards(env: AppEnv["Bindings"], words: string[]): Promise<Record<string, WordInfo>> {
+  const out: Record<string, WordInfo> = {};
+  if (words.length === 0) return out;
+  const { results } = await env.DB.prepare(`SELECT word, data FROM word_info WHERE word IN (${words.map((_, k) => `?${k + 1}`).join(",")})`)
+    .bind(...words)
+    .all<{ word: string; data: string }>();
+  for (const r of results) out[r.word] = JSON.parse(r.data) as WordInfo;
+  const missing = words.filter((w) => !out[w]);
+  if (missing.length === 0) return out;
+
+  const made: Record<string, Partial<WordInfo>> = {};
+  if (missing.length === 1) {
+    const w = missing[0];
+    made[w] = (
+      await runJson<Partial<WordInfo>>(env, {
+        system: WORD_SYSTEM,
+        prompt: `English word: "${w}"\n\nReturn:\n- "lemma": its base form (e.g. "went" -> "go", "children" -> "child"; the word itself if already basic).\n- "ipa": American IPA of "${w}" between slashes.\n- ${SENSES_RULE}`,
+        schema: wordSchema,
+        maxTokens: 600,
+      })
+    ).data;
+  } else {
+    const list =
+      (
+        await runJson<{ words?: (Partial<WordInfo> & { word?: string })[] }>(env, {
+          system: WORD_SYSTEM,
+          prompt: `English words: ${missing.map((w) => `"${w}"`).join(", ")}\n\nReturn "words": one entry per word, in the same order, each with:\n- "word": the word exactly as given.\n- "lemma": its base form (e.g. "went" -> "go"; the word itself if already basic).\n- "ipa": American IPA between slashes.\n- ${SENSES_RULE}`,
+          schema: wordsSchema,
+          maxTokens: Math.min(4000, 380 * missing.length),
+        })
+      ).data.words ?? [];
+    list.forEach((item, k) => {
+      const w = cleanWord(item?.word) || missing[k];
+      if (missing.includes(w)) made[w] = item;
+    });
   }
-  return c.json(info);
+  const stmts: D1PreparedStatement[] = [];
+  for (const w of missing) {
+    const info = cleanCard(w, made[w]);
+    if (!info.senses.length) continue;
+    out[w] = info;
+    stmts.push(env.DB.prepare("INSERT OR REPLACE INTO word_info (word, data) VALUES (?1, ?2)").bind(w, JSON.stringify(info)));
+  }
+  if (stmts.length) await env.DB.batch(stmts);
+  return out;
+}
+
+/** A learner's word card: base form, IPA and up to three common senses with a Vietnamese meaning and an example. */
+speech.get("/word", async (c) => {
+  const word = cleanWord(c.req.query("w"));
+  if (!word) return c.json({ error: "Không phải một từ tiếng Anh." }, 400);
+  try {
+    const card = (await cards(c.env, [word]))[word];
+    return card ? c.json(card) : c.json({ error: "Chưa tra được từ này." }, 404);
+  } catch (err) {
+    if (err instanceof AiError) return c.json({ error: err.message }, err.status as 429 | 502);
+    throw err;
+  }
+});
+
+/** Several cards at once (up to 12): an exercise prefetches the words of its sentence so a tap is instant. */
+speech.post("/words", async (c) => {
+  const body = await c.req.json<{ words?: unknown }>().catch(() => ({}) as { words?: unknown });
+  const words = [...new Set((Array.isArray(body.words) ? body.words : []).map(cleanWord).filter(Boolean))].slice(0, 12);
+  try {
+    return c.json({ cards: await cards(c.env, words) });
+  } catch (err) {
+    if (err instanceof AiError) return c.json({ error: err.message, cards: {} }, err.status as 429 | 502);
+    throw err;
+  }
 });

@@ -215,9 +215,15 @@ export function Exercise({ lessonId, step, me, onGame }: { lessonId: number; ste
     const guard = `${lessonId}/${step}`;
     if (history.state?.exGuard !== guard) history.pushState({ exGuard: guard }, "", location.href);
     let gone = false;
+    const own = location.hash;
     const onPop = () => {
       // A hash change made by location.replace() fires popstate too: once leaving, ignore the rest.
       if (gone) return;
+      // Going somewhere else (a typed address, another link) is not the back button: let it go.
+      if (location.hash !== own) {
+        gone = true;
+        return;
+      }
       if (leaving.current !== null || doneRef.current) {
         gone = true;
         return location.replace(leaving.current ?? back);
@@ -402,9 +408,70 @@ function FullscreenButton() {
   );
 }
 
-/** English text whose words open the dictionary card when tapped. */
+// ---- Word cards: fetched in batches before they are needed, kept for the visit ----------------
+
+const cardCache = new Map<string, Promise<WordCard | null>>();
+let pendingWords = new Set<string>();
+let flushTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** "Hanoi." -> "hanoi"; "" when it is not an English word. */
+function wordKey(raw: string): string {
+  const w = raw.toLowerCase().replace(/[’]/g, "'").replace(/^[^a-z]+|[^a-z]+$/g, "");
+  return /^[a-z][a-z'-]*$/.test(w) ? w : "";
+}
+
+function flushWords() {
+  flushTimer = null;
+  const all = [...pendingWords];
+  const list = all.slice(0, 12);
+  pendingWords = new Set(all.slice(12));
+  if (pendingWords.size) flushTimer = setTimeout(flushWords, 50);
+  const batch = api<{ cards: Record<string, WordCard> }>("/api/words", { body: { words: list } })
+    .then((r) => r.cards ?? {})
+    .catch(() => ({}) as Record<string, WordCard>);
+  for (const w of list) {
+    cardCache.set(
+      w,
+      batch.then((c) => {
+        // Not written this time: forget it, so a tap asks again.
+        if (!c[w]) cardCache.delete(w);
+        return c[w] ?? null;
+      }),
+    );
+  }
+}
+
+/** Asks for the cards of the content words in `text` (batched), so tapping one of them is instant. */
+function prefetchWords(text: string) {
+  for (const tok of text.split(/\s+/)) {
+    const w = wordKey(tok);
+    if (w.length < 3 || FUNCTION_WORDS.has(w) || cardCache.has(w) || pendingWords.has(w)) continue;
+    pendingWords.add(w);
+  }
+  if (pendingWords.size && !flushTimer) flushTimer = setTimeout(flushWords, 400);
+}
+
+/** One word's card: from the cache (or the batch writing it), else asked for on its own. */
+function getCard(word: string): Promise<WordCard | null> {
+  const w = wordKey(word);
+  if (!w) return Promise.resolve(null);
+  let p = cardCache.get(w);
+  if (!p) {
+    p = api<WordCard>(`/api/word?w=${encodeURIComponent(w)}`).catch(() => {
+      cardCache.delete(w);
+      return null;
+    });
+    cardCache.set(w, p);
+  }
+  return p;
+}
+
+/** English text whose words open the dictionary card when tapped (and are prefetched). */
 function Say({ text }: { text: string }) {
   const ex = useContext(ExCtx);
+  useEffect(() => {
+    if (ex) prefetchWords(text);
+  }, [ex, text]);
   return (
     <>
       {text.split(/(\s+)/).map((tok, j) =>
@@ -1949,13 +2016,15 @@ function WordPop({ raw, c, onClose }: { raw: string; c?: LessonContent; onClose:
     void speak(word);
     setCard("loading");
     setDict("loading");
-    api<WordCard>(`/api/word?w=${encodeURIComponent(word)}`)
-      .then(setCard)
-      .catch(() => setCard(null));
+    let live = true;
+    void getCard(word).then((card) => live && setCard(card));
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.toLowerCase())}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((j) => setDict(Array.isArray(j) ? (j[0] as DictEntry) : null))
-      .catch(() => setDict(null));
+      .then((j) => live && setDict(Array.isArray(j) ? (j[0] as DictEntry) : null))
+      .catch(() => live && setDict(null));
+    return () => {
+      live = false;
+    };
   }, [word]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -1997,7 +2066,13 @@ function WordPop({ raw, c, onClose }: { raw: string; c?: LessonContent; onClose:
             {local.example_vi && <em>{local.example_vi}</em>}
           </div>
         )}
-        {card === "loading" && <p className="muted small">Đang tra nghĩa…</p>}
+        {card === "loading" && (
+          <div className="wp-sense wp-skeleton" aria-label="Đang tra nghĩa">
+            <span />
+            <span />
+            <span />
+          </div>
+        )}
         {ai?.senses
           .filter((s) => !local || s.meaning_vi.toLowerCase() !== local.meaning_vi.toLowerCase())
           .map((s, k) => (

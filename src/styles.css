@@ -2188,9 +2188,35 @@ code {
   .feedback-text b {
     font-size: 1.08rem;
   }
-  .feedback-actions .btn {
-    flex: 1;
+  .ex-foot .feedback-actions .btn,
+  .ex-foot .feedback-actions .btn.wide {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 0.6rem;
   }
+}
+/* Up to 960 px the feedback card and its buttons do not fit on one row: card on top, buttons below. */
+@media (min-width: 701px) and (max-width: 960px) {
+  .ex-foot:not(.idle) .ex-foot-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+  }
+  .ex-foot:not(.idle) .feedback-card {
+    flex: none;
+  }
+  .ex-foot:not(.idle) .feedback-actions {
+    justify-content: flex-end;
+  }
+}
+/* The buttons keep their size: a percentage min-width (as on .btn.wide) is ignored while the row is measured,
+   so the row came out narrower than its buttons and "Thử lại" spilled past the edge. */
+.feedback-actions {
+  flex: none;
+  max-width: 100%;
+}
+.feedback-actions .btn.wide {
+  min-width: 150px;
 }
 
 /* vocabulary: flashcards */
@@ -2850,6 +2876,29 @@ code {
   padding: 0.6rem 0.8rem;
   border-radius: 14px;
   background: var(--surface-2);
+}
+.wp-skeleton span {
+  display: block;
+  height: 0.8rem;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--line) 25%, var(--surface) 50%, var(--line) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s linear infinite;
+}
+.wp-skeleton span:nth-child(1) {
+  width: 30%;
+}
+.wp-skeleton span:nth-child(2) {
+  width: 55%;
+  height: 1rem;
+}
+.wp-skeleton span:nth-child(3) {
+  width: 80%;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
 }
 .wp-sense.here {
   background: var(--brand-soft);
