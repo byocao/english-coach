@@ -5,6 +5,7 @@ import { authRoutes, requireAdmin, requireUser } from "./auth";
 import { budgetUsd, claudeJson, monthSpend, overBudget } from "./claude";
 import { learn } from "./learn";
 import { access, addLesson, classes } from "./classes";
+import { speech } from "./speech";
 import { canTeach, limits, quota, refund, reserve, type Allowance, usedNow, vipLimits, weekResetsAt } from "./quota";
 import type { AppEnv, Env, Role, User } from "./env";
 import {
@@ -285,6 +286,7 @@ api.patch("/admin/users/:id", requireAdmin, async (c) => {
 
 api.route("/", learn);
 api.route("/", classes);
+api.route("/", speech);
 app.route("/api", api);
 app.all("/api/*", (c) => c.json({ error: "Not found" }, 404));
 

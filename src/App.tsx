@@ -32,7 +32,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, onApiError, type ApiError, type ClassList, type LessonDetail, type LessonRow, type Me } from "./api";
 import { ClassPage, Classes } from "./Classes";
 import { Notifications } from "./Notifications";
-import { englishVoices, isNaturalVoice, onVoicesChanged, preferredVoice, setPreferredVoice, speak } from "./audio";
+import { AI_VOICES, englishVoices, onVoicesChanged, preferredVoice, setPreferredVoice, speak } from "./audio";
 import { Exercise } from "./Exercise";
 import { Landing } from "./Landing";
 import { Login } from "./Login";
@@ -1669,41 +1669,47 @@ function Stat({ fx, value, label }: { fx: Parameters<typeof Fx>[0]["name"]; valu
 /** Picks the English voice used for listening; "automatic" takes the most natural one this browser has. */
 function VoiceSetting() {
   const [voices, setVoices] = useState(englishVoices);
-  const [uri, setUri] = useState(preferredVoice);
+  const [choice, setChoice] = useState(preferredVoice);
   useEffect(() => {
     // The list may have loaded between the first render and this effect, so read it again.
     setVoices(englishVoices());
     return onVoicesChanged(() => setVoices(englishVoices()));
   }, []);
-  const auto = voices[0];
   const pick = (v: string) => {
-    setUri(v);
+    setChoice(v);
     setPreferredVoice(v);
-    void speak("Hi! This is the voice you will hear in your lessons.", { voiceURI: v || undefined });
+    void speak("Hi! This is the voice you will hear in your lessons.", { voice: v });
   };
-  if (!("speechSynthesis" in window)) return null;
   return (
     <div className="setting voice-setting">
       <span>Giọng đọc tiếng Anh</span>
       <div className="voice-pick">
-        <select className="select" value={uri} onChange={(e) => pick(e.target.value)} aria-label="Giọng đọc tiếng Anh">
-          <option value="">Tự động{auto ? ` (${auto.name.replace(/^Microsoft |^Google /, "").replace(/ - .*$/, "")})` : ""}</option>
-          {voices.map((v) => (
-            <option key={v.voiceURI} value={v.voiceURI}>
-              {isNaturalVoice(v) ? "★ " : ""}
-              {v.name} ({v.lang})
-            </option>
-          ))}
+        <select className="select" value={choice} onChange={(e) => pick(e.target.value)} aria-label="Giọng đọc tiếng Anh">
+          <optgroup label="Giọng AI tự nhiên (khuyên dùng)">
+            {AI_VOICES.map((v, k) => (
+              <option key={v.id} value={k === 0 ? "" : `ai:${v.id}`}>
+                ★ {v.label}
+              </option>
+            ))}
+          </optgroup>
+          {voices.length > 0 && (
+            <optgroup label="Giọng của trình duyệt">
+              <option value="browser:">Tự động ({voices[0].name.replace(/^Microsoft |^Google /, "").replace(/ - .*$/, "")})</option>
+              {voices.map((v) => (
+                <option key={v.voiceURI} value={`browser:${v.voiceURI}`}>
+                  {v.name} ({v.lang})
+                </option>
+              ))}
+            </optgroup>
+          )}
         </select>
-        <button className="btn small ghost" onClick={() => pick(uri)}>
+        <button className="btn small ghost" onClick={() => pick(choice)}>
           <SpeakerHigh size={16} weight="bold" /> Nghe thử
         </button>
       </div>
-      {voices.length > 0 && !voices.some(isNaturalVoice) && (
-        <span className="muted small voice-hint">
-          Trình duyệt này chỉ có giọng máy. Mở app bằng Microsoft Edge để có giọng tự nhiên (Natural), hoặc Chrome để có giọng Google.
-        </span>
-      )}
+      <span className="muted small voice-hint">
+        Giọng AI đọc tự nhiên và đọc chậm vẫn liền mạch. Giọng của trình duyệt dùng được cả khi mạng yếu.
+      </span>
     </div>
   );
 }

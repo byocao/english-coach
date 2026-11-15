@@ -6,7 +6,7 @@ import { CATEGORIES, Fx, LEVELS, STEPS } from "./meta";
 const STEP_DETAIL: Record<string, string> = {
   words: "Lật thẻ, nghe phát âm chuẩn, ghép từ với nghĩa và điền từ vào câu.",
   listen: "Nghe câu do giọng tự nhiên đọc rồi xếp các từ đúng thứ tự.",
-  dictation: "Gõ lại những gì nghe được, sai chỗ nào được tô màu ngay.",
+  dictation: "Nghe câu rồi điền những từ còn thiếu, ô sai được tô đỏ để sửa ngay.",
   speak: "Đọc to từng câu, AI chấm điểm và chỉ rõ từ nào cần sửa.",
   read: "Đọc cả bài, bấm vào từ để tra, bấm câu để AI giải thích bằng tiếng Việt.",
   quiz: "Trả lời câu hỏi đọc hiểu để chắc là bạn đã nắm bài.",

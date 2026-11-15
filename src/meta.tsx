@@ -127,7 +127,7 @@ export function Fx({ name, size = 28, label, className = "", tile = false }: { n
 export const STEPS: { key: Step; label: string; fx: FxName; hint: string; tone: string }[] = [
   { key: "words", label: "Từ vựng", fx: "books", hint: "Thẻ từ, ghép cặp, điền từ", tone: "violet" },
   { key: "listen", label: "Nghe & xếp câu", fx: "headphone", hint: "Nghe rồi xếp từ thành câu", tone: "sky" },
-  { key: "dictation", label: "Chép chính tả", fx: "memo", hint: "Gõ lại câu bạn nghe được", tone: "mint" },
+  { key: "dictation", label: "Chép chính tả", fx: "memo", hint: "Nghe rồi điền từ còn thiếu", tone: "mint" },
   { key: "speak", label: "Luyện nói", fx: "microphone", hint: "Đọc to, AI chấm phát âm", tone: "pink" },
   { key: "read", label: "Đọc hiểu", fx: "open_book", hint: "Đọc bài, tra từ, hỏi AI", tone: "amber" },
   { key: "quiz", label: "Thử thách", fx: "trophy", hint: "Trả lời câu hỏi về bài", tone: "coral" },

@@ -13,7 +13,8 @@ export interface Env {
   CLASS_LIMIT: string; // classes a VIP account can own (admin unlimited)
   CLASS_STUDENT_LIMIT: string; // students per class, pending invites included
   CLASS_TEACHER_LIMIT: string; // co-teachers per class
-  MONTHLY_BUDGET_USD: string; // Claude API spend per month before lesson creation and grading pause
+  MONTHLY_BUDGET_USD: string;
+  TTS_DAILY_CHARS: string; // characters of new AI speech per account per day (cached speech is free) // Claude API spend per month before lesson creation and grading pause
 
   // Secrets (wrangler secret put / .dev.vars)
   ADMIN_LOGIN?: string; // username of the admin account; unset = no admin
