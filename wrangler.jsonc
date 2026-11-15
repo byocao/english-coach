@@ -41,6 +41,8 @@
     "CLASS_LIMIT": "3",
     "CLASS_STUDENT_LIMIT": "15",
     "CLASS_TEACHER_LIMIT": "1",
+    // New AI speech (Deepgram Aura-2 on Workers AI, ~$0.03 per 1k characters) per account per day; cached speech is free.
+    "TTS_DAILY_CHARS": "20000",
     // Once a month's Claude spend reaches this, lesson creation and grading show "đang bảo trì".
     "MONTHLY_BUDGET_USD": "70"
   },

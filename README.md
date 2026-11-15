@@ -56,7 +56,7 @@ classes. Speaking is graded by speech recognition plus an AI coach. Everything r
 | 🔔 **Notifications** | Class invites (accepted right in the list), replies and new class lessons. |
 | 🐶 **Companions** | Wanko (a puppy in a matcha bowl), the cats Tororo & Hijiki, and Kitsu, an original low-poly fox. |
 | 🌗 **Light and dark** | Follows the system theme, or pick one in the profile. Works as well on a phone as on a desktop. |
-| 🗣️ **Natural voices** | The browser's most natural English voice is picked automatically (e.g. Edge "Natural" voices); learners can choose another. |
+| 🗣️ **Natural voice** | A natural AI voice (Deepgram Aura-2) reads every sentence; slow playback stays smooth. Browser voices remain as a fallback and a choice in the profile. |
 | 💬 **Feedback** | "Báo lỗi bài này" on every lesson, and a support card that opens a prefilled GitHub issue form or an email. |
 
 <table>
@@ -109,6 +109,8 @@ Browser (React 19, Vite) ──► Cloudflare Worker (Hono)
 | Write a custom lesson | Claude (`LESSON_MODEL`) | Not available | `VIP_LESSON_LIMIT` lessons |
 | Grade a spoken sentence | Whisper transcribes, Claude (`GRADE_MODEL`) grades | `GRADE_LIMIT` grades | `VIP_GRADE_LIMIT` grades |
 | Explain a sentence | Workers AI (`WORKERS_AI_MODEL`) | Unlimited, within Cloudflare's free daily allowance | Unlimited |
+| Word card (Vietnamese meaning) | Workers AI (`WORKERS_AI_MODEL`), cached in D1 per word | Unlimited | Unlimited |
+| Natural voice | Deepgram Aura-2 on Workers AI (`@cf/deepgram/aura-2-en`, ~$0.03 per 1k characters), cached | `TTS_DAILY_CHARS` new characters a day | Same |
 
 The admin is unlimited. Trial and member allowances are per account and never reset; VIP allowances start again
 every Monday at 00:00 Vietnam time. The admin gives or removes VIP (or blocks an account) from the users table.
@@ -203,6 +205,7 @@ Plain settings live in `wrangler.jsonc` → `vars`:
 | `CLASS_LIMIT` | Classes a VIP account can own |
 | `CLASS_STUDENT_LIMIT` | Students per class, pending invites included |
 | `CLASS_TEACHER_LIMIT` | Co-teachers per class |
+| `TTS_DAILY_CHARS` | Characters of new (uncached) AI speech per account per day; cached speech is free |
 | `MONTHLY_BUDGET_USD` | Monthly Claude API spend before lesson writing and grading pause |
 | `WORKERS_AI_MODEL` | Workers AI model for sentence explanations |
 

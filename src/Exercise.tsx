@@ -4,9 +4,12 @@
 import {
   ArrowCounterClockwise,
   ArrowRight,
+  ArrowsIn,
+  ArrowsOut,
   Check,
   Eraser,
   Lightbulb,
+  MagnifyingGlass,
   Microphone,
   Play,
   Question,
@@ -15,9 +18,9 @@ import {
   Translate,
   X,
 } from "@phosphor-icons/react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { api, type Grade, type LessonContent, type LessonDetail, type Me, type ProgressResult, type Quota, type Step } from "./api";
-import { alignWords, norm, speak, startRecording, stopSpeaking, words, type Recorder } from "./audio";
+import { alignWords, norm, prefetchSpeech, speak, startRecording, stopSpeaking, words, type Recorder } from "./audio";
 import { Mascot, useCompanion, type Mood } from "./Mascot";
 import { Fx, STEPS } from "./meta";
 import { sfx } from "./sound";
@@ -30,20 +33,162 @@ const viOf = (c: LessonContent, i: number) => c.sentences_vi?.[i]?.trim() || "";
 const PRAISE = ["Tuyệt vời!", "Chính xác!", "Giỏi quá!", "Hay lắm!", "Đúng rồi!", "Xuất sắc!"];
 const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
 
-function shuffle<T>(a: T[]): T[] {
+// ---- Seeded shuffles and saved progress: a reloaded step continues where it was ----------------
+
+/** The seed of the step being played; set by <Exercise> before its children render. */
+let runSeed = 0;
+
+function hashStr(s: string): number {
+  let h = 2166136261;
+  for (let k = 0; k < s.length; k++) {
+    h ^= s.charCodeAt(k);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+/** mulberry32: a tiny seeded random number generator. */
+function seeded(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Shuffles the same way for the same step seed and `salt`, so a reload sees the same order. */
+function shuffle<T>(a: T[], salt: string): T[] {
+  const rand = seeded(hashStr(`${runSeed}|${salt}`));
   const b = [...a];
   for (let k = b.length - 1; k > 0; k--) {
-    const j = Math.floor(Math.random() * (k + 1));
+    const j = Math.floor(rand() * (k + 1));
     [b[k], b[j]] = [b[j], b[k]];
   }
   return b;
+}
+
+/** A step's progress, kept for the browser session (sessionStorage). */
+interface SavedRun {
+  seed: number;
+  total?: number;
+  queue?: number[];
+  pos?: number;
+  scores?: (number | null)[];
+  reviews?: number[];
+  combo?: number;
+}
+function loadRun(key: string): SavedRun | null {
+  try {
+    const v = JSON.parse(sessionStorage.getItem(key) ?? "null");
+    return v && typeof v.seed === "number" ? v : null;
+  } catch {
+    return null;
+  }
+}
+function saveRun(key: string, patch: Partial<SavedRun>) {
+  try {
+    sessionStorage.setItem(key, JSON.stringify({ ...loadRun(key), ...patch }));
+  } catch {
+    /* storage blocked: a reload just starts again */
+  }
+}
+function clearRun(key: string) {
+  try {
+    sessionStorage.removeItem(key);
+  } catch {
+    /* ignore */
+  }
+}
+
+/** What every part of an exercise can reach: its saved-progress key, leaving, and the word lookup. */
+interface ExApi {
+  storeKey: string;
+  leave: (href: string) => void;
+  lookup: (word: string) => void;
+  search: () => void;
+}
+const ExCtx = createContext<ExApi | null>(null);
+
+// ---- Which sentences each step practises -------------------------------------------------------
+
+/** At most this many sentences per step: shorter sessions, and each sentence practised in one way. */
+const MAX_PER_STEP = 5;
+
+/**
+ * Listening, dictation and speaking each get their own third of the passage (sentences 0, 3, 6… / 1, 4, 7… /
+ * 2, 5, 8…), so no sentence is ordered, typed and spoken in a row. Reading covers the whole passage.
+ */
+function sentencesFor(c: LessonContent, step: "listen" | "dictation" | "speak"): number[] {
+  const all = c.sentences.map((_, k) => k);
+  if (all.length < 3) return all;
+  const r = { listen: 0, dictation: 1, speak: 2 }[step];
+  return all.filter((k) => k % 3 === r).slice(0, MAX_PER_STEP);
+}
+
+/** A sentence's words, with the punctuation around each kept apart. */
+interface Token {
+  raw: string;
+  pre: string;
+  w: string;
+  post: string;
+}
+function sentenceTokens(s: string): Token[] {
+  return words(s).map((raw) => {
+    const m = raw.match(/^([^\p{L}\p{N}']*)(.*?)([^\p{L}\p{N}']*)$/u)!;
+    return { raw, pre: m[1], w: m[2], post: m[3] };
+  });
+}
+
+const FUNCTION_WORDS = new Set(
+  "a an the to of in on at for with from by my your his her its our their this that these those and but or so as than i you he she it we they me him us them is are was were be been am do does did have has had will would can could should not no".split(
+    " ",
+  ),
+);
+
+/**
+ * Word-order tiles. Up to 8 words: one tile per word. Longer sentences are cut into phrases of 2 (or 3, above 14
+ * words) at punctuation where possible, and a phrase never ends on a little word like "the" or "to".
+ */
+function phraseChunks(tokens: Token[]): string[] {
+  const ws = tokens.filter((t) => t.w);
+  if (ws.length <= 8) return ws.map((t) => t.w);
+  const size = ws.length <= 14 ? 2 : 3;
+  const out: string[][] = [];
+  let cur: string[] = [];
+  ws.forEach((t, k) => {
+    cur.push(t.w);
+    const last = k === ws.length - 1;
+    const pause = /[,;:]/.test(t.post);
+    const dangling = FUNCTION_WORDS.has(t.w.toLowerCase()) && !last && cur.length <= size;
+    if (last || pause || (cur.length >= size && !dangling)) {
+      out.push(cur);
+      cur = [];
+    }
+  });
+  // No lonely one-word phrase at the end.
+  if (out.length > 1 && out[out.length - 1].length === 1) out[out.length - 2].push(...out.pop()!);
+  return out.map((p) => p.join(" "));
 }
 
 export function Exercise({ lessonId, step, me, onGame }: { lessonId: number; step: string; me: Me; onGame: () => void }) {
   const [d, setD] = useState<LessonDetail | null>(null);
   const [error, setError] = useState("");
   const [done, setDone] = useState<{ score: number; res: ProgressResult } | null>(null);
+  const [asking, setAsking] = useState(false);
+  const [word, setWord] = useState<string | null>(null);
+  const [searching, setSearching] = useState(false);
   const info = STEPS.find((s) => s.key === step);
+  const back = `#/lesson/${lessonId}`;
+
+  // Progress of this step survives a reload (same browser tab): its seed fixes every shuffle.
+  const storeKey = `wancha_run_${lessonId}_${step}`;
+  const [seed] = useState(() => {
+    const s = loadRun(storeKey)?.seed ?? Math.floor(Math.random() * 2 ** 31);
+    saveRun(storeKey, { seed: s });
+    return s;
+  });
+  runSeed = seed;
 
   useEffect(() => {
     api<LessonDetail>(`/api/lessons/${lessonId}`)
@@ -52,9 +197,47 @@ export function Exercise({ lessonId, step, me, onGame }: { lessonId: number; ste
     return stopSpeaking;
   }, [lessonId]);
 
+  // The browser's back button asks before leaving: an extra history entry catches it.
+  const leaving = useRef<string | null>(null);
+  const doneRef = useRef(false);
+  doneRef.current = !!done;
+  const leave = useCallback((href: string) => {
+    stopSpeaking();
+    // Fullscreen is for exercises; leave it when going back to the app.
+    if (!/^#\/lesson\/\d+\/\w+/.test(href) && document.fullscreenElement) void document.exitFullscreen().catch(() => {});
+    if (history.state?.exGuard) {
+      // Drop the guard entry first, then replace the exercise entry: no stale exercise left in history.
+      leaving.current = href;
+      history.back();
+    } else location.replace(href);
+  }, []);
+  useEffect(() => {
+    const guard = `${lessonId}/${step}`;
+    if (history.state?.exGuard !== guard) history.pushState({ exGuard: guard }, "", location.href);
+    let gone = false;
+    const onPop = () => {
+      // A hash change made by location.replace() fires popstate too: once leaving, ignore the rest.
+      if (gone) return;
+      if (leaving.current !== null || doneRef.current) {
+        gone = true;
+        return location.replace(leaving.current ?? back);
+      }
+      history.pushState({ exGuard: guard }, "", location.href);
+      setAsking(true);
+    };
+    addEventListener("popstate", onPop);
+    return () => removeEventListener("popstate", onPop);
+  }, [lessonId, step, back]);
+
+  const ex = useMemo<ExApi>(
+    () => ({ storeKey, leave, lookup: (w) => setWord(w), search: () => setSearching(true) }),
+    [storeKey, leave],
+  );
+
   const finish = async (score: number) => {
     try {
       const res = await api<ProgressResult>("/api/progress", { body: { lessonId, step, score } });
+      clearRun(storeKey);
       sfx.complete();
       setDone({ score, res });
       onGame();
@@ -63,40 +246,68 @@ export function Exercise({ lessonId, step, me, onGame }: { lessonId: number; ste
     }
   };
 
-  const back = `#/lesson/${lessonId}`;
-  if (!info) return <p className="error center">Không có bài tập “{step}”.</p>;
-  if (error)
-    return (
+  let body: React.ReactNode;
+  if (!info) body = <p className="error center">Không có bài tập “{step}”.</p>;
+  else if (error)
+    body = (
       <ExShell back={back} progress={0}>
         <p className="error center">{error}</p>
       </ExShell>
     );
-  if (!d)
-    return (
+  else if (!d)
+    body = (
       <ExShell back={back} progress={0}>
         <div className="loading">
           <Fx name={info.fx} size={64} className="bob" />
         </div>
       </ExShell>
     );
-  if (done) return <Complete lessonId={lessonId} stepKey={info.key} score={done.score} res={done.res} />;
-
-  const c = d.lesson.content;
-  const props = { c, back, lessonId, me, onFinish: finish };
-  switch (info.key) {
-    case "words":
-      return <WordsRun {...props} />;
-    case "listen":
-      return <WordBankRun {...props} />;
-    case "dictation":
-      return <DictationRun {...props} />;
-    case "quiz":
-      return <QuizRun {...props} />;
-    case "speak":
-      return <SpeakRun {...props} prior={d.sentences} />;
-    case "read":
-      return <ReadRun {...props} />;
+  else if (done) body = <Complete lessonId={lessonId} stepKey={info.key} score={done.score} res={done.res} />;
+  else {
+    const c = d.lesson.content;
+    const props = { c, back, lessonId, me, onFinish: finish };
+    body = {
+      words: <WordsRun {...props} />,
+      listen: <WordBankRun {...props} />,
+      dictation: <ClozeRun {...props} />,
+      quiz: <QuizRun {...props} />,
+      speak: <SpeakRun {...props} prior={d.sentences} />,
+      read: <ReadRun {...props} />,
+    }[info.key];
   }
+
+  return (
+    <ExCtx.Provider value={ex}>
+      {body}
+      {word && <WordPop raw={word} c={d?.lesson.content} onClose={() => setWord(null)} />}
+      {searching && (
+        <WordSearch
+          onClose={() => setSearching(false)}
+          onFind={(w) => {
+            setSearching(false);
+            setWord(w);
+          }}
+        />
+      )}
+      {asking && (
+        <div className="overlay" onClick={() => setAsking(false)}>
+          <div className="dialog" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <Fx name="locked" size={56} tile className="dialog-fx" />
+            <h2>Thoát bài tập?</h2>
+            <p>Tiến độ được giữ lại: vào lại bài này, bạn sẽ học tiếp từ câu đang làm.</p>
+            <div className="dialog-actions">
+              <button className="btn ghost" onClick={() => leave(back)}>
+                Thoát
+              </button>
+              <button className="btn primary" onClick={() => setAsking(false)} autoFocus>
+                Học tiếp
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </ExCtx.Provider>
+  );
 }
 
 interface RunProps {
@@ -124,10 +335,20 @@ function ExShell({
   children: React.ReactNode;
   footer?: React.ReactNode;
 }) {
+  const ex = useContext(ExCtx);
   return (
     <div className="ex">
       <header className="ex-top">
-        <a className="icon-btn" href={back} aria-label="Thoát">
+        <a
+          className="icon-btn"
+          href={back}
+          aria-label="Thoát"
+          onClick={(e) => {
+            if (!ex) return;
+            e.preventDefault();
+            ex.leave(back);
+          }}
+        >
           <X size={26} weight="bold" />
         </a>
         <div className="ex-progress grow">
@@ -135,7 +356,7 @@ function ExShell({
         </div>
         {review && (
           <span className="review-pill" title="Ôn lại những câu chưa đúng">
-            <ArrowCounterClockwise size={16} weight="bold" /> Ôn lại · còn {review.left}
+            <ArrowCounterClockwise size={16} weight="bold" /> <span className="review-text">Ôn lại · còn</span> {review.left}
           </span>
         )}
         {combo >= 2 && (
@@ -143,10 +364,66 @@ function ExShell({
             <Fx name="fire" size={22} /> {combo}
           </span>
         )}
+        {ex && (
+          <button className="icon-btn" onClick={ex.search} aria-label="Tra từ" title="Tra từ">
+            <MagnifyingGlass size={24} weight="bold" />
+          </button>
+        )}
+        <FullscreenButton />
       </header>
-      <main className="ex-body">{children}</main>
+      <div className="ex-scroll">
+        <main className="ex-body">{children}</main>
+      </div>
       {footer}
     </div>
+  );
+}
+
+/** Fullscreen hides the browser's bars on phones. Hidden where the browser cannot do it (iPhone Safari). */
+function FullscreenButton() {
+  const [on, setOn] = useState(() => !!document.fullscreenElement);
+  useEffect(() => {
+    const fn = () => setOn(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", fn);
+    return () => document.removeEventListener("fullscreenchange", fn);
+  }, []);
+  if (!document.fullscreenEnabled) return null;
+  return (
+    <button
+      className="icon-btn"
+      onClick={() =>
+        void (on ? document.exitFullscreen() : document.documentElement.requestFullscreen({ navigationUI: "hide" })).catch(() => {})
+      }
+      aria-label={on ? "Thoát toàn màn hình" : "Toàn màn hình"}
+      title={on ? "Thoát toàn màn hình" : "Toàn màn hình"}
+    >
+      {on ? <ArrowsIn size={24} weight="bold" /> : <ArrowsOut size={24} weight="bold" />}
+    </button>
+  );
+}
+
+/** English text whose words open the dictionary card when tapped. */
+function Say({ text }: { text: string }) {
+  const ex = useContext(ExCtx);
+  return (
+    <>
+      {text.split(/(\s+)/).map((tok, j) =>
+        !ex || /^\s*$/.test(tok) || !/[A-Za-z]/.test(tok) ? (
+          tok
+        ) : (
+          <span
+            key={j}
+            className="lw"
+            onClick={(e) => {
+              e.stopPropagation();
+              ex.lookup(tok);
+            }}
+          >
+            {tok}
+          </span>
+        ),
+      )}
+    </>
   );
 }
 
@@ -249,7 +526,8 @@ function Footer({
   );
 }
 
-function Prompt({ title, mood, say, children }: { title: string; mood: Mood; say?: React.ReactNode; children?: React.ReactNode }) {
+/** Title, companion and speech bubble. `en` is English text (its words open the dictionary); `say` is anything else. */
+function Prompt({ title, mood, say, en, children }: { title: string; mood: Mood; say?: React.ReactNode; en?: string; children?: React.ReactNode }) {
   const companion = useCompanion();
   return (
     <>
@@ -260,6 +538,11 @@ function Prompt({ title, mood, say, children }: { title: string; mood: Mood; say
         </div>
         <div className="ex-speech">
           {say && <div className="speech">{say}</div>}
+          {en && (
+            <div className="speech en">
+              <Say text={en} />
+            </div>
+          )}
           {children}
         </div>
       </div>
@@ -295,13 +578,24 @@ const MAX_REVIEWS = 2;
  * first time = full, right on a retry = 60 %, revealed = what the first try got.
  */
 function useRunner(total: number, onFinish: (score: number) => void) {
-  const [queue, setQueue] = useState(() => Array.from({ length: total }, (_, k) => k));
-  const [pos, setPos] = useState(0);
+  // A reload picks up the saved queue, position and scores of this step.
+  const storeKey = useContext(ExCtx)?.storeKey ?? "";
+  const [saved] = useState(() => {
+    const r = storeKey ? loadRun(storeKey) : null;
+    return r && r.total === total && r.queue && typeof r.pos === "number" && r.pos < r.queue.length ? r : null;
+  });
+  const [queue, setQueue] = useState(() => saved?.queue ?? Array.from({ length: total }, (_, k) => k));
+  const [pos, setPos] = useState(saved?.pos ?? 0);
   const [state, setState] = useState<Check>("idle");
   const [attempt, setAttempt] = useState(0);
-  const [combo, setCombo] = useState(0);
-  const scores = useRef<(number | undefined)[]>([]);
-  const reviews = useRef<number[]>([]);
+  const [combo, setCombo] = useState(saved?.combo ?? 0);
+  const scores = useRef<(number | undefined)[]>((saved?.scores ?? []).map((x) => x ?? undefined));
+  const reviews = useRef<number[]>(saved?.reviews ?? []);
+  useEffect(() => {
+    if (storeKey) saveRun(storeKey, { total, queue, pos, combo, scores: scores.current.map((x) => x ?? null), reviews: reviews.current });
+    // Saved when the learner moves on, not on every keystroke inside an item.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeKey, total, queue, pos]);
   const i = queue[pos] ?? 0;
   const inReview = pos >= total;
 
@@ -377,11 +671,11 @@ type WordItem =
 function buildWordItems(c: LessonContent): WordItem[] {
   const vocab = c.vocabulary.filter((v) => v.word.trim());
   if (vocab.length === 0) return [];
-  const others = (v: Vocab, n: number) =>
-    shuffle(vocab.filter((o) => o.word.toLowerCase() !== v.word.toLowerCase()).map((o) => o.word)).slice(0, n);
+  const others = (v: Vocab, n: number, salt: string) =>
+    shuffle(vocab.filter((o) => o.word.toLowerCase() !== v.word.toLowerCase()).map((o) => o.word), salt + v.word).slice(0, n);
   const items: WordItem[] = [{ kind: "cards", vocab }];
   const gaps: WordItem[] = [];
-  for (const v of shuffle(vocab)) {
+  for (const v of shuffle(vocab, "gaps")) {
     const at = v.example.toLowerCase().indexOf(v.word.toLowerCase());
     if (at < 0 || vocab.length < 3) continue;
     gaps.push({
@@ -389,13 +683,13 @@ function buildWordItems(c: LessonContent): WordItem[] {
       v,
       before: v.example.slice(0, at),
       after: v.example.slice(at + v.word.length),
-      options: shuffle([v.word, ...others(v, 3)]),
+      options: shuffle([v.word, ...others(v, 3, "gap-o")], "gap" + v.word),
     });
   }
-  if (vocab.length >= 3) items.push({ kind: "match", vocab: shuffle(vocab).slice(0, 5) });
+  if (vocab.length >= 3) items.push({ kind: "match", vocab: shuffle(vocab, "match").slice(0, 5) });
   items.push(...gaps.slice(0, 2));
   if (vocab.length >= 3) {
-    for (const v of shuffle(vocab).slice(0, 2)) items.push({ kind: "hear", v, options: shuffle([v.word, ...others(v, 3)]) });
+    for (const v of shuffle(vocab, "hear").slice(0, 2)) items.push({ kind: "hear", v, options: shuffle([v.word, ...others(v, 3, "hear-o")], "hear" + v.word) });
   }
   items.push(...gaps.slice(2, 4));
   return items;
@@ -471,8 +765,8 @@ function CardsItem({ vocab, back, run, total }: { vocab: Vocab[]; back: string; 
 }
 
 function MatchItem({ vocab, back, run }: { vocab: Vocab[]; back: string; run: Run }) {
-  const left = useMemo(() => shuffle(vocab.map((v, k) => ({ k, text: v.word }))), [vocab]);
-  const right = useMemo(() => shuffle(vocab.map((v, k) => ({ k, text: v.meaning_vi }))), [vocab]);
+  const left = useMemo(() => shuffle(vocab.map((v, k) => ({ k, text: v.word })), "match-l"), [vocab]);
+  const right = useMemo(() => shuffle(vocab.map((v, k) => ({ k, text: v.meaning_vi })), "match-r"), [vocab]);
   const [selL, setSelL] = useState<number | null>(null);
   const [selR, setSelR] = useState<number | null>(null);
   const [matched, setMatched] = useState<Set<number>>(new Set());
@@ -601,7 +895,7 @@ function ChoiceItem({ item, back, run }: { item: Extract<WordItem, { kind: "gap"
               </span>
               {item.kind === "gap" && (
                 <span className="vi">
-                  {item.v.example}
+                  <Say text={item.v.example} />
                   {item.v.example_vi ? ` — ${item.v.example_vi}` : ""}
                 </span>
               )}
@@ -614,9 +908,9 @@ function ChoiceItem({ item, back, run }: { item: Extract<WordItem, { kind: "gap"
         <>
           <Prompt title="Điền từ còn thiếu" mood={moodFor(run.state)} />
           <p className="gap-sentence">
-            {item.before}
+            <Say text={item.before} />
             <span className={`blank ${sel ? "filled" : ""} ${run.state}`}>{run.state === "reveal" ? answer : sel ?? " ".repeat(8)}</span>
-            {item.after}
+            <Say text={item.after} />
           </p>
         </>
       ) : (
@@ -661,17 +955,29 @@ function tileWords(s: string): string[] {
 }
 
 function WordBankRun({ c, back, onFinish }: RunProps) {
-  const run = useRunner(c.sentences.length, onFinish);
+  // Only this step's third of the passage; long sentences come as phrase tiles.
+  const order = useMemo(() => sentencesFor(c, "listen"), [c]);
+  const run = useRunner(order.length, onFinish);
   const { i, state, mark, next, progress, combo } = run;
-  const sentence = c.sentences[i];
-  const vi = viOf(c, i);
-  const target = useMemo(() => tileWords(sentence), [sentence]);
+  const idx = order[i];
+  const sentence = c.sentences[idx];
+  const vi = viOf(c, idx);
+  const wordCount = useMemo(() => sentenceTokens(sentence).filter((t) => t.w).length, [sentence]);
+  const target = useMemo(() => phraseChunks(sentenceTokens(sentence)), [sentence]);
+  const chunked = target.length < wordCount;
   const bank = useMemo<Tile[]>(() => {
-    const have = new Set(target.map(norm));
-    const pool = shuffle(c.sentences.flatMap(tileWords).filter((w) => !have.has(norm(w)) && w.length > 2));
-    const extras = [...new Set(pool.map((w) => w.toLowerCase()))].slice(0, Math.min(3, Math.max(2, Math.floor(target.length / 4))));
-    return shuffle([...target, ...extras]).map((text, id) => ({ id, text }));
-  }, [target, c.sentences]);
+    const have = new Set(target.flatMap((t) => t.split(" ")).map(norm));
+    const pool = shuffle(
+      c.sentences.flatMap(tileWords).filter((w) => !have.has(norm(w)) && w.length > 2),
+      "pool" + idx,
+    );
+    const extras = [...new Set(pool.map((w) => w.toLowerCase()))].slice(0, chunked ? 2 : Math.min(3, Math.max(2, Math.floor(target.length / 4))));
+    return shuffle([...target, ...extras], "bank" + idx).map((text, id) => ({ id, text }));
+  }, [target, c.sentences, idx, chunked]);
+  useEffect(() => {
+    const nextIdx = order[i + 1];
+    if (nextIdx !== undefined) prefetchSpeech(c.sentences[nextIdx]);
+  }, [order, i, c.sentences]);
   const maxHints = Math.max(1, Math.floor(target.length / 3));
 
   // One slot per word of the sentence. A slot holds a bank tile id; hinted and confirmed slots are locked.
@@ -908,7 +1214,10 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
           hint="Ô màu đỏ chưa đúng chỗ. Bấm “Thử lại”: từ đúng được giữ lại, bạn chỉ cần xếp lại các ô đỏ."
           detail={
             <>
-              {state === "reveal" && <div>Đáp án: {sentence}</div>}
+              <div>
+                {state === "reveal" ? "Đáp án: " : ""}
+                <Say text={sentence} />
+              </div>
               {vi && <span className="vi">{vi}</span>}
             </>
           }
@@ -931,7 +1240,13 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
       </Prompt>
 
       <p className="wb-help small muted">
-        Câu có <b>{target.length} từ</b>. Bấm hoặc kéo từ vào ô; bấm vào ô để bỏ từ ra.
+        Câu có <b>{wordCount} từ</b>
+        {chunked && (
+          <>
+            , chia thành <b>{target.length} cụm</b>
+          </>
+        )}
+        . Bấm hoặc kéo {chunked ? "cụm từ" : "từ"} vào ô; bấm vào ô để bỏ ra.
       </p>
       <div className="wb-slots" role="group" aria-label={`Câu có ${target.length} từ`}>
         {target.map((_, k) => {
@@ -962,7 +1277,7 @@ function WordBankRun({ c, back, onFinish }: RunProps) {
               onPointerDown={id !== null && !b.locked[k] ? (e) => startDrag(e, id) : undefined}
               onClick={tapped(() => (id === null ? update({ sel: b.sel === k ? null : k }) : takeOut(k)))}
             >
-              {id === null ? "…" : textOf(id)}
+              {id === null ? target[k].split(" ").map(() => "…").join(" ") : textOf(id)}
             </button>
           );
         })}
@@ -1033,23 +1348,85 @@ interface Board {
 
 // ---- Dictation ---------------------------------------------------------------------------------
 
-function DictationRun({ c, back, onFinish }: RunProps) {
-  const run = useRunner(c.sentences.length, onFinish);
-  const { i, state, mark, next, progress, combo } = run;
-  const sentence = c.sentences[i];
-  const [text, setText] = useState("");
-  const [diff, setDiff] = useState<{ word: string; ok: boolean }[] | null>(null);
-  useEffect(() => {
-    setText("");
-    setDiff(null);
-  }, [run.key]);
+// Dictation: hear the sentence, type only the 2-4 missing key words (lesson vocabulary first).
+const CLOZE_STOP = new Set([...FUNCTION_WORDS, ..."there here then when what which who how very just also into about".split(" ")]);
 
-  const check = () => {
-    const d = alignWords(sentence, text);
-    const pct = Math.round((d.filter((w) => w.ok).length / d.length) * 100);
-    setDiff(d);
-    mark(pct, pct >= 90);
+/** The words to blank: lesson vocabulary first, then the longest content words; 2-4 per sentence, in order. */
+function pickBlanks(tokens: Token[], c: LessonContent, salt: string): number[] {
+  const vocab = new Set(c.vocabulary.flatMap((v) => v.word.toLowerCase().split(/\s+/)));
+  const cand = tokens.map((t, k) => ({ k, w: t.w.toLowerCase() })).filter((t) => t.w.length >= 3 && !CLOZE_STOP.has(t.w));
+  const fromVocab = shuffle(
+    cand.filter((t) => vocab.has(t.w)),
+    salt + "v",
+  );
+  const rest = shuffle(
+    cand.filter((t) => !vocab.has(t.w)),
+    salt + "r",
+  ).sort((a, b) => b.w.length - a.w.length);
+  const count = Math.max(2, Math.min(4, Math.round(tokens.length / 5)));
+  const picked = [...new Set([...fromVocab, ...rest].map((t) => t.k))].slice(0, count);
+  if (picked.length === 0 && tokens.some((t) => t.w)) picked.push(tokens.findIndex((t) => t.w));
+  return picked.sort((a, b) => a - b);
+}
+
+interface Cloze {
+  key: number;
+  vals: Record<number, string>;
+  locked: Record<number, boolean>;
+  marks: Record<number, boolean> | null;
+}
+
+function ClozeRun({ c, back, onFinish }: RunProps) {
+  const order = useMemo(() => sentencesFor(c, "dictation"), [c]);
+  const run = useRunner(order.length, onFinish);
+  const { i, state, mark, next, progress, combo } = run;
+  const idx = order[i];
+  const sentence = c.sentences[idx];
+  const vi = viOf(c, idx);
+  const tokens = useMemo(() => sentenceTokens(sentence), [sentence]);
+  const blanks = useMemo(() => pickBlanks(tokens, c, "cloze" + idx), [tokens, c, idx]);
+  const fresh = (): Cloze => ({ key: run.key, vals: {}, locked: {}, marks: null });
+  const [stored, setCloze] = useState<Cloze>(fresh);
+  const z = stored.key === run.key ? stored : fresh();
+  const inputs = useRef<Record<number, HTMLInputElement | null>>({});
+  const idle = state === "idle";
+  const open = blanks.filter((k) => !z.locked[k]);
+  const filled = open.every((k) => (z.vals[k] ?? "").trim());
+
+  useEffect(() => {
+    const nextIdx = order[i + 1];
+    if (nextIdx !== undefined) prefetchSpeech(c.sentences[nextIdx]);
+  }, [order, i, c.sentences]);
+  // Focus the first empty blank when a sentence (or a retry) starts.
+  useEffect(() => {
+    if (!idle) return;
+    const k = blanks.find((b) => !z.locked[b] && !(z.vals[b] ?? "").trim());
+    if (k !== undefined) setTimeout(() => inputs.current[k]?.focus({ preventScroll: true }), 350);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [run.key, idle]);
+
+  const focusNext = (from: number) => {
+    const k = blanks.find((b) => b > from && !z.locked[b]) ?? blanks.find((b) => !z.locked[b] && !(z.vals[b] ?? "").trim());
+    if (k !== undefined && k !== from) inputs.current[k]?.focus();
   };
+  const check = () => {
+    const marks = Object.fromEntries(blanks.map((k) => [k, norm(z.vals[k] ?? "") === norm(tokens[k].w)]));
+    const right = blanks.filter((k) => marks[k]).length;
+    setCloze({ ...z, marks });
+    mark(Math.round((right / blanks.length) * 100), right === blanks.length);
+  };
+  /** Try again: the right words stay (locked), the wrong ones are cleared. */
+  const retry = () => {
+    const m = z.marks ?? {};
+    setCloze({
+      ...z,
+      vals: Object.fromEntries(blanks.filter((k) => m[k] || z.locked[k]).map((k) => [k, z.vals[k] ?? ""])),
+      locked: Object.fromEntries(blanks.map((k) => [k, !!(m[k] || z.locked[k])])),
+      marks: null,
+    });
+    run.retry();
+  };
+  const right = z.marks ? blanks.filter((k) => z.marks![k]).length : 0;
 
   return (
     <ExShell
@@ -1060,32 +1437,26 @@ function DictationRun({ c, back, onFinish }: RunProps) {
       footer={
         <Footer
           state={state}
-          canCheck={text.trim().length > 0}
+          canCheck={filled}
+          checkLabel={filled ? "Kiểm tra" : `Điền ${open.filter((k) => !(z.vals[k] ?? "").trim()).length} ô còn trống`}
           onCheck={check}
           onNext={next}
-          onRetry={run.retry}
+          onRetry={retry}
           onReveal={run.reveal}
           retried={run.retried}
-          hint={diff && `Đúng ${diff.filter((w) => w.ok).length}/${diff.length} từ. Nghe lại rồi sửa câu của bạn nhé.`}
+          hint={`Đúng ${right}/${blanks.length} từ. Nghe lại rồi sửa các ô đỏ nhé.`}
           detail={
-            diff && (
-              <>
-                <span className="diff">
-                  {diff.map((w, k) => (
-                    <span key={k} className={w.ok ? "w-ok" : "w-miss"}>
-                      {w.word}{" "}
-                    </span>
-                  ))}
-                </span>
-                {viOf(c, i) && <span className="vi">{viOf(c, i)}</span>}
-              </>
-            )
+            <>
+              <div>
+                <Say text={sentence} />
+              </div>
+              {vi && <span className="vi">{vi}</span>}
+            </>
           }
           extra={
             <button
               className="btn ghost"
               onClick={() => {
-                setDiff(alignWords(sentence, text));
                 mark(0, false);
                 run.reveal();
               }}
@@ -1096,25 +1467,58 @@ function DictationRun({ c, back, onFinish }: RunProps) {
         />
       }
     >
-      <Prompt title="Gõ lại những gì bạn nghe" mood={moodFor(state)}>
+      <Prompt title="Nghe và điền từ còn thiếu" mood={moodFor(state)}>
         <PlayButtons text={sentence} />
       </Prompt>
-      <textarea
-        className="dict-input"
-        value={text}
-        disabled={state !== "idle"}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey && text.trim() && state === "idle") {
-            e.preventDefault();
-            check();
+      <p className="cloze">
+        {tokens.map((t, k) => {
+          const space = k < tokens.length - 1 ? " " : "";
+          if (!blanks.includes(k)) {
+            return (
+              <span key={k}>
+                <Say text={t.raw} />
+                {space}
+              </span>
+            );
           }
-        }}
-        placeholder="Gõ bằng tiếng Anh…"
-        autoFocus
-        spellCheck={false}
-        autoCapitalize="none"
-      />
+          const shown = state === "reveal" && !z.locked[k] && !z.marks?.[k] ? t.w : (z.vals[k] ?? "");
+          const cls = z.locked[k] ? "locked" : z.marks ? (z.marks[k] ? "right" : "wrong") : state === "reveal" ? "reveal" : "";
+          return (
+            <span key={k} className="cloze-item">
+              {t.pre}
+              <input
+                ref={(el) => {
+                  inputs.current[k] = el;
+                }}
+                className={`cloze-input ${cls}`}
+                value={shown}
+                size={Math.max(3, t.w.length)}
+                style={{ width: `${Math.max(3, t.w.length) + 1.2}ch` }}
+                disabled={!idle || z.locked[k]}
+                onChange={(e) => setCloze({ ...z, vals: { ...z.vals, [k]: e.target.value.replace(/\s/g, "") } })}
+                onKeyDown={(e) => {
+                  if (e.key === " " || (e.key === "Enter" && !filled)) {
+                    e.preventDefault();
+                    focusNext(k);
+                  } else if (e.key === "Enter" && filled && idle) {
+                    e.preventDefault();
+                    check();
+                  }
+                }}
+                aria-label={`Từ còn thiếu số ${blanks.indexOf(k) + 1}`}
+                autoCapitalize="none"
+                autoCorrect="off"
+                autoComplete="off"
+                spellCheck={false}
+                enterKeyHint="next"
+              />
+              {t.post}
+              {space}
+            </span>
+          );
+        })}
+      </p>
+      <p className="wb-help small muted">Gõ từ bạn nghe được vào mỗi ô. Dấu cách hoặc Enter để sang ô tiếp theo.</p>
     </ExShell>
   );
 }
@@ -1163,7 +1567,7 @@ function QuizRun({ c, back, onFinish }: RunProps) {
         />
       }
     >
-      <Prompt title="Chọn đáp án đúng" mood={moodFor(state)} say={q.question} />
+      <Prompt title="Chọn đáp án đúng" mood={moodFor(state)} en={q.question} />
       <div className="options">
         {q.options.map((o, k) => {
           const known = state === "correct" || state === "reveal";
@@ -1199,15 +1603,18 @@ interface SpeakResult {
 }
 
 function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior: LessonDetail["sentences"] }) {
-  const total = c.sentences.length;
+  // Only this step's third of the passage.
+  const order = useMemo(() => sentencesFor(c, "speak"), [c]);
+  const total = order.length;
   const [i, setI] = useState(0);
+  const idx = order[i];
   const [phase, setPhase] = useState<"idle" | "rec" | "grading">("idle");
   const [result, setResult] = useState<SpeakResult | null>(null);
   const [error, setError] = useState("");
   const [gradesLeft, setGradesLeft] = useState(me.quota.grades.left);
   const best = useRef<Record<number, number>>(Object.fromEntries(prior.map((p) => [p.sentence_index, p.best])));
   const rec = useRef<Recorder | null>(null);
-  const sentence = c.sentences[i];
+  const sentence = c.sentences[idx];
 
   useEffect(() => {
     setResult(null);
@@ -1235,11 +1642,11 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
       const recording = await r.stop();
       if (recording.seconds < 0.4) throw new Error("Bản ghi quá ngắn, hãy thử lại.");
       const res = await api<Omit<SpeakResult, "url">>("/api/speak", {
-        body: { target: sentence, audio: recording.wavBase64, lessonId, sentenceIndex: i },
+        body: { target: sentence, audio: recording.wavBase64, lessonId, sentenceIndex: idx },
       });
       setResult({ ...res, url: recording.url });
       setGradesLeft(res.quota.grades.left);
-      best.current[i] = Math.max(best.current[i] ?? 0, res.grade.score);
+      best.current[idx] = Math.max(best.current[idx] ?? 0, res.grade.score);
       if (res.grade.score >= 85) sfx.correct();
       else if (res.grade.score < 60) sfx.wrong();
     } catch (err) {
@@ -1251,8 +1658,8 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
 
   const next = () => {
     if (i + 1 >= total) {
-      const scores = Object.values(best.current);
-      onFinish(scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / total) : 0);
+      const scores = order.map((k) => best.current[k] ?? 0);
+      onFinish(Math.round(scores.reduce((a, b) => a + b, 0) / Math.max(1, total)));
       return;
     }
     setI(i + 1);
@@ -1314,8 +1721,8 @@ function SpeakRun({ c, back, lessonId, me, onFinish, prior }: RunProps & { prior
                     {w.word}{" "}
                   </span>
                 ))
-            : sentence}
-          {viOf(c, i) && <p className="speak-vi">{viOf(c, i)}</p>}
+            : <Say text={sentence} />}
+          {viOf(c, idx) && <p className="speak-vi">{viOf(c, idx)}</p>}
         </div>
         <PlayButtons text={sentence} auto={false} size="small" />
       </div>
@@ -1396,7 +1803,7 @@ interface Explain {
 }
 
 function ReadRun({ c, back, onFinish }: RunProps) {
-  const [word, setWord] = useState<string | null>(null);
+  const lookup = useContext(ExCtx)?.lookup ?? (() => {});
   const [open, setOpen] = useState<number | null>(null);
   const [explains, setExplains] = useState<Record<number, Explain | string>>({});
   const [loading, setLoading] = useState<number | null>(null);
@@ -1446,7 +1853,7 @@ function ReadRun({ c, back, onFinish }: RunProps) {
               /\s+/.test(tok) ? (
                 tok
               ) : (
-                <span key={j} className="rw" onClick={() => setWord(tok)}>
+                <span key={j} className="rw" onClick={() => lookup(tok)}>
                   {tok}
                 </span>
               ),
@@ -1500,7 +1907,6 @@ function ReadRun({ c, back, onFinish }: RunProps) {
           )}
         </div>
       )}
-      {word && <WordPop raw={word} c={c} onClose={() => setWord(null)} />}
     </ExShell>
   );
 }
@@ -1511,46 +1917,151 @@ interface DictEntry {
   meanings?: { partOfSpeech: string; definitions: { definition: string }[] }[];
 }
 
-function WordPop({ raw, c, onClose }: { raw: string; c: LessonContent; onClose: () => void }) {
-  const word = raw.replace(/^[^A-Za-z']+|[^A-Za-z']+$/g, "");
-  const local = c.vocabulary.find((v) => v.word.toLowerCase() === word.toLowerCase());
+interface WordCard {
+  lemma: string;
+  ipa: string;
+  senses: { pos: string; meaning_vi: string; example: string; example_vi: string }[];
+}
+
+const POS_VI: Record<string, string> = {
+  noun: "danh từ",
+  verb: "động từ",
+  adjective: "tính từ",
+  adverb: "trạng từ",
+  preposition: "giới từ",
+  conjunction: "liên từ",
+  pronoun: "đại từ",
+  determiner: "hạn định từ",
+  phrase: "cụm từ",
+  interjection: "thán từ",
+};
+
+/** The word card: Vietnamese meanings (lesson vocabulary, then Workers AI), IPA, examples and English definitions. */
+function WordPop({ raw, c, onClose }: { raw: string; c?: LessonContent; onClose: () => void }) {
+  const ex = useContext(ExCtx);
+  const word = raw.replace(/[’]/g, "'").replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, "");
+  const local = c?.vocabulary.find((v) => v.word.toLowerCase() === word.toLowerCase());
+  const [card, setCard] = useState<WordCard | null | "loading">("loading");
   const [dict, setDict] = useState<DictEntry | null | "loading">("loading");
+  const [showEn, setShowEn] = useState(false);
   useEffect(() => {
     if (!word) return;
     void speak(word);
+    setCard("loading");
     setDict("loading");
+    api<WordCard>(`/api/word?w=${encodeURIComponent(word)}`)
+      .then(setCard)
+      .catch(() => setCard(null));
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.toLowerCase())}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => setDict(Array.isArray(j) ? (j[0] as DictEntry) : null))
       .catch(() => setDict(null));
   }, [word]);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    addEventListener("keydown", onKey);
+    return () => removeEventListener("keydown", onKey);
+  }, [onClose]);
   if (!word) return null;
-  const ipa = local?.ipa || (dict && dict !== "loading" ? dict.phonetic || dict.phonetics?.find((p) => p.text)?.text : "");
+  const ai = card && card !== "loading" ? card : null;
+  const en = dict && dict !== "loading" ? dict : null;
+  const ipa = local?.ipa || ai?.ipa || en?.phonetic || en?.phonetics?.find((p) => p.text)?.text || "";
+  const nothing = !local && card === null && dict === null;
   return (
-    <div className="word-pop">
-      <div className="row gap">
-        <button className="play" onClick={() => speak(word)} aria-label="Nghe từ">
-          <SpeakerHigh size={20} weight="fill" />
-        </button>
-        <b className="big-word">{word}</b>
-        <span className="muted">{ipa}</span>
-        <span className="grow" />
-        <button className="icon-btn" onClick={onClose} aria-label="Đóng">
-          <X size={20} weight="bold" />
-        </button>
-      </div>
-      {local && <p className="wp-mean">{local.meaning_vi}</p>}
-      {dict === "loading" && <p className="muted small">Đang tra từ điển…</p>}
-      {dict && dict !== "loading" && (
-        <ul className="small">
-          {dict.meanings?.slice(0, 3).map((m, k) => (
-            <li key={k}>
-              <i>{m.partOfSpeech}</i> — {m.definitions[0]?.definition}
-            </li>
+    <div className="sheet-backdrop" onClick={onClose}>
+      <div className="word-pop" role="dialog" aria-label={`Từ điển: ${word}`} onClick={(e) => e.stopPropagation()}>
+        <div className="row gap">
+          <button className="play" onClick={() => speak(word)} aria-label="Nghe từ">
+            <SpeakerHigh size={20} weight="fill" />
+          </button>
+          <div className="grow">
+            <b className="big-word">{word}</b> <span className="muted">{ipa}</span>
+            {ai && ai.lemma && ai.lemma !== word.toLowerCase() && (
+              <div className="small muted">
+                dạng gốc:{" "}
+                <b className="lw" onClick={() => ex?.lookup(ai.lemma)}>
+                  {ai.lemma}
+                </b>
+              </div>
+            )}
+          </div>
+          <button className="icon-btn" onClick={onClose} aria-label="Đóng">
+            <X size={20} weight="bold" />
+          </button>
+        </div>
+        {local && (
+          <div className="wp-sense here">
+            <span className="wp-pos">{local.pos || "trong bài"}</span>
+            <b>{local.meaning_vi}</b>
+            {local.example && <i>{local.example}</i>}
+            {local.example_vi && <em>{local.example_vi}</em>}
+          </div>
+        )}
+        {card === "loading" && <p className="muted small">Đang tra nghĩa…</p>}
+        {ai?.senses
+          .filter((s) => !local || s.meaning_vi.toLowerCase() !== local.meaning_vi.toLowerCase())
+          .map((s, k) => (
+            <div key={k} className="wp-sense">
+              <span className="wp-pos">{POS_VI[s.pos.toLowerCase()] ?? s.pos}</span>
+              <b>{s.meaning_vi}</b>
+              {s.example && <i>{s.example}</i>}
+              {s.example_vi && <em>{s.example_vi}</em>}
+            </div>
           ))}
-        </ul>
-      )}
-      {dict === null && !local && <p className="muted small">Không có trong từ điển.</p>}
+        {en?.meanings?.length ? (
+          <div className="wp-en">
+            <button className="btn small ghost" onClick={() => setShowEn(!showEn)} aria-expanded={showEn}>
+              {showEn ? "Ẩn" : "Xem"} định nghĩa tiếng Anh
+            </button>
+            {showEn && (
+              <ul className="small">
+                {en.meanings.slice(0, 4).map((m, k) => (
+                  <li key={k}>
+                    <i>{m.partOfSpeech}</i> — {m.definitions[0]?.definition}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : null}
+        {nothing && <p className="muted small">Chưa tra được từ này. Kiểm tra lại chính tả nhé.</p>}
+      </div>
+    </div>
+  );
+}
+
+/** "Tra từ": type any English word. */
+function WordSearch({ onClose, onFind }: { onClose: () => void; onFind: (w: string) => void }) {
+  const [q, setQ] = useState("");
+  return (
+    <div className="sheet-backdrop" onClick={onClose}>
+      <form
+        className="word-pop word-search"
+        onClick={(e) => e.stopPropagation()}
+        onSubmit={(e) => {
+          e.preventDefault();
+          const w = q.trim().split(/\s+/)[0];
+          if (w) onFind(w);
+        }}
+      >
+        <label className="search">
+          <MagnifyingGlass size={20} />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Gõ một từ tiếng Anh…"
+            autoFocus
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="search"
+            aria-label="Từ cần tra"
+          />
+        </label>
+        <button className="btn primary" disabled={!q.trim()}>
+          Tra
+        </button>
+      </form>
     </div>
   );
 }
@@ -1558,6 +2069,12 @@ function WordPop({ raw, c, onClose }: { raw: string; c: LessonContent; onClose: 
 // ---- Completion --------------------------------------------------------------------------------
 
 function Complete({ lessonId, stepKey, score, res }: { lessonId: number; stepKey: Step; score: number; res: ProgressResult }) {
+  const ex = useContext(ExCtx);
+  const go = (href: string) => (e: React.MouseEvent) => {
+    if (!ex) return;
+    e.preventDefault();
+    ex.leave(href);
+  };
   const info = STEPS.find((s) => s.key === stepKey)!;
   const nextStep = STEPS[STEPS.findIndex((s) => s.key === stepKey) + 1];
   return (
@@ -1595,11 +2112,15 @@ function Complete({ lessonId, stepKey, score, res }: { lessonId: number; stepKey
       {res.goalReached && <p className="good">Bạn đã đạt mục tiêu hôm nay!</p>}
       <div className="complete-actions">
         {nextStep && (
-          <a className="btn primary wide" href={`#/lesson/${lessonId}/${nextStep.key}`}>
+          <a className="btn primary wide" href={`#/lesson/${lessonId}/${nextStep.key}`} onClick={go(`#/lesson/${lessonId}/${nextStep.key}`)}>
             TIẾP: {nextStep.label.toUpperCase()} <ArrowRight size={18} weight="bold" />
           </a>
         )}
-        <a className={`btn wide ${nextStep ? "ghost" : "primary"}`} href={nextStep ? `#/lesson/${lessonId}` : "#/"}>
+        <a
+          className={`btn wide ${nextStep ? "ghost" : "primary"}`}
+          href={nextStep ? `#/lesson/${lessonId}` : "#/"}
+          onClick={go(nextStep ? `#/lesson/${lessonId}` : "#/")}
+        >
           {nextStep ? "Về bài học" : "Về lộ trình"}
         </a>
       </div>

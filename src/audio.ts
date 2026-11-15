@@ -92,8 +92,9 @@ function blobToBase64(blob: Blob): Promise<string> {
 }
 
 // ---- Text-to-speech -------------------------------------------------------------
-// Uses the browser's own voices (free). Quality differs a lot between voices, so they are ranked:
-// neural/"Natural" voices (Edge), Apple Premium/Enhanced, Google voices (Chrome, Android), then the rest.
+// The default voice is a natural AI voice (Deepgram Aura-2, synthesised by the Worker and cached). The browser's
+// own voices are the fallback, and a choice in Profile. Browser voices are ranked: neural/"Natural" voices (Edge),
+// Apple Premium/Enhanced, Google voices (Chrome, Android), then the rest.
 
 const NOVELTY =
   /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|junior|organ|pipe organ|ralph|superstar|trinoids|whisper|wobble|zarvox|fred|kathy|grandma|grandpa|eddy|flo|reed|rocko|sandy|shelley)\b/i;
@@ -126,7 +127,7 @@ export function englishVoices(): SpeechSynthesisVoice[] {
     .sort((a, b) => voiceScore(b) - voiceScore(a));
 }
 
-/** True for the voices worth labelling as natural-sounding in the picker. */
+/** True for the browser voices worth labelling as natural-sounding in the picker. */
 export function isNaturalVoice(v: SpeechSynthesisVoice): boolean {
   return voiceScore(v) >= 45;
 }
@@ -150,9 +151,22 @@ function voicesReady(): Promise<void> {
   });
 }
 
-const VOICE_KEY = "ec_voice_uri";
+/** AI voices (Deepgram Aura-2 speakers) offered in Profile. */
+export const AI_VOICES = [
+  { id: "asteria", label: "Asteria (nữ, Mỹ)" },
+  { id: "luna", label: "Luna (nữ, Mỹ)" },
+  { id: "athena", label: "Athena (nữ)" },
+  { id: "orion", label: "Orion (nam, Mỹ)" },
+  { id: "arcas", label: "Arcas (nam, Mỹ)" },
+  { id: "apollo", label: "Apollo (nam)" },
+] as const;
 
-/** The voice the user picked in Profile, or "" for automatic. */
+/**
+ * The voice the user picked in Profile: "ai:<speaker>" for an AI voice, "browser:<voiceURI>" (or "browser:" for the
+ * best one) for a browser voice. Empty means the default AI voice. (A new key, so everyone moves to the AI voice once.)
+ */
+const VOICE_KEY = "wancha_voice";
+
 export function preferredVoice(): string {
   try {
     return localStorage.getItem(VOICE_KEY) || "";
@@ -161,16 +175,16 @@ export function preferredVoice(): string {
   }
 }
 
-export function setPreferredVoice(uri: string) {
+export function setPreferredVoice(choice: string) {
   try {
-    if (uri) localStorage.setItem(VOICE_KEY, uri);
+    if (choice) localStorage.setItem(VOICE_KEY, choice);
     else localStorage.removeItem(VOICE_KEY);
   } catch {
     /* private mode */
   }
 }
 
-/** Splits long text into sentence-sized pieces: Chrome's Google voices stop after ~15 s of one utterance. */
+/** Splits long text into sentence-sized pieces (Chrome's Google voices stop after ~15 s; the AI voice takes 400 chars). */
 function chunks(text: string): string[] {
   const parts = text.match(/[^.!?]+[.!?]+["')\]]*\s*|[^.!?]+$/g) ?? [text];
   const out: string[] = [];
@@ -183,24 +197,118 @@ function chunks(text: string): string[] {
   return out.length ? out : [text];
 }
 
-let speakToken = 0;
+/** Callers pass 0.95 for normal and 0.6 for slow. */
+const isSlow = (rate?: number) => (rate ?? 1) < 0.8;
 
-export async function speak(text: string, opts: { rate?: number; voiceURI?: string } = {}): Promise<void> {
+// -- AI voice ------------------------------------------------------------------------
+
+/** Off for the rest of the visit once the server says the daily allowance is used up (or the voice is unavailable). */
+let aiOff = false;
+const clips = new Map<string, Promise<string | null>>();
+let player: HTMLAudioElement | null = null;
+
+function aiSpeaker(choice = preferredVoice()): string | null {
+  if (aiOff || typeof Audio === "undefined") return null;
+  if (choice.startsWith("browser:")) return null;
+  const id = choice.startsWith("ai:") ? choice.slice(3) : "asteria";
+  return AI_VOICES.some((v) => v.id === id) ? id : "asteria";
+}
+
+/** The audio of one short text as a blob URL, fetched once per visit; null when the AI voice is not available. */
+function clip(text: string, speaker: string): Promise<string | null> {
+  const key = `${speaker}|${text}`;
+  let p = clips.get(key);
+  if (!p) {
+    p = fetch(`/api/tts?v=${speaker}&t=${encodeURIComponent(text)}`, { credentials: "same-origin" })
+      .then(async (r) => {
+        if (!r.ok) {
+          if (r.status === 429 || r.status === 403) aiOff = true;
+          clips.delete(key);
+          return null;
+        }
+        return URL.createObjectURL(await r.blob());
+      })
+      .catch(() => {
+        clips.delete(key);
+        return null;
+      });
+    clips.set(key, p);
+    // Keep memory bounded: forget the oldest clips.
+    if (clips.size > 120) {
+      const [oldKey, old] = clips.entries().next().value!;
+      clips.delete(oldKey);
+      void old.then((u) => u && URL.revokeObjectURL(u));
+    }
+  }
+  return p;
+}
+
+/** Starts fetching the audio of `text` so the next play is instant. */
+export function prefetchSpeech(text: string) {
+  const sp = aiSpeaker();
+  if (sp && text.trim()) for (const piece of chunks(text.trim())) void clip(piece, sp);
+}
+
+/** One audio element for the whole app: iOS only lets an element play without a tap once it has played after one. */
+function audioEl(): HTMLAudioElement {
+  if (!player) {
+    player = new Audio();
+    player.preload = "auto";
+  }
+  return player;
+}
+
+if (typeof window !== "undefined") {
+  const unlock = () => {
+    const a = audioEl();
+    // A tiny silent WAV, played on the first tap, unlocks the element for later automatic plays.
+    a.src = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=";
+    void a.play().catch(() => {});
+    removeEventListener("pointerdown", unlock, true);
+  };
+  addEventListener("pointerdown", unlock, true);
+}
+
+async function playAi(pieces: string[], speaker: string, slow: boolean, token: number): Promise<boolean> {
+  for (const piece of pieces) {
+    const url = await clip(piece, speaker);
+    if (token !== speakToken) return true;
+    if (!url) return false;
+    const a = audioEl();
+    a.src = url;
+    a.playbackRate = slow ? 0.72 : 1;
+    (a as HTMLAudioElement & { preservesPitch?: boolean }).preservesPitch = true;
+    const ended = new Promise<void>((resolve) => {
+      a.onended = () => resolve();
+      a.onerror = () => resolve();
+      a.onpause = () => resolve();
+    });
+    try {
+      await a.play();
+    } catch {
+      return false;
+    }
+    await ended;
+    if (token !== speakToken) return true;
+  }
+  return true;
+}
+
+// -- Browser voice -------------------------------------------------------------------------
+
+async function playBrowser(pieces: string[], slow: boolean, voiceURI: string, token: number) {
   if (!("speechSynthesis" in window)) return;
-  const token = ++speakToken;
-  speechSynthesis.cancel();
   await voicesReady();
-  if (token !== speakToken) return; // a newer speak() or stopSpeaking() came in while waiting
+  if (token !== speakToken) return;
   const voices = englishVoices();
-  const wanted = opts.voiceURI || preferredVoice();
-  const voice = voices.find((v) => v.voiceURI === wanted) ?? voices[0] ?? null;
-  const pieces = chunks(text);
+  const voice = voices.find((v) => v.voiceURI === voiceURI) ?? voices[0] ?? null;
   await new Promise<void>((resolve) => {
     pieces.forEach((piece, i) => {
       const u = new SpeechSynthesisUtterance(piece);
       u.voice = voice;
       u.lang = voice?.lang ?? "en-US";
-      u.rate = opts.rate ?? 1;
+      // Below ~0.75 many browser voices start reading word by word.
+      u.rate = slow ? 0.78 : 1;
       if (i === pieces.length - 1) {
         u.onend = () => resolve();
         u.onerror = () => resolve();
@@ -210,9 +318,33 @@ export async function speak(text: string, opts: { rate?: number; voiceURI?: stri
   });
 }
 
+let speakToken = 0;
+
+/**
+ * Reads `text` aloud with the chosen voice (AI by default, browser as fallback). `rate` below 0.8 means slow.
+ * `voice` overrides the saved choice (for "Nghe thử" in Profile).
+ */
+export async function speak(text: string, opts: { rate?: number; voice?: string } = {}): Promise<void> {
+  const token = ++speakToken;
+  stopAudio();
+  const clean = text.trim();
+  if (!clean) return;
+  const pieces = chunks(clean);
+  const choice = opts.voice ?? preferredVoice();
+  const speaker = aiSpeaker(choice);
+  if (speaker && (await playAi(pieces, speaker, isSlow(opts.rate), token))) return;
+  if (token !== speakToken) return;
+  await playBrowser(pieces, isSlow(opts.rate), choice.startsWith("browser:") ? choice.slice(8) : "", token);
+}
+
+function stopAudio() {
+  if (player && !player.paused) player.pause();
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+}
+
 export function stopSpeaking() {
   speakToken++;
-  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  stopAudio();
 }
 
 // ---- Word alignment for dictation ------------------------------------------------
