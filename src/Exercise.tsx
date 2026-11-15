@@ -420,24 +420,34 @@ function wordKey(raw: string): string {
   return /^[a-z][a-z'-]*$/.test(w) ? w : "";
 }
 
+/**
+ * Words per request. The AI writes the words of one request one after another (8 new words took ~20 s on the live
+ * site), so small requests run side by side: each word is ready about as fast as a single lookup (~6 s), and
+ * cached ones come back in ~100 ms.
+ */
+const WORDS_PER_REQUEST = 2;
+
 function flushWords() {
   flushTimer = null;
   const all = [...pendingWords];
   const list = all.slice(0, 12);
   pendingWords = new Set(all.slice(12));
   if (pendingWords.size) flushTimer = setTimeout(flushWords, 50);
-  const batch = api<{ cards: Record<string, WordCard> }>("/api/words", { body: { words: list } })
-    .then((r) => r.cards ?? {})
-    .catch(() => ({}) as Record<string, WordCard>);
-  for (const w of list) {
-    cardCache.set(
-      w,
-      batch.then((c) => {
-        // Not written this time: forget it, so a tap asks again.
-        if (!c[w]) cardCache.delete(w);
-        return c[w] ?? null;
-      }),
-    );
+  for (let k = 0; k < list.length; k += WORDS_PER_REQUEST) {
+    const group = list.slice(k, k + WORDS_PER_REQUEST);
+    const batch = api<{ cards: Record<string, WordCard> }>("/api/words", { body: { words: group } })
+      .then((r) => r.cards ?? {})
+      .catch(() => ({}) as Record<string, WordCard>);
+    for (const w of group) {
+      cardCache.set(
+        w,
+        batch.then((c) => {
+          // Not written this time: forget it, so a tap asks again.
+          if (!c[w]) cardCache.delete(w);
+          return c[w] ?? null;
+        }),
+      );
+    }
   }
 }
 
